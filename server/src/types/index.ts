@@ -22,6 +22,12 @@ export interface UserPayload {
 // Request with authenticated user
 export interface AuthRequest extends Request {
   user?: UserPayload;
+  file?: Express.Multer.File;
+  files?: Express.Multer.File[];
+  rateLimit?: {
+    remaining?: number;
+    resetTime?: Date;
+  };
 }
 
 // Campsite Types
