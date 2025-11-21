@@ -15,7 +15,14 @@ export const enforceHttps = (
     return;
   }
 
-  // Check if request is secure
+  // Skip if request comes from Nginx proxy (has X-Real-IP header)
+  // This allows Nginx to handle HTTP/HTTPS, backend just processes requests
+  if (req.headers['x-real-ip']) {
+    next();
+    return;
+  }
+
+  // Check if request is secure (for direct backend access)
   const isSecure =
     req.secure ||
     req.headers['x-forwarded-proto'] === 'https' ||
