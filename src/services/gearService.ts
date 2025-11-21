@@ -2149,14 +2149,22 @@ export const gearService = {
     }
   },
 
-  async createGear(data: FormData): Promise<Gear> {
+  async createGear(data: FormData | any): Promise<Gear> {
     try {
-      const response = await api.post<Gear>('/gear', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      // If FormData, send as multipart, otherwise send as JSON
+      const isFormData = data instanceof FormData;
+      const response = await api.post<{ success: boolean; data: Gear }>('/gear', data, {
+        headers: isFormData
+          ? { 'Content-Type': 'multipart/form-data' }
+          : { 'Content-Type': 'application/json' },
       });
-      return response.data;
+      
+      // Handle backend response format
+      if (response.data.success && (response.data as any).data) {
+        return (response.data as any).data;
+      }
+      
+      return response.data as any;
     } catch (error) {
       // Fallback to mock response in development
       if (import.meta.env.DEV) {

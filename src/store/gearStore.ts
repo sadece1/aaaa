@@ -72,44 +72,23 @@ export const useGearStore = create<GearState>((set, get) => ({
   addGear: async (gearData) => {
     set({ isLoading: true, error: null });
     try {
-      // Create FormData for service compatibility
-      const formData = new FormData();
-      formData.append('name', gearData.name);
-      formData.append('description', gearData.description || '');
-      formData.append('category', String(gearData.category));
-      if (gearData.categoryId) {
-        formData.append('categoryId', gearData.categoryId);
-      }
-      formData.append('pricePerDay', String(gearData.pricePerDay));
-      if (gearData.deposit !== undefined) {
-        formData.append('deposit', String(gearData.deposit));
-      }
-      formData.append('available', String(gearData.available ?? true));
-      
-      // Add images as URLs (service will handle them)
-      if (gearData.images && gearData.images.length > 0) {
-        gearData.images.forEach((url, index) => {
-          if (url && url.trim() !== '') {
-            formData.append(`image_${index}`, url);
-          }
-        });
-      }
+      // Send as JSON (backend will handle FormData if needed)
+      const jsonData = {
+        name: gearData.name,
+        description: gearData.description || '',
+        category_id: gearData.categoryId || gearData.category,
+        price_per_day: gearData.pricePerDay,
+        deposit: gearData.deposit,
+        status: gearData.status || (gearData.available ? 'for-sale' : 'sold'),
+        available: gearData.available ?? true,
+        images: gearData.images || [],
+        brand: gearData.brand,
+        color: gearData.color,
+        specifications: gearData.specifications,
+        recommended_products: gearData.recommendedProducts,
+      };
 
-      // Add optional fields
-      if (gearData.brand) {
-        formData.append('brand', gearData.brand);
-      }
-      if (gearData.color) {
-        formData.append('color', gearData.color);
-      }
-      if (gearData.rating !== undefined) {
-        formData.append('rating', String(gearData.rating));
-      }
-      if (gearData.recommendedProducts && gearData.recommendedProducts.length > 0) {
-        formData.append('recommendedProducts', JSON.stringify(gearData.recommendedProducts));
-      }
-
-      await gearService.createGear(formData);
+      await gearService.createGear(jsonData as any);
       // Refresh gear list
       await get().fetchGear(get().filters, get().page);
       set({ isLoading: false });

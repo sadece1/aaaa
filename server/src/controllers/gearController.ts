@@ -12,6 +12,7 @@ import {
 } from '../services/gearService';
 import { asyncHandler } from '../middleware/errorHandler';
 import { parseDate } from '../utils/helpers';
+import { createGearSchema, updateGearSchema } from '../validators';
 
 /**
  * Get all gear
@@ -56,6 +57,88 @@ export const getSingleGear = asyncHandler(async (req: Request, res: Response) =>
 });
 
 /**
+ * Helper to parse FormData or JSON body
+ */
+const parseGearData = (req: Request): any => {
+  // If Content-Type is multipart/form-data, parse FormData
+  if (req.headers['content-type']?.includes('multipart/form-data')) {
+    const body: any = {};
+    
+    // Parse FormData fields (camelCase to snake_case conversion)
+    if (req.body.name) body.name = req.body.name;
+    if (req.body.description) body.description = req.body.description;
+    
+    // Handle category_id - can be categoryId or category_id
+    if (req.body.categoryId) {
+      body.category_id = req.body.categoryId;
+    } else if (req.body.category_id) {
+      body.category_id = req.body.category_id;
+    }
+    
+    // Handle images - can be image_0, image_1, etc. or images array
+    const images: string[] = [];
+    let index = 0;
+    while (req.body[`image_${index}`]) {
+      const url = req.body[`image_${index}`];
+      if (url && typeof url === 'string' && url.trim()) {
+        images.push(url.trim());
+      }
+      index++;
+    }
+    if (images.length > 0) {
+      body.images = images;
+    } else if (req.body.images) {
+      body.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
+    }
+    
+    // Handle price_per_day
+    if (req.body.pricePerDay) {
+      body.price_per_day = parseFloat(req.body.pricePerDay);
+    } else if (req.body.price_per_day) {
+      body.price_per_day = parseFloat(req.body.price_per_day);
+    }
+    
+    // Handle deposit
+    if (req.body.deposit !== undefined) {
+      body.deposit = req.body.deposit ? parseFloat(req.body.deposit) : null;
+    }
+    
+    // Handle status
+    if (req.body.status) {
+      body.status = req.body.status;
+    }
+    
+    // Handle available
+    if (req.body.available !== undefined) {
+      body.available = req.body.available === 'true' || req.body.available === true;
+    }
+    
+    // Handle optional fields
+    if (req.body.brand) body.brand = req.body.brand;
+    if (req.body.color) body.color = req.body.color;
+    if (req.body.specifications) {
+      body.specifications = typeof req.body.specifications === 'string' 
+        ? JSON.parse(req.body.specifications) 
+        : req.body.specifications;
+    }
+    if (req.body.recommendedProducts) {
+      body.recommended_products = typeof req.body.recommendedProducts === 'string'
+        ? JSON.parse(req.body.recommendedProducts)
+        : req.body.recommendedProducts;
+    } else if (req.body.recommended_products) {
+      body.recommended_products = typeof req.body.recommended_products === 'string'
+        ? JSON.parse(req.body.recommended_products)
+        : req.body.recommended_products;
+    }
+    
+    return body;
+  }
+  
+  // Otherwise, return body as-is (JSON)
+  return req.body;
+};
+
+/**
  * Create gear
  */
 export const create = asyncHandler(async (req: AuthRequest, res: Response) => {
@@ -67,7 +150,31 @@ export const create = asyncHandler(async (req: AuthRequest, res: Response) => {
     return;
   }
 
-  const gear = await createGear(req.body, req.user.id);
+  // Parse FormData or JSON
+  const gearData = parseGearData(req);
+  
+  // Validate parsed data
+  const { error, value } = createGearSchema.validate(gearData, {
+    abortEarly: false,
+    stripUnknown: true,
+    convert: true,
+  });
+  
+  if (error) {
+    const errors = error.details.map((detail) => ({
+      field: detail.path.join('.'),
+      message: detail.message,
+    }));
+    
+    res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      errors,
+    });
+    return;
+  }
+  
+  const gear = await createGear(value, req.user.id);
 
   res.status(201).json({
     success: true,
@@ -95,7 +202,31 @@ export const update = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const isAdmin = req.user.role === 'admin';
 
-  const gear = await updateGear(id, req.body, req.user.id, isAdmin);
+  // Parse FormData or JSON
+  const gearData = parseGearData(req);
+  
+  // Validate parsed data
+  const { error, value } = updateGearSchema.validate(gearData, {
+    abortEarly: false,
+    stripUnknown: true,
+    convert: true,
+  });
+  
+  if (error) {
+    const errors = error.details.map((detail) => ({
+      field: detail.path.join('.'),
+      message: detail.message,
+    }));
+    
+    res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      errors,
+    });
+    return;
+  }
+  
+  const gear = await updateGear(id, value, req.user.id, isAdmin);
 
   res.status(200).json({
     success: true,
