@@ -58,24 +58,32 @@ export const getSingleGear = asyncHandler(async (req: Request, res: Response) =>
 
 /**
  * Helper to parse FormData or JSON body
+ * Note: Express doesn't parse multipart/form-data automatically, 
+ * so we handle both JSON and urlencoded formats
  */
 const parseGearData = (req: Request): any => {
-  // If Content-Type is multipart/form-data, parse FormData
-  if (req.headers['content-type']?.includes('multipart/form-data')) {
-    const body: any = {};
-    
-    // Parse FormData fields (camelCase to snake_case conversion)
-    if (req.body.name) body.name = req.body.name;
-    if (req.body.description) body.description = req.body.description;
-    
-    // Handle category_id - can be categoryId or category_id
-    if (req.body.categoryId) {
-      body.category_id = req.body.categoryId;
-    } else if (req.body.category_id) {
-      body.category_id = req.body.category_id;
-    }
-    
-    // Handle images - can be image_0, image_1, etc. or images array
+  const body: any = {};
+  
+  // Handle both camelCase (from frontend) and snake_case (from backend)
+  if (req.body.name) body.name = req.body.name;
+  if (req.body.description) body.description = req.body.description;
+  
+  // Handle category_id - can be categoryId, category_id, or category
+  if (req.body.categoryId) {
+    body.category_id = req.body.categoryId;
+  } else if (req.body.category_id) {
+    body.category_id = req.body.category_id;
+  } else if (req.body.category) {
+    // If category is a slug, we need to find the category ID
+    // For now, use it as-is (backend should handle slug to ID conversion)
+    body.category_id = req.body.category;
+  }
+  
+  // Handle images - can be array or individual image_0, image_1, etc.
+  if (req.body.images) {
+    body.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
+  } else {
+    // Check for image_0, image_1, etc. pattern
     const images: string[] = [];
     let index = 0;
     while (req.body[`image_${index}`]) {
@@ -87,55 +95,50 @@ const parseGearData = (req: Request): any => {
     }
     if (images.length > 0) {
       body.images = images;
-    } else if (req.body.images) {
-      body.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
     }
-    
-    // Handle price_per_day
-    if (req.body.pricePerDay) {
-      body.price_per_day = parseFloat(req.body.pricePerDay);
-    } else if (req.body.price_per_day) {
-      body.price_per_day = parseFloat(req.body.price_per_day);
-    }
-    
-    // Handle deposit
-    if (req.body.deposit !== undefined) {
-      body.deposit = req.body.deposit ? parseFloat(req.body.deposit) : null;
-    }
-    
-    // Handle status
-    if (req.body.status) {
-      body.status = req.body.status;
-    }
-    
-    // Handle available
-    if (req.body.available !== undefined) {
-      body.available = req.body.available === 'true' || req.body.available === true;
-    }
-    
-    // Handle optional fields
-    if (req.body.brand) body.brand = req.body.brand;
-    if (req.body.color) body.color = req.body.color;
-    if (req.body.specifications) {
-      body.specifications = typeof req.body.specifications === 'string' 
-        ? JSON.parse(req.body.specifications) 
-        : req.body.specifications;
-    }
-    if (req.body.recommendedProducts) {
-      body.recommended_products = typeof req.body.recommendedProducts === 'string'
-        ? JSON.parse(req.body.recommendedProducts)
-        : req.body.recommendedProducts;
-    } else if (req.body.recommended_products) {
-      body.recommended_products = typeof req.body.recommended_products === 'string'
-        ? JSON.parse(req.body.recommended_products)
-        : req.body.recommended_products;
-    }
-    
-    return body;
   }
   
-  // Otherwise, return body as-is (JSON)
-  return req.body;
+  // Handle price_per_day
+  if (req.body.pricePerDay !== undefined) {
+    body.price_per_day = parseFloat(String(req.body.pricePerDay));
+  } else if (req.body.price_per_day !== undefined) {
+    body.price_per_day = parseFloat(String(req.body.price_per_day));
+  }
+  
+  // Handle deposit
+  if (req.body.deposit !== undefined && req.body.deposit !== null && req.body.deposit !== '') {
+    body.deposit = parseFloat(String(req.body.deposit));
+  }
+  
+  // Handle status
+  if (req.body.status) {
+    body.status = req.body.status;
+  }
+  
+  // Handle available
+  if (req.body.available !== undefined) {
+    body.available = req.body.available === 'true' || req.body.available === true || req.body.available === '1';
+  }
+  
+  // Handle optional fields
+  if (req.body.brand) body.brand = req.body.brand;
+  if (req.body.color) body.color = req.body.color;
+  if (req.body.specifications) {
+    body.specifications = typeof req.body.specifications === 'string' 
+      ? JSON.parse(req.body.specifications) 
+      : req.body.specifications;
+  }
+  if (req.body.recommendedProducts) {
+    body.recommended_products = typeof req.body.recommendedProducts === 'string'
+      ? JSON.parse(req.body.recommendedProducts)
+      : req.body.recommendedProducts;
+  } else if (req.body.recommended_products) {
+    body.recommended_products = typeof req.body.recommended_products === 'string'
+      ? JSON.parse(req.body.recommended_products)
+      : req.body.recommended_products;
+  }
+  
+  return body;
 };
 
 /**
