@@ -330,7 +330,7 @@ server {
     
     server_name ${DOMAIN_NAME} www.${DOMAIN_NAME};
     
-    root /var/www/campscape/frontend;
+    root /var/www/campscape/dist;
     index index.html;
     
     access_log /var/log/nginx/campscape-access.log;
