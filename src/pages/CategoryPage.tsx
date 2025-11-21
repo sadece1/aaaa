@@ -103,14 +103,33 @@ export const CategoryPage = () => {
         console.log('Matching category IDs:', Array.from(matchingCategoryIds));
         console.log('Total gear items:', gear.length);
         
-        // Build a map of backend UUID category IDs to frontend slug-based IDs
-        const categoryIdMap = new Map<string, string>();
-        allCategories.forEach(cat => {
-          // Map both UUID and slug-based IDs
-          categoryIdMap.set(cat.id, cat.id);
-          if (cat.id.startsWith('cat-')) {
-            // If it's already slug-based, use it directly
-            categoryIdMap.set(cat.id, cat.id);
+        // Fetch backend categories to map UUID category_ids to frontend categories
+        // Backend returns UUID category_ids, but we need to match them with frontend slug-based categories
+        let backendCategories: Category[] = [];
+        try {
+          const backendCategoriesResponse = await fetch('/api/categories').then(r => r.json());
+          if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
+            backendCategories = backendCategoriesResponse.data;
+          }
+        } catch (error) {
+          console.warn('Failed to fetch backend categories, using frontend categories only:', error);
+        }
+        
+        // Build a map of backend UUID category IDs to frontend slug-based category IDs
+        const backendToFrontendCategoryMap = new Map<string, string>();
+        backendCategories.forEach(backendCat => {
+          // Find matching frontend category by slug
+          const frontendCat = allCategories.find(fc => fc.slug === backendCat.slug);
+          if (frontendCat) {
+            backendToFrontendCategoryMap.set(backendCat.id, frontendCat.id);
+          }
+        });
+        
+        // Also add direct frontend category IDs to matching set
+        const allMatchingIds = new Set(matchingCategoryIds);
+        backendToFrontendCategoryMap.forEach((frontendId) => {
+          if (matchingCategoryIds.has(frontendId)) {
+            allMatchingIds.add(frontendId);
           }
         });
         
@@ -118,6 +137,15 @@ export const CategoryPage = () => {
         const filtered = gear.filter((item) => {
           // Get categoryId from item (could be categoryId or category_id from backend)
           const itemCategoryId = (item as any).categoryId || (item as any).category_id;
+          
+          // Check if backend UUID maps to a frontend category ID that matches
+          if (itemCategoryId) {
+            const mappedFrontendId = backendToFrontendCategoryMap.get(itemCategoryId);
+            if (mappedFrontendId && matchingCategoryIds.has(mappedFrontendId)) {
+              console.log('Matched by backend UUID to frontend category:', item.name, 'UUID:', itemCategoryId, '-> Frontend ID:', mappedFrontendId);
+              return true;
+            }
+          }
           
           // Check categoryId first (most reliable) - exact match with category or its parents/children
           if (itemCategoryId && matchingCategoryIds.has(itemCategoryId)) {
@@ -158,18 +186,6 @@ export const CategoryPage = () => {
           if (itemCategory && typeof itemCategory === 'string' && itemCategory.includes(categorySlug)) {
             console.log('Matched by category string:', item.name);
             return true;
-          }
-          
-          // Debug: log item details for troubleshooting
-          if (itemCategoryId) {
-            console.log('Debug - gear item not matched:', {
-              itemName: item.name,
-              itemCategoryId: itemCategoryId,
-              itemCategory: itemCategory,
-              categoryId: category.id,
-              categorySlug: category.slug,
-              matchingIds: Array.from(matchingCategoryIds)
-            });
           }
           
           return false;
