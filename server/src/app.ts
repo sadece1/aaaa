@@ -34,9 +34,10 @@ const app: Application = express();
 app.set('trust proxy', 1);
 
 // HTTPS enforcement (redirect HTTP to HTTPS in production)
-if (process.env.NODE_ENV === 'production') {
-  app.use(enforceHttps);
-}
+// Disabled for Nginx proxy - Nginx handles HTTP/HTTPS
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(enforceHttps);
+// }
 
 // Security middleware with enhanced CSP and security headers
 app.use(helmet({
