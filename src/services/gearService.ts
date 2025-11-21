@@ -2133,20 +2133,26 @@ export const gearService = {
   async getGearById(id: string): Promise<Gear> {
     try {
       const response = await api.get<{ success: boolean; data: Gear } | Gear>(`/gear/${id}`);
-      // Handle both response formats
-      const gear = (response.data as any).success ? (response.data as any).data : response.data;
-      return gear;
-    } catch (error) {
-      // Fallback to mock data (both dev and prod)
-      console.warn('API call failed, using mock gear data:', error);
-      // Reload from localStorage to get latest data
-      mockGear = loadGearFromStorage();
-      const mockItem = mockGear.find(g => g.id === id);
-      if (mockItem) {
-        return mockItem;
+      
+      // Backend returns { success: true, data: gear }
+      if ((response.data as any).success && (response.data as any).data) {
+        return (response.data as any).data;
       }
-      // If not found in mock data, throw error
-      throw new Error(`Gear with id ${id} not found`);
+      
+      // Direct gear object
+      return response.data as Gear;
+    } catch (error: any) {
+      // Fallback to mock data if 404 or other error
+      if (error.response?.status === 404 || import.meta.env.DEV) {
+        console.warn('API call failed, using mock gear data:', error);
+        // Reload from localStorage to get latest data
+        mockGear = loadGearFromStorage();
+        const mockItem = mockGear.find(g => g.id === id);
+        if (mockItem) {
+          return mockItem;
+        }
+      }
+      throw error;
     }
   },
 
