@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2';
 import pool from '../config/database';
 import { generateId, isEmpty } from '../utils/helpers';
 import { AppError } from '../middleware/errorHandler';
@@ -57,10 +58,10 @@ export const createReference = async (data: {
   // Get max order_index if not provided
   let orderIndex = data.order_index;
   if (orderIndex === undefined) {
-    const [result] = await pool.execute<Array<{ max_order: number }>>(
+    const [result] = await pool.execute<RowDataPacket[]>(
       'SELECT COALESCE(MAX(order_index), 0) + 1 as max_order FROM project_references'
     );
-    orderIndex = result[0]?.max_order || 1;
+    orderIndex = (result[0] as { max_order: number })?.max_order || 1;
   }
 
   await pool.execute(
