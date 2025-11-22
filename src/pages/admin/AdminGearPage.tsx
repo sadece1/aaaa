@@ -448,36 +448,37 @@ export const AdminGearPage = () => {
       <AdminLayout>
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
                 Ürün Yönetimi
               </h1>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mt-1">
                 {stats.total} ürün yönetiliyor
               </p>
             </div>
-              <Link to={routes.adminAddGear}>
-              <Button variant="primary" className="flex items-center gap-2">
+            <Link to={routes.adminAddGear} className="w-full sm:w-auto">
+              <Button variant="primary" className="w-full sm:w-auto flex items-center justify-center gap-2 text-sm sm:text-base px-4 py-2">
                 <span>+</span>
-                <span>Yeni Ürün Ekle</span>
+                <span className="hidden xs:inline">Yeni Ürün Ekle</span>
+                <span className="xs:hidden">Ekle</span>
               </Button>
-              </Link>
+            </Link>
           </div>
 
           {/* İstatistik Kartları */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white"
+              className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl shadow-lg p-3 sm:p-4 md:p-6 text-white"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm font-medium">Toplam Ürün</p>
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold mt-1">{stats.total}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-blue-100 text-xs sm:text-sm font-medium truncate">Toplam Ürün</p>
+                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mt-0.5 sm:mt-1">{stats.total}</p>
                 </div>
-                <div className="text-2xl sm:text-3xl lg:text-4xl opacity-80">📦</div>
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-80 flex-shrink-0 ml-2">📦</div>
               </div>
             </motion.div>
 
@@ -485,14 +486,14 @@ export const AdminGearPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white"
+              className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg sm:rounded-xl shadow-lg p-3 sm:p-4 md:p-6 text-white"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100 text-sm font-medium">Satılık</p>
-                  <p className="text-3xl font-bold mt-1">{stats.forSale}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-green-100 text-xs sm:text-sm font-medium truncate">Satılık</p>
+                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mt-0.5 sm:mt-1">{stats.forSale}</p>
                 </div>
-                <div className="text-4xl opacity-80">🛒</div>
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-80 flex-shrink-0 ml-2">🛒</div>
               </div>
             </motion.div>
 
@@ -500,14 +501,14 @@ export const AdminGearPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white"
+              className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl shadow-lg p-3 sm:p-4 md:p-6 text-white"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm font-medium">Sipariş Edilebilir</p>
-                  <p className="text-3xl font-bold mt-1">{stats.orderable}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-purple-100 text-xs sm:text-sm font-medium truncate">Sipariş Edilebilir</p>
+                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mt-0.5 sm:mt-1">{stats.orderable}</p>
                 </div>
-                <div className="text-2xl sm:text-3xl lg:text-4xl opacity-80">📦</div>
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-80 flex-shrink-0 ml-2">📦</div>
               </div>
             </motion.div>
 
@@ -515,14 +516,14 @@ export const AdminGearPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white"
+              className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg sm:rounded-xl shadow-lg p-3 sm:p-4 md:p-6 text-white"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-red-100 text-sm font-medium">Satıldı</p>
-                  <p className="text-3xl font-bold mt-1">{stats.sold}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-red-100 text-xs sm:text-sm font-medium truncate">Satıldı</p>
+                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mt-0.5 sm:mt-1">{stats.sold}</p>
                 </div>
-                <div className="text-4xl opacity-80">✅</div>
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-80 flex-shrink-0 ml-2">✅</div>
               </div>
             </motion.div>
 
@@ -530,24 +531,24 @@ export const AdminGearPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg p-6 text-white"
+              className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg sm:rounded-xl shadow-lg p-3 sm:p-4 md:p-6 text-white"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-amber-100 text-sm font-medium">Ortalama Fiyat</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold mt-1">₺{stats.averagePrice}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-amber-100 text-xs sm:text-sm font-medium truncate">Ortalama Fiyat</p>
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold mt-0.5 sm:mt-1">₺{stats.averagePrice}</p>
                 </div>
-                <div className="text-4xl opacity-80">💰</div>
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-80 flex-shrink-0 ml-2">💰</div>
               </div>
             </motion.div>
           </div>
 
           {/* Filtreler ve Kontroller */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3 sm:p-4 lg:p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md p-3 sm:p-4 lg:p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
               {/* Arama */}
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="sm:col-span-2 lg:col-span-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                   🔍 Ara
                 </label>
                 <input
@@ -555,19 +556,19 @@ export const AdminGearPage = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Ürün adı, açıklama veya marka ile ara..."
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
 
               {/* Kategori Filtresi */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                   🏷️ Kategori
                 </label>
                 <select
                   value={selectedCategory || ''}
                   onChange={(e) => setSelectedCategory(e.target.value || null)}
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
                   <option value="">Tüm Kategoriler</option>
                   {rootCategories.map((cat) => (
@@ -580,13 +581,13 @@ export const AdminGearPage = () => {
 
               {/* Durum Filtresi */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                   📊 Durum
                 </label>
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
                   <option value="all">Tüm Durumlar</option>
                   <option value="for-sale">Satılık</option>
@@ -596,74 +597,80 @@ export const AdminGearPage = () => {
                   <option value="sold">Satıldı</option>
                 </select>
               </div>
-              </div>
+            </div>
 
             {/* View Mode, Sort ve Toplu İşlemler */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Görünüm:</span>
-                <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                  <button
-                    onClick={() => setViewMode('category')}
-                    className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                      viewMode === 'category'
-                        ? 'bg-primary-600 text-white'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    }`}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-2 w-full xs:w-auto">
+                  <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Görünüm:</span>
+                  <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5 sm:p-1 flex-1 xs:flex-initial">
+                    <button
+                      onClick={() => setViewMode('category')}
+                      className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                        viewMode === 'category'
+                          ? 'bg-primary-600 text-white'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      <span className="hidden sm:inline">📁 Kategoriler</span>
+                      <span className="sm:hidden">📁</span>
+                    </button>
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                        viewMode === 'grid'
+                          ? 'bg-primary-600 text-white'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      <span className="hidden sm:inline">⊞ Grid</span>
+                      <span className="sm:hidden">⊞</span>
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                        viewMode === 'list'
+                          ? 'bg-primary-600 text-white'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      <span className="hidden sm:inline">☰ Liste</span>
+                      <span className="sm:hidden">☰</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full xs:w-auto">
+                  <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Sırala:</span>
+                  <select
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value as SortOption)}
+                    className="flex-1 xs:flex-initial px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                   >
-                    📁 Kategoriler
-                  </button>
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                      viewMode === 'grid'
-                        ? 'bg-primary-600 text-white'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    }`}
-                  >
-                    ⊞ Grid
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                      viewMode === 'list'
-                        ? 'bg-primary-600 text-white'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    }`}
-                  >
-                    ☰ Liste
-                  </button>
+                    <option value="name">İsme Göre</option>
+                    <option value="price">Fiyata Göre</option>
+                    <option value="status">Duruma Göre</option>
+                    <option value="date">Tarihe Göre</option>
+                  </select>
                 </div>
               </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Sırala:</span>
-                <select
-                  value={sortOption}
-                  onChange={(e) => setSortOption(e.target.value as SortOption)}
-                  className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="name">İsme Göre</option>
-                  <option value="price">Fiyata Göre</option>
-                  <option value="status">Duruma Göre</option>
-                  <option value="date">Tarihe Göre</option>
-                </select>
-            </div>
 
               {selectedItems.size > 0 && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 w-full sm:w-auto justify-end"
                 >
-                  <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                  <span className="text-xs sm:text-sm font-medium text-primary-600 dark:text-primary-400 whitespace-nowrap">
                     {selectedItems.size} seçili
                   </span>
                   <button
                     onClick={handleBulkDelete}
-                    className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-red-700 transition-colors whitespace-nowrap"
                   >
-                    🗑️ Toplu Sil
+                    🗑️ <span className="hidden sm:inline">Toplu Sil</span>
+                    <span className="sm:hidden">Sil</span>
                   </button>
                 </motion.div>
               )}
@@ -678,11 +685,11 @@ export const AdminGearPage = () => {
           ) : (
             <>
               {viewMode === 'category' ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {Object.keys(filteredCategories).length === 0 ? (
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-12 text-center">
-                      <div className="text-6xl mb-4">📦</div>
-                      <p className="text-gray-500 dark:text-gray-400 text-lg">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md p-6 sm:p-8 md:p-12 text-center">
+                      <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">📦</div>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base md:text-lg">
                         {searchQuery || selectedCategory || statusFilter !== 'all'
                       ? 'Arama kriterlerinize uygun ürün bulunamadı.'
                       : 'Henüz ürün eklenmemiş.'}
@@ -691,18 +698,20 @@ export const AdminGearPage = () => {
               ) : (
                     <>
                       {/* Kategori Görünümü Kontrolleri */}
-                      <div className="flex justify-end gap-2">
+                      <div className="flex flex-col xs:flex-row justify-end gap-2">
                         <button
                           onClick={expandAllCategories}
-                          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                          className="w-full xs:w-auto px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                         >
-                          📂 Tümünü Aç
+                          📂 <span className="hidden sm:inline">Tümünü Aç</span>
+                          <span className="sm:hidden">Aç</span>
                         </button>
                         <button
                           onClick={collapseAllCategories}
-                          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                          className="w-full xs:w-auto px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                         >
-                          📁 Tümünü Kapat
+                          📁 <span className="hidden sm:inline">Tümünü Kapat</span>
+                          <span className="sm:hidden">Kapat</span>
                         </button>
                       </div>
 
@@ -717,17 +726,17 @@ export const AdminGearPage = () => {
                     >
                       <button
                         onClick={() => toggleCategory(categoryName)}
-                        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                          <span className="text-xl sm:text-2xl flex-shrink-0">
                             {categories.find(c => c.name === categoryName)?.icon || '📦'}
                           </span>
-                          <div className="text-left">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          <div className="text-left flex-1 min-w-0">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
                               {categoryName}
                             </h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                               {items.length} ürün
                             </p>
                           </div>
@@ -758,12 +767,12 @@ export const AdminGearPage = () => {
                                   transition={{ duration: 0.3 }}
                                   className="border-t border-gray-200 dark:border-gray-700 overflow-hidden"
                                 >
-                          <div className="overflow-x-auto">
-                            <div className="overflow-x-auto">
+                          <div className="overflow-x-auto -mx-3 sm:mx-0">
+                            <div className="inline-block min-w-full align-middle">
                               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                               <thead className="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                          <th className="px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                                     <input
                                       type="checkbox"
                                               checked={items.every(item => selectedItems.has(item.id))}
@@ -779,19 +788,19 @@ export const AdminGearPage = () => {
                                         });
                                         setSelectedItems(newSelected);
                                       }}
-                                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4 sm:w-5 sm:h-5"
                                     />
                                   </th>
-                                          <th className="px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                                             Ürün
                                   </th>
-                                          <th className="px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase hidden sm:table-cell">
                                     Fiyat
                                   </th>
-                                          <th className="px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase hidden md:table-cell">
                                     Durum
                                   </th>
-                                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                                     İşlemler
                                   </th>
                                 </tr>
@@ -802,37 +811,44 @@ export const AdminGearPage = () => {
                                     key={item.id}
                                             className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                   >
-                                            <td className="px-3 sm:px-4 lg:px-6 py-2 sm:py-4">
+                                            <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4">
                                       <input
                                         type="checkbox"
                                         checked={selectedItems.has(item.id)}
                                         onChange={() => toggleSelectItem(item.id)}
-                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4 sm:w-5 sm:h-5"
                                       />
                                     </td>
-                                    <td className="px-6 py-4">
-                                      <div className="flex items-center gap-3">
+                                    <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4">
+                                      <div className="flex items-center gap-2 sm:gap-3">
                                                 {item.images && item.images.length > 0 && (
                                           <img
                                             src={item.images[0]}
                                             alt={item.name}
-                                                    className="w-14 h-14 object-cover rounded-lg"
+                                                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-cover rounded-lg flex-shrink-0"
                                           />
                                         )}
-                                                <div>
-                                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                                <div className="min-w-0 flex-1">
+                                          <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate">
                                             {item.name}
                                           </div>
                                           {item.description && (
-                                                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">
+                                                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs sm:max-w-md hidden sm:block">
                                               {item.description}
                                             </div>
                                           )}
+                                          {/* Mobilde fiyat ve durum */}
+                                          <div className="sm:hidden mt-1 flex items-center gap-2">
+                                            <div className="text-xs font-semibold text-gray-900 dark:text-white">
+                                              ₺{item.pricePerDay}/gün
+                                            </div>
+                                            {getStatusBadge(item)}
+                                          </div>
                                         </div>
                                       </div>
                                     </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                              <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                                            <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                                              <div className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">
                                       ₺{item.pricePerDay}/gün
                                               </div>
                                       {item.deposit && (
@@ -841,22 +857,24 @@ export const AdminGearPage = () => {
                                                 </div>
                                       )}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden md:table-cell">
                                               {getStatusBadge(item)}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                      <div className="flex items-center justify-end gap-3">
+                                    <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
+                                      <div className="flex items-center justify-end gap-2 sm:gap-3">
                                         <Link
                                           to={`/admin/gear/edit/${item.id}`}
-                                                  className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                                                  className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium whitespace-nowrap"
                                         >
-                                                  ✏️ Düzenle
+                                                  <span className="hidden sm:inline">✏️ Düzenle</span>
+                                                  <span className="sm:hidden">✏️</span>
                                         </Link>
                                         <button
                                           onClick={() => handleDelete(item.id)}
-                                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium"
+                                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium whitespace-nowrap"
                                         >
-                                                  🗑️ Sil
+                                                  <span className="hidden sm:inline">🗑️ Sil</span>
+                                                  <span className="sm:hidden">🗑️</span>
                                         </button>
                                       </div>
                                     </td>
@@ -878,9 +896,9 @@ export const AdminGearPage = () => {
               ) : viewMode === 'grid' ? (
                 <div>
                   {filteredAndSortedGear.length === 0 ? (
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-12 text-center">
-                      <div className="text-6xl mb-4">📦</div>
-                      <p className="text-gray-500 dark:text-gray-400 text-lg">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md p-6 sm:p-8 md:p-12 text-center">
+                      <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">📦</div>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base md:text-lg">
                         Arama kriterlerinize uygun ürün bulunamadı.
                       </p>
                     </div>
@@ -907,7 +925,7 @@ export const AdminGearPage = () => {
                           </div>
                         </div>
                       )}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                         {filteredAndSortedGear.map((item) => (
                           <motion.div
                             key={item.id}
@@ -921,11 +939,11 @@ export const AdminGearPage = () => {
                                 <img
                                   src={item.images[0]}
                                   alt={item.name}
-                                  className="w-full h-48 object-cover"
+                                  className="w-full h-40 sm:h-48 object-cover"
                                 />
                               ) : (
-                                <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                                  <span className="text-4xl">📦</span>
+                                <div className="w-full h-40 sm:h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                  <span className="text-3xl sm:text-4xl">📦</span>
                     </div>
                               )}
                               <div className="absolute top-2 left-2">
@@ -937,18 +955,18 @@ export const AdminGearPage = () => {
                                 />
                               </div>
                             </div>
-                            <div className="p-4">
-                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                            <div className="p-3 sm:p-4">
+                              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-1.5 sm:mb-2 line-clamp-2">
                                 {item.name}
                               </h3>
                               {item.description && (
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
+                                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-3 line-clamp-2">
                                   {item.description}
                                 </p>
                               )}
-                              <div className="flex items-center justify-between mb-3">
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-2 sm:mb-3">
                                 <div>
-                                  <div className="text-xl font-bold text-primary-600 dark:text-primary-400">
+                                  <div className="text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400">
                                     ₺{item.pricePerDay}/gün
                                   </div>
                                   {item.deposit && (
@@ -957,18 +975,19 @@ export const AdminGearPage = () => {
                                     </div>
                                   )}
                                 </div>
-                                {getStatusBadge(item)}
+                                <div className="self-start sm:self-auto">{getStatusBadge(item)}</div>
                               </div>
                               <div className="flex gap-2">
                                 <Link
                                   to={`/admin/gear/edit/${item.id}`}
-                                  className="flex-1 px-3 py-2 bg-primary-600 text-white text-center text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
+                                  className="flex-1 px-2 sm:px-3 py-1.5 sm:py-2 bg-primary-600 text-white text-center text-xs sm:text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
                                 >
-                                  ✏️ Düzenle
+                                  <span className="hidden sm:inline">✏️ Düzenle</span>
+                                  <span className="sm:hidden">✏️</span>
                                 </Link>
                                 <button
                                   onClick={() => handleDelete(item.id)}
-                                  className="px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+                                  className="px-2 sm:px-3 py-1.5 sm:py-2 bg-red-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
                                 >
                                   🗑️
                                 </button>
@@ -981,32 +1000,33 @@ export const AdminGearPage = () => {
                   )}
                 </div>
               ) : (
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md overflow-hidden">
+                  <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <div className="inline-block min-w-full align-middle">
+                      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th className="px-6 py-3 text-left">
+                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left">
                             <input
                               type="checkbox"
                               checked={selectedItems.size === filteredAndSortedGear.length && filteredAndSortedGear.length > 0}
                               onChange={toggleSelectAll}
-                              className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                              className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4 sm:w-5 sm:h-5"
                             />
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                             Ürün
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase hidden md:table-cell">
                             Kategori
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase hidden sm:table-cell">
                             Fiyat
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase hidden md:table-cell">
                             Durum
                           </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                             İşlemler
                           </th>
                         </tr>
@@ -1014,9 +1034,9 @@ export const AdminGearPage = () => {
                       <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {filteredAndSortedGear.length === 0 ? (
                           <tr>
-                            <td colSpan={6} className="px-6 py-12 text-center">
-                              <div className="text-6xl mb-4">📦</div>
-                              <p className="text-gray-500 dark:text-gray-400 text-lg">
+                            <td colSpan={6} className="px-4 sm:px-6 py-8 sm:py-12 text-center">
+                              <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">📦</div>
+                              <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base md:text-lg">
                                 Arama kriterlerinize uygun ürün bulunamadı.
                               </p>
                             </td>
@@ -1046,42 +1066,56 @@ export const AdminGearPage = () => {
                                 key={item.id}
                                 className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                               >
-                                <td className="px-6 py-4">
+                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4">
                                   <input
                                     type="checkbox"
                                     checked={selectedItems.has(item.id)}
                                     onChange={() => toggleSelectItem(item.id)}
-                                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4 sm:w-5 sm:h-5"
                                   />
                                 </td>
-                                <td className="px-6 py-4">
-                                  <div className="flex items-center gap-3">
+                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4">
+                                  <div className="flex items-center gap-2 sm:gap-3">
                                     {item.images && item.images.length > 0 && (
                                       <img
                                         src={item.images[0]}
                                         alt={item.name}
-                                        className="w-14 h-14 object-cover rounded-lg"
+                                        className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-cover rounded-lg flex-shrink-0"
                                       />
                                     )}
-                                    <div>
-                                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                    <div className="min-w-0 flex-1">
+                                      <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate">
                                         {item.name}
                                       </div>
                                       {item.description && (
-                                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">
+                                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs sm:max-w-md hidden sm:block">
                                           {item.description}
                                         </div>
                                       )}
+                                      {/* Mobilde kategori, fiyat ve durum */}
+                                      <div className="sm:hidden mt-1 space-y-1">
+                                        {category && (
+                                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                                            {category.name}
+                                          </div>
+                                        )}
+                                        <div className="flex items-center gap-2">
+                                          <div className="text-xs font-semibold text-gray-900 dark:text-white">
+                                            ₺{item.pricePerDay}/gün
+                                          </div>
+                                          {getStatusBadge(item)}
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden md:table-cell">
+                                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                                     {category?.name || 'Kategorisiz'}
                                   </span>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                  <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                                  <div className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">
                                     ₺{item.pricePerDay}/gün
                                   </div>
                                   {item.deposit && (
@@ -1090,22 +1124,24 @@ export const AdminGearPage = () => {
                                     </div>
                                   )}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden md:table-cell">
                                   {getStatusBadge(item)}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                  <div className="flex items-center justify-end gap-3">
+                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
+                                  <div className="flex items-center justify-end gap-2 sm:gap-3">
                                     <Link
                                       to={`/admin/gear/edit/${item.id}`}
-                                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium whitespace-nowrap"
                                     >
-                                      ✏️ Düzenle
+                                      <span className="hidden sm:inline">✏️ Düzenle</span>
+                                      <span className="sm:hidden">✏️</span>
                                     </Link>
                                     <button
                                       onClick={() => handleDelete(item.id)}
-                                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium"
+                                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium whitespace-nowrap"
                                     >
-                                      🗑️ Sil
+                                      <span className="hidden sm:inline">🗑️ Sil</span>
+                                      <span className="sm:hidden">🗑️</span>
                                     </button>
                                   </div>
                                 </td>
@@ -1115,8 +1151,9 @@ export const AdminGearPage = () => {
               )}
                       </tbody>
                     </table>
+                    </div>
                   </div>
-            </div>
+                </div>
               )}
             </>
           )}
