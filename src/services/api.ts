@@ -50,6 +50,18 @@ api.interceptors.response.use(
       window.location.href = '/login';
     }
     
+    // Handle validation errors (400) with detailed messages
+    if (error.response?.status === 400) {
+      const errorData = error.response.data as { message?: string; errors?: Array<{ field: string; message: string }> };
+      
+      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        // Build detailed validation error message
+        const validationMessages = errorData.errors.map(err => `${err.field}: ${err.message}`).join('\n');
+        console.error('Validation errors:', errorData.errors);
+        return Promise.reject(new Error(`Validation error:\n${validationMessages}`));
+      }
+    }
+    
     // For other errors (500, etc.), silently fail so we can use mock data
     // Don't log to console to avoid noise
     const message = 
