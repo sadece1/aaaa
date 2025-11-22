@@ -263,10 +263,14 @@ export const GearDetailsPage = () => {
 
   const colorInfo = gear.color ? colorService.getColorByName(gear.color) : null;
 
-  const renderStars = (rating?: number) => {
+  const renderStars = (rating?: number | string) => {
     if (!rating) return null;
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
+    // Convert to number if string
+    const ratingNum = typeof rating === 'number' ? rating : parseFloat(String(rating || 0));
+    if (isNaN(ratingNum) || ratingNum <= 0) return null;
+    
+    const fullStars = Math.floor(ratingNum);
+    const hasHalfStar = ratingNum % 1 >= 0.5;
     
     return (
       <div className="flex items-center gap-0.5">
@@ -280,7 +284,7 @@ export const GearDetailsPage = () => {
           }
         })}
         <span className="text-xs font-medium text-gray-700 dark:text-gray-300 ml-1.5">
-          {typeof rating === 'number' ? rating.toFixed(1) : parseFloat(String(rating || 0)).toFixed(1)} / 5.0
+          {ratingNum.toFixed(1)} / 5.0
         </span>
       </div>
     );
@@ -445,7 +449,7 @@ export const GearDetailsPage = () => {
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-semibold text-gray-900 dark:text-white">
-                          {typeof gear.rating === 'number' ? gear.rating.toFixed(1) : parseFloat(String(gear.rating)).toFixed(1)}
+                          {gear.rating ? (typeof gear.rating === 'number' ? gear.rating.toFixed(1) : parseFloat(String(gear.rating || 0)).toFixed(1)) : '0.0'}
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
                           / 5.0
@@ -592,12 +596,13 @@ export const GearDetailsPage = () => {
                           <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">Değerlendirme</div>
                           <div className="flex items-center gap-2">
                             <span className="text-xl font-semibold text-gray-900 dark:text-white">
-                              {typeof gear.rating === 'number' ? gear.rating.toFixed(1) : parseFloat(String(gear.rating)).toFixed(1)}
+                              {gear.rating ? (typeof gear.rating === 'number' ? gear.rating.toFixed(1) : parseFloat(String(gear.rating || 0)).toFixed(1)) : '0.0'}
                             </span>
                             <div className="flex items-center gap-0.5">
                               {[...Array(5)].map((_, i) => {
-                                const fullStars = Math.floor(gear.rating!);
-                                const hasHalfStar = gear.rating! % 1 >= 0.5;
+                                const ratingNum = typeof gear.rating === 'number' ? gear.rating : parseFloat(String(gear.rating || 0));
+                                const fullStars = Math.floor(ratingNum);
+                                const hasHalfStar = ratingNum % 1 >= 0.5;
                                 if (i < fullStars) {
                                   return <span key={i} className="text-yellow-500">★</span>;
                                 } else if (i === fullStars && hasHalfStar) {
