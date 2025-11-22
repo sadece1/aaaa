@@ -41,6 +41,9 @@ export const EditGearPage = () => {
   
   // YENİ: Direkt state ile specifications yönetimi (React Hook Form'dan bağımsız)
   const [specificationsState, setSpecificationsState] = useState<Array<{ key: string; value: string }>>([{ key: '', value: '' }]);
+  
+  // Flag to prevent category state resets during initial load
+  const [isLoadingCategoryHierarchy, setIsLoadingCategoryHierarchy] = useState(false);
 
   const {
     register,
