@@ -34,7 +34,13 @@ echo "  Price: $BEFORE_PRICE"
 echo "  Name: $BEFORE_NAME"
 
 # Yeni fiyat (mevcut fiyat + 100)
-NEW_PRICE=$(echo "$BEFORE_PRICE + 100" | bc 2>/dev/null || echo "$(( ${BEFORE_PRICE%.*} + 100 )).00")
+# bc yoksa awk kullan
+if command -v bc &> /dev/null; then
+  NEW_PRICE=$(echo "$BEFORE_PRICE + 100" | bc)
+else
+  # awk ile float toplama
+  NEW_PRICE=$(awk "BEGIN {printf \"%.2f\", $BEFORE_PRICE + 100}")
+fi
 
 echo ""
 echo "2️⃣ Güncelleme Yapılıyor (Sadece Fiyat Değiştiriliyor):"
