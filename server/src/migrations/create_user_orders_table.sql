@@ -1,0 +1,21 @@
+-- User Orders table for tracking gear orders
+CREATE TABLE IF NOT EXISTS user_orders (
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    gear_id VARCHAR(36) NOT NULL,
+    status ENUM('waiting', 'arrived', 'shipped') NOT NULL DEFAULT 'waiting',
+    price DECIMAL(10, 2) NOT NULL,
+    public_note TEXT,
+    private_note TEXT,
+    shipped_date DATE,
+    shipped_time TIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_user_id (user_id),
+    INDEX idx_gear_id (gear_id),
+    INDEX idx_status (status),
+    INDEX idx_created_at (created_at),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (gear_id) REFERENCES gear(id) ON DELETE CASCADE
+);
+

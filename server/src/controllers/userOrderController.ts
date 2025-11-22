@@ -1,0 +1,128 @@
+import { Request, Response } from 'express';
+import { AuthRequest } from '../middleware/auth';
+import {
+  getUserOrders,
+  getUserOrderById,
+  createUserOrder,
+  updateUserOrder,
+  deleteUserOrder,
+} from '../services/userOrderService';
+import { asyncHandler } from '../middleware/errorHandler';
+import { parseDate } from '../utils/helpers';
+
+export const getAllUserOrders = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.query.userId as string | undefined;
+  const orders = await getUserOrders(userId);
+  
+  res.status(200).json({
+    success: true,
+    data: orders.map((order: any) => ({
+      id: order.id,
+      userId: order.user_id,
+      gearId: order.gear_id,
+      status: order.status,
+      price: order.price,
+      publicNote: order.public_note || undefined,
+      privateNote: order.private_note || undefined,
+      shippedDate: order.shipped_date || undefined,
+      shippedTime: order.shipped_time || undefined,
+      createdAt: parseDate(order.created_at),
+      updatedAt: parseDate(order.updated_at),
+    })),
+  });
+});
+
+export const getSingleUserOrder = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const order = await getUserOrderById(id);
+  
+  if (!order) {
+    res.status(404).json({ success: false, message: 'User order not found' });
+    return;
+  }
+
+  res.status(200).json({
+    success: true,
+    data: {
+      id: order.id,
+      userId: order.user_id,
+      gearId: order.gear_id,
+      status: order.status,
+      price: order.price,
+      publicNote: order.public_note || undefined,
+      privateNote: order.private_note || undefined,
+      shippedDate: order.shipped_date || undefined,
+      shippedTime: order.shipped_time || undefined,
+      createdAt: parseDate(order.created_at),
+      updatedAt: parseDate(order.updated_at),
+    },
+  });
+});
+
+export const create = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const order = await createUserOrder({
+    user_id: req.body.userId || req.user?.id || '',
+    gear_id: req.body.gearId,
+    status: req.body.status,
+    price: req.body.price,
+    public_note: req.body.publicNote || null,
+    private_note: req.body.privateNote || null,
+    shipped_date: req.body.shippedDate || null,
+    shipped_time: req.body.shippedTime || null,
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'User order created successfully',
+    data: {
+      id: order.id,
+      userId: order.user_id,
+      gearId: order.gear_id,
+      status: order.status,
+      price: order.price,
+      publicNote: order.public_note || undefined,
+      privateNote: order.private_note || undefined,
+      shippedDate: order.shipped_date || undefined,
+      shippedTime: order.shipped_time || undefined,
+      createdAt: parseDate(order.created_at),
+      updatedAt: parseDate(order.updated_at),
+    },
+  });
+});
+
+export const update = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  const order = await updateUserOrder(id, {
+    status: req.body.status,
+    price: req.body.price,
+    public_note: req.body.publicNote !== undefined ? req.body.publicNote : undefined,
+    private_note: req.body.privateNote !== undefined ? req.body.privateNote : undefined,
+    shipped_date: req.body.shippedDate !== undefined ? req.body.shippedDate : undefined,
+    shipped_time: req.body.shippedTime !== undefined ? req.body.shippedTime : undefined,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'User order updated successfully',
+    data: {
+      id: order.id,
+      userId: order.user_id,
+      gearId: order.gear_id,
+      status: order.status,
+      price: order.price,
+      publicNote: order.public_note || undefined,
+      privateNote: order.private_note || undefined,
+      shippedDate: order.shipped_date || undefined,
+      shippedTime: order.shipped_time || undefined,
+      createdAt: parseDate(order.created_at),
+      updatedAt: parseDate(order.updated_at),
+    },
+  });
+});
+
+export const remove = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  await deleteUserOrder(id);
+  res.status(200).json({ success: true, message: 'User order deleted successfully' });
+});
+

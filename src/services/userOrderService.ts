@@ -28,8 +28,11 @@ const saveOrders = (orders: UserOrder[]) => {
 export const userOrderService = {
   async createOrder(data: UserOrderForm): Promise<UserOrder> {
     try {
-      const response = await api.post('/user-orders', data);
-      return response.data;
+      const response = await api.post<{ success: boolean; data: UserOrder }>('/user-orders', data);
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      throw new Error('Failed to create order');
     } catch (error) {
       // Fallback: save to localStorage
       const newOrder: UserOrder = {
@@ -49,8 +52,11 @@ export const userOrderService = {
 
   async getOrders(userId?: string): Promise<UserOrder[]> {
     try {
-      const response = await api.get('/user-orders', { params: { userId } });
-      return response.data;
+      const response = await api.get<{ success: boolean; data: UserOrder[] }>('/user-orders', { params: { userId } });
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      return [];
     } catch (error) {
       // Fallback: load from localStorage
       const orders = loadOrders();
@@ -63,8 +69,11 @@ export const userOrderService = {
 
   async getOrderById(id: string): Promise<UserOrder> {
     try {
-      const response = await api.get(`/user-orders/${id}`);
-      return response.data;
+      const response = await api.get<{ success: boolean; data: UserOrder }>(`/user-orders/${id}`);
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      throw new Error('Order not found');
     } catch (error) {
       // Fallback: load from localStorage
       const orders = loadOrders();
@@ -76,8 +85,11 @@ export const userOrderService = {
 
   async updateOrder(id: string, data: Partial<UserOrderForm>): Promise<UserOrder> {
     try {
-      const response = await api.put(`/user-orders/${id}`, data);
-      return response.data;
+      const response = await api.put<{ success: boolean; data: UserOrder }>(`/user-orders/${id}`, data);
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      throw new Error('Failed to update order');
     } catch (error) {
       // Fallback: update in localStorage
       const orders = loadOrders();

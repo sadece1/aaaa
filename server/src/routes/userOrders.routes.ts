@@ -1,16 +1,30 @@
 import { Router } from 'express';
-import { getAllReservations, getSingleReservation } from '../controllers/reservationController';
-import { authenticate } from '../middleware/auth';
+import {
+  getAllUserOrders,
+  getSingleUserOrder,
+  create,
+  update,
+  remove,
+} from '../controllers/userOrderController';
+import { authenticate, authorizeAdmin } from '../middleware/auth';
+import { validate, createUserOrderSchema, updateUserOrderSchema } from '../validators';
 
 const router = Router();
 
-// User orders are actually reservations
-// This endpoint provides an alias for /api/reservations
-// All routes require authentication
-router.use(authenticate);
+// Get all user orders (admin only, or filtered by userId)
+router.get('/', authenticate, getAllUserOrders);
 
-router.get('/', getAllReservations);
-router.get('/:id', getSingleReservation);
+// Get single user order
+router.get('/:id', authenticate, getSingleUserOrder);
+
+// Create user order (admin only)
+router.post('/', authenticate, authorizeAdmin, validate(createUserOrderSchema), create);
+
+// Update user order (admin only)
+router.put('/:id', authenticate, authorizeAdmin, validate(updateUserOrderSchema), update);
+
+// Delete user order (admin only)
+router.delete('/:id', authenticate, authorizeAdmin, remove);
 
 export default router;
 
