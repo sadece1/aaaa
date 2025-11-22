@@ -29,7 +29,7 @@ export const AdminGearPage = () => {
     fetchGear({}, 1, 500); // Reasonable limit for admin page
     const loadCategories = async () => {
       const allCategories = await categoryManagementService.getAllCategories();
-      setCategories(allCategories);
+    setCategories(allCategories);
     };
     loadCategories();
     
@@ -463,7 +463,7 @@ export const AdminGearPage = () => {
                 <span className="hidden xs:inline">Yeni Ürün Ekle</span>
                 <span className="xs:hidden">Ekle</span>
               </Button>
-            </Link>
+              </Link>
           </div>
 
           {/* İstatistik Kartları */}
@@ -597,7 +597,7 @@ export const AdminGearPage = () => {
                   <option value="sold">Satıldı</option>
                 </select>
               </div>
-            </div>
+              </div>
 
             {/* View Mode, Sort ve Toplu İşlemler */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -605,56 +605,56 @@ export const AdminGearPage = () => {
                 <div className="flex items-center gap-2 w-full xs:w-auto">
                   <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Görünüm:</span>
                   <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5 sm:p-1 flex-1 xs:flex-initial">
-                    <button
-                      onClick={() => setViewMode('category')}
+                  <button
+                    onClick={() => setViewMode('category')}
                       className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
-                        viewMode === 'category'
-                          ? 'bg-primary-600 text-white'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                      }`}
-                    >
+                      viewMode === 'category'
+                        ? 'bg-primary-600 text-white'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
                       <span className="hidden sm:inline">📁 Kategoriler</span>
                       <span className="sm:hidden">📁</span>
-                    </button>
-                    <button
-                      onClick={() => setViewMode('grid')}
+                  </button>
+                  <button
+                    onClick={() => setViewMode('grid')}
                       className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
-                        viewMode === 'grid'
-                          ? 'bg-primary-600 text-white'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                      }`}
-                    >
+                      viewMode === 'grid'
+                        ? 'bg-primary-600 text-white'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
                       <span className="hidden sm:inline">⊞ Grid</span>
                       <span className="sm:hidden">⊞</span>
-                    </button>
-                    <button
-                      onClick={() => setViewMode('list')}
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
                       className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
-                        viewMode === 'list'
-                          ? 'bg-primary-600 text-white'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                      }`}
-                    >
+                      viewMode === 'list'
+                        ? 'bg-primary-600 text-white'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
                       <span className="hidden sm:inline">☰ Liste</span>
                       <span className="sm:hidden">☰</span>
-                    </button>
-                  </div>
+                  </button>
                 </div>
+              </div>
 
                 <div className="flex items-center gap-2 w-full xs:w-auto">
                   <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Sırala:</span>
-                  <select
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value as SortOption)}
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value as SortOption)}
                     className="flex-1 xs:flex-initial px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
-                  >
-                    <option value="name">İsme Göre</option>
-                    <option value="price">Fiyata Göre</option>
-                    <option value="status">Duruma Göre</option>
-                    <option value="date">Tarihe Göre</option>
-                  </select>
+                >
+                  <option value="name">İsme Göre</option>
+                  <option value="price">Fiyata Göre</option>
+                  <option value="status">Duruma Göre</option>
+                  <option value="date">Tarihe Göre</option>
+                </select>
                 </div>
-              </div>
+            </div>
 
               {selectedItems.size > 0 && (
                 <motion.div
@@ -1003,7 +1003,7 @@ export const AdminGearPage = () => {
                 <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md overflow-hidden">
                   <div className="overflow-x-auto -mx-4 sm:mx-0">
                     <div className="inline-block min-w-full align-middle">
-                      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
                           <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left">
@@ -1153,7 +1153,7 @@ export const AdminGearPage = () => {
                     </table>
                     </div>
                   </div>
-                </div>
+            </div>
               )}
             </>
           )}

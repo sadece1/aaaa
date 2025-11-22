@@ -100,11 +100,35 @@ export const gearService = {
 
   async updateGear(id: string, data: FormData | Partial<Gear>): Promise<Gear> {
     try {
+      // Transform camelCase to snake_case for backend compatibility
+      let transformedData: any = data;
+      if (!(data instanceof FormData)) {
+        transformedData = { ...data };
+        // Convert categoryId to category_id
+        if (transformedData.categoryId !== undefined) {
+          transformedData.category_id = transformedData.categoryId;
+          delete transformedData.categoryId;
+        }
+        // Ensure specifications is properly formatted
+        if (transformedData.specifications && typeof transformedData.specifications === 'object') {
+          // Already an object, keep as is
+        }
+        // Ensure rating is a number or null
+        if (transformedData.rating !== undefined) {
+          transformedData.rating = transformedData.rating !== null && transformedData.rating !== '' 
+            ? (typeof transformedData.rating === 'number' ? transformedData.rating : parseFloat(String(transformedData.rating)))
+            : null;
+          if (isNaN(transformedData.rating)) {
+            transformedData.rating = null;
+          }
+        }
+      }
+
       const headers = data instanceof FormData
         ? { 'Content-Type': 'multipart/form-data' }
         : { 'Content-Type': 'application/json' };
 
-      const response = await api.put<{ success: boolean; data: Gear } | Gear>(`/gear/${id}`, data, { headers });
+      const response = await api.put<{ success: boolean; data: Gear } | Gear>(`/gear/${id}`, transformedData, { headers });
       
       // Backend returns { success: true, data: gear }
       if ((response.data as any).success && (response.data as any).data) {

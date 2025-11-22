@@ -1,81 +1,74 @@
 # VPS Deploy Komutları
 
-## Hızlı Deploy (Tüm Değişiklikler)
+## Tüm Değişiklikleri Deploy Etme
 
 ```bash
+# Proje dizinine git
 cd /var/www/campscape
+
+# Son değişiklikleri çek
 git pull origin main
+
+# Backend build ve restart
 cd server
 npm install
 npm run build
 pm2 restart campscape-backend
+
+# Frontend build ve restart
 cd ..
+npm install
 npm run build
 pm2 restart all
 ```
 
-## Adım Adım Deploy
+## Sadece Backend Değişiklikleri
 
-### 1. Backend Güncelleme
 ```bash
-cd /var/www/campscape
+cd /var/www/campscape/server
 git pull origin main
-cd server
 npm install
 npm run build
 pm2 restart campscape-backend
 ```
 
-### 2. Frontend Güncelleme
+## Sadece Frontend Değişiklikleri
+
 ```bash
 cd /var/www/campscape
+git pull origin main
+npm install
 npm run build
 pm2 restart all
 ```
 
-## PM2 Durum Kontrolü
+## PM2 Durumunu Kontrol Etme
 
 ```bash
 pm2 status
 pm2 logs campscape-backend --lines 50
+pm2 logs all --lines 50
 ```
 
-## Veritabanı Migration (Gerekirse)
+## Backend Loglarını İzleme
 
-```bash
-mysql -u root -p
-# Şifre: MySecurePass123!@#
-
-USE campscape_marketplace;
-
-# Migration SQL komutlarını buraya yapıştır
-
-EXIT;
-```
-
-## Nginx Yeniden Başlatma (Gerekirse)
-
-```bash
-sudo systemctl restart nginx
-sudo systemctl status nginx
-```
-
-## Hata Ayıklama
-
-### Backend logları
 ```bash
 pm2 logs campscape-backend --lines 100
 ```
 
-### Frontend build hatası
+## Frontend Loglarını İzleme
+
 ```bash
-cd /var/www/campscape
-npm run build
+pm2 logs all --lines 100
 ```
 
-### Port kontrolü
+## Hızlı Restart (Build Olmadan)
+
 ```bash
-netstat -tulpn | grep :3000
-curl http://localhost:3000/api/health
+# Sadece backend restart
+pm2 restart campscape-backend
+
+# Tüm servisleri restart
+pm2 restart all
 ```
 

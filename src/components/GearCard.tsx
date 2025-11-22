@@ -124,7 +124,15 @@ export const GearCard = ({ gear }: GearCardProps) => {
       <Link to={`${routes.gear}/${gear.id}`} className="block">
         <div className="p-5">
           {/* Title */}
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 min-h-[3.5rem]">
+          <h3 
+            className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 min-h-[3.5rem]"
+            style={{
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              overflowX: 'hidden',
+              maxWidth: '100%',
+            }}
+          >
             {gear.name}
           </h3>
 
@@ -159,7 +167,15 @@ export const GearCard = ({ gear }: GearCardProps) => {
           </div>
           
           {/* Description */}
-          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4 min-h-[2.5rem]">
+          <p 
+            className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4 min-h-[2.5rem]"
+            style={{
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              overflowX: 'hidden',
+              maxWidth: '100%',
+            }}
+          >
             {gear.description}
           </p>
 

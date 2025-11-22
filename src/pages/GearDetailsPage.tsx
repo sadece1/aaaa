@@ -439,7 +439,15 @@ export const GearDetailsPage = () => {
                     </span>
                   )}
                 </div>
-                <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-4 leading-tight">
+                <h1 
+                  className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-4 leading-tight"
+                  style={{
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
+                    overflowX: 'hidden',
+                    maxWidth: '100%',
+                  }}
+                >
                   {gear.name}
                 </h1>
                 
@@ -509,7 +517,16 @@ export const GearDetailsPage = () => {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
                   Ürün Açıklaması
                 </h2>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+                <p 
+                  className="text-gray-700 dark:text-gray-300 leading-relaxed text-base"
+                  style={{
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
+                    overflowX: 'hidden',
+                    maxWidth: '100%',
+                    whiteSpace: 'pre-wrap',
+                  }}
+                >
                   {gear.description}
                 </p>
               </div>

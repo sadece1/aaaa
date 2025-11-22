@@ -282,10 +282,26 @@ export const SearchResultsPage = () => {
                           )}
                         </div>
                         <div className="p-4">
-                          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                          <h3 
+                            className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                            style={{
+                              wordBreak: 'break-word',
+                              overflowWrap: 'break-word',
+                              overflowX: 'hidden',
+                              maxWidth: '100%',
+                            }}
+                          >
                             {item.name}
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                          <p 
+                            className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2"
+                            style={{
+                              wordBreak: 'break-word',
+                              overflowWrap: 'break-word',
+                              overflowX: 'hidden',
+                              maxWidth: '100%',
+                            }}
+                          >
                             {item.description}
                           </p>
                           <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">

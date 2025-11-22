@@ -103,6 +103,11 @@ const transformFormData = (req: Request, res: Response, next: NextFunction) => {
   }
 
   // Ensure category_id is a string (UUID validation will handle format)
+  // Support both categoryId (camelCase) and category_id (snake_case)
+  if (req.body.categoryId && !req.body.category_id) {
+    req.body.category_id = String(req.body.categoryId).trim();
+    delete req.body.categoryId;
+  }
   if (req.body.category_id) {
     req.body.category_id = String(req.body.category_id).trim();
   }
