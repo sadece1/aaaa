@@ -135,12 +135,19 @@ export const useGearStore = create<GearState>((set, get) => ({
                   availableBackendCategories: backendCategories.map((bc: any) => ({ id: bc.id, slug: bc.slug, name: bc.name }))
                 });
                 
-                // If no match found, try to use first backend category as fallback
-                console.warn('⚠️ Using first backend category as fallback');
-                if (backendCategories.length > 0) {
-                  backendCategoryId = backendCategories[0].id;
-                  console.warn('⚠️ Fallback category:', backendCategories[0]);
-                }
+                // Don't use fallback - show error to user
+                const availableCategoryNames = backendCategories.map((bc: any) => bc.name).join(', ');
+                const errorMsg = `⚠️ Kategori Backend'de Bulunamadı!\n\n` +
+                  `Seçilen kategori: "${frontendCategory.name}" (${frontendCategory.slug})\n\n` +
+                  `Backend'de mevcut kategoriler:\n${availableCategoryNames}\n\n` +
+                  `Lütfen:\n` +
+                  `1. Backend'de "${frontendCategory.name}" kategorisini oluşturun, VEYA\n` +
+                  `2. Frontend'de mevcut backend kategorilerinden birini seçin.\n\n` +
+                  `Not: Backend'de kategori oluşturmak için admin panelinden kategori yönetimi bölümünü kullanın.`;
+                
+                alert(errorMsg);
+                set({ isLoading: false });
+                return;
               }
             } else {
               console.warn('⚠️ Frontend category not found for ID:', gearData.categoryId);
