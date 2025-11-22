@@ -36,6 +36,9 @@ export const AdminGearPage = () => {
     // Fetch backend categories and create mapping
     const fetchBackendCategories = async () => {
       try {
+        // Get frontend categories first
+        const allCategories = await categoryManagementService.getAllCategories();
+        
         const response = await fetch('/api/categories');
         const backendCategoriesResponse = await response.json();
         if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
@@ -93,7 +96,10 @@ export const AdminGearPage = () => {
   // İstatistikler
   const stats = useMemo(() => {
     const forSale = gear.filter(g => (g.status || (g.available ? 'for-sale' : 'sold')) === 'for-sale').length;
-    const orderable = gear.filter(g => (g.status || (g.available ? 'for-sale' : 'sold')) === 'orderable').length;
+    const orderable = gear.filter(g => {
+      const status = g.status || (g.available ? 'for-sale' : 'sold');
+      return status === 'waiting' || status === 'arrived' || status === 'shipped';
+    }).length;
     const sold = gear.filter(g => (g.status || (g.available ? 'for-sale' : 'sold')) === 'sold').length;
     const totalValue = gear.reduce((sum, g) => sum + (g.pricePerDay || 0), 0);
     
@@ -421,9 +427,11 @@ export const AdminGearPage = () => {
 
   const getStatusBadge = (item: Gear) => {
     const status = item.status || (item.available ? 'for-sale' : 'sold');
-    const configs = {
+    const configs: Record<string, { label: string; bg: string; text: string }> = {
       'for-sale': { label: '🛒 Satılık', bg: 'bg-green-100 dark:bg-green-900', text: 'text-green-800 dark:text-green-200' },
-      'orderable': { label: '📦 Sipariş Edilebilir', bg: 'bg-blue-100 dark:bg-blue-900', text: 'text-blue-800 dark:text-blue-200' },
+      'waiting': { label: '📦 Bekleniyor', bg: 'bg-blue-100 dark:bg-blue-900', text: 'text-blue-800 dark:text-blue-200' },
+      'arrived': { label: '📦 Ürün Geldi', bg: 'bg-blue-100 dark:bg-blue-900', text: 'text-blue-800 dark:text-blue-200' },
+      'shipped': { label: '📦 Yola Çıktı', bg: 'bg-blue-100 dark:bg-blue-900', text: 'text-blue-800 dark:text-blue-200' },
       'sold': { label: '✅ Satıldı', bg: 'bg-red-100 dark:bg-red-900', text: 'text-red-800 dark:text-red-200' },
     };
     const config = configs[status as keyof typeof configs] || configs['for-sale'];
@@ -582,7 +590,9 @@ export const AdminGearPage = () => {
                 >
                   <option value="all">Tüm Durumlar</option>
                   <option value="for-sale">Satılık</option>
-                  <option value="orderable">Sipariş Edilebilir</option>
+                  <option value="waiting">Bekleniyor</option>
+                  <option value="arrived">Ürün Geldi</option>
+                  <option value="shipped">Yola Çıktı</option>
                   <option value="sold">Satıldı</option>
                 </select>
               </div>
