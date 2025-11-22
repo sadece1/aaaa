@@ -409,7 +409,7 @@ export const EditGearPage = () => {
     <>
       <SEO title="Ürün Düzenle" description="Ürünü düzenleyin" />
       <AdminLayout>
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto px-4 overflow-x-hidden">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 lg:mb-8">
             Ürün Düzenle
           </h1>
