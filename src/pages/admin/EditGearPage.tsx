@@ -539,15 +539,6 @@ export const EditGearPage = () => {
         currentGearCategoryId: currentGear.categoryId
       });
       
-      console.log('CRITICAL VALUES:', {
-        finalRatingValue,
-        finalSpecifications,
-        finalCategoryIdValue,
-        ratingValue,
-        finalRating,
-        currentGearRating: currentGear.rating
-      });
-      
       // Ensure all values are explicitly set, NEVER undefined - use formData
       const updates: Partial<Gear> = {
         name: formData.name || data.name || '',
