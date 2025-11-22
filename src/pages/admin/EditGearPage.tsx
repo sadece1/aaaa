@@ -125,12 +125,14 @@ export const EditGearPage = () => {
       // Status'u belirle (available'dan veya mevcut status'tan)
       const status = currentGear.status || (currentGear.available ? 'for-sale' : 'sold');
       
-      // Get actual values - check all possible field names
-      const actualPricePerDay = currentGear.pricePerDay ?? currentGear.price_per_day ?? (currentGear as any).price ?? 0;
-      const actualDeposit = currentGear.deposit ?? (currentGear as any).deposit_amount ?? null;
-      const actualRating = currentGear.rating ?? (currentGear as any).rating_value ?? undefined;
+      // Get actual values - check all possible field names from backend
+      const gearData = currentGear as any;
+      const actualPricePerDay = gearData.pricePerDay ?? gearData.price_per_day ?? gearData.price ?? (typeof gearData.pricePerDay === 'number' ? gearData.pricePerDay : 0);
+      const actualDeposit = gearData.deposit ?? gearData.deposit_amount ?? (typeof gearData.deposit === 'number' ? gearData.deposit : null);
+      const actualRating = gearData.rating ?? gearData.rating_value ?? (typeof gearData.rating === 'number' ? gearData.rating : undefined);
       
-      console.log('Extracted values:', { actualPricePerDay, actualDeposit, actualRating }); // Debug log
+      console.log('Loading gear data:', currentGear); // Debug log
+      console.log('Extracted values:', { actualPricePerDay, actualDeposit, actualRating, pricePerDay: gearData.pricePerDay, price_per_day: gearData.price_per_day }); // Debug log
       
       // Reset form with all gear data - use actual values, not defaults
       const formData = {
@@ -146,11 +148,11 @@ export const EditGearPage = () => {
       
       console.log('Form data to set:', formData); // Debug log
       
-      // Reset form immediately
-      reset(formData);
+      // Reset form immediately with defaultValues
+      reset(formData, { keepDefaultValues: false });
       
-      // Then set values again after a short delay to ensure they stick
-      const timer = setTimeout(() => {
+      // Force set values multiple times to ensure they stick
+      const setValues = () => {
         setValue('name', formData.name, { shouldValidate: false, shouldDirty: false });
         setValue('description', formData.description, { shouldValidate: false, shouldDirty: false });
         setValue('pricePerDay', formData.pricePerDay, { shouldValidate: false, shouldDirty: false });
@@ -159,11 +161,27 @@ export const EditGearPage = () => {
         setValue('color', formData.color, { shouldValidate: false, shouldDirty: false });
         setValue('rating', formData.rating, { shouldValidate: false, shouldDirty: false });
         setValue('status', formData.status, { shouldValidate: false, shouldDirty: false });
-        
-        console.log('Values set, current form values:', watch()); // Debug log
-      }, 100);
+      };
       
-      return () => clearTimeout(timer);
+      // Set immediately
+      setValues();
+      
+      // Then set again after delays to ensure they stick
+      const timer1 = setTimeout(setValues, 50);
+      const timer2 = setTimeout(() => {
+        setValues();
+        console.log('Values set after 200ms, current form values:', watch()); // Debug log
+      }, 200);
+      const timer3 = setTimeout(() => {
+        setValues();
+        console.log('Values set after 500ms, current form values:', watch()); // Debug log
+      }, 500);
+      
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+      };
       
       setImageUrls(currentGear.images && currentGear.images.length > 0 ? currentGear.images : []);
       setImageFiles([]);
@@ -423,7 +441,7 @@ export const EditGearPage = () => {
     <>
       <SEO title="Ürün Düzenle" description="Ürünü düzenleyin" />
       <AdminLayout>
-        <div className="max-w-4xl mx-auto px-4 overflow-x-hidden">
+        <div className="max-w-4xl mx-auto px-4" style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 lg:mb-8">
             Ürün Düzenle
           </h1>
@@ -435,14 +453,14 @@ export const EditGearPage = () => {
               error={errors.name?.message}
             />
 
-            <div className="w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Açıklama
               </label>
               <textarea
                 {...register('description', { required: 'Açıklama gereklidir' })}
                 rows={5}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.description
                     ? 'border-red-500 focus:ring-red-500'
                     : 'border-gray-300 dark:border-gray-600'
@@ -450,11 +468,13 @@ export const EditGearPage = () => {
                 style={{ 
                   width: '100%',
                   maxWidth: '100%',
+                  minWidth: 0,
                   boxSizing: 'border-box',
                   wordBreak: 'break-word', 
                   overflowWrap: 'break-word',
                   overflowX: 'hidden',
-                  overflowY: 'auto'
+                  overflowY: 'auto',
+                  whiteSpace: 'pre-wrap'
                 }}
               />
               {errors.description && (
