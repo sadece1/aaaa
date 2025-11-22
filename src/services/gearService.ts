@@ -154,7 +154,18 @@ export const gearService = {
         ? { 'Content-Type': 'multipart/form-data' }
         : { 'Content-Type': 'application/json' };
 
+      console.log('=== SENDING TO BACKEND ===');
+      console.log('URL:', `/gear/${id}`);
+      console.log('Data being sent:', transformedData);
+      console.log('Data.rating:', transformedData.rating, typeof transformedData.rating);
+      console.log('Data.specifications:', transformedData.specifications);
+      console.log('Data.category_id:', transformedData.category_id);
+      console.log('Headers:', headers);
+      
       const response = await api.put<{ success: boolean; data: Gear } | Gear>(`/gear/${id}`, transformedData, { headers });
+      
+      console.log('=== BACKEND RESPONSE ===');
+      console.log('Response:', response.data);
       
       // Backend returns { success: true, data: gear }
       if ((response.data as any).success && (response.data as any).data) {

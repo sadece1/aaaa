@@ -298,6 +298,12 @@ export const useGearStore = create<GearState>((set, get) => ({
         formData.append('recommendedProducts', JSON.stringify(gearData.recommendedProducts));
       }
 
+      console.log('=== SENDING TO GEAR SERVICE (CREATE) ===');
+      console.log('FormData entries:');
+      for (const [key, value] of formData.entries()) {
+        console.log(`  ${key}:`, value);
+      }
+      
       await gearService.createGear(formData);
       // Refresh gear list
       await get().fetchGear(get().filters, get().page);
