@@ -454,8 +454,8 @@ export const EditGearPage = () => {
       
       // Use manual data
       const formData = manualData;
-      // Son seçilen kategoriyi belirle
-      let finalCategoryId = selectedFinalCategory || selectedSubCategory || selectedParentCategory;
+      // Son seçilen kategoriyi belirle - mevcut kategoriyi de kontrol et
+      let finalCategoryId = selectedFinalCategory || selectedSubCategory || selectedParentCategory || currentGear.categoryId;
       let finalCategorySlug = '';
       
       if (finalCategoryId) {
@@ -465,6 +465,7 @@ export const EditGearPage = () => {
         }
       }
 
+      // Sadece hiç kategori yoksa (yeni ürün gibi) hata ver
       if (!finalCategoryId) {
         alert('Lütfen bir kategori seçin!');
         setIsSubmitting(false);
