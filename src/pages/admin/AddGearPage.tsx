@@ -33,6 +33,12 @@ export const AddGearPage = () => {
   const [allGear, setAllGear] = useState<Gear[]>([]);
   const [selectedRecommendedProducts, setSelectedRecommendedProducts] = useState<string[]>([]);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
+  
+  // YENİ: Direkt state ile rating yönetimi (React Hook Form'dan bağımsız)
+  const [ratingState, setRatingState] = useState<number | null>(null);
+  
+  // YENİ: Direkt state ile specifications yönetimi (React Hook Form'dan bağımsız)
+  const [specificationsState, setSpecificationsState] = useState<Array<{ key: string; value: string }>>([{ key: '', value: '' }]);
 
   const {
     register,
@@ -266,48 +272,26 @@ export const AddGearPage = () => {
         return;
       }
       
-      // Convert specifications array to object
+      // YENİ MEKANİZMA 1: Teknik Özellikler - State'den direkt al
       const specificationsObj: Record<string, string> = {};
-      specifications.forEach(spec => {
+      specificationsState.forEach(spec => {
         if (spec.key.trim() && spec.value.trim()) {
           specificationsObj[spec.key.trim()] = spec.value.trim();
         }
       });
+      console.log('✅ Specifications from STATE:', specificationsState);
+      console.log('✅ Specifications object:', specificationsObj);
 
-      // Extract and validate form values - use formData instead of data
+      // Extract and validate form values
       const pricePerDay = typeof formData.pricePerDay === 'number' && !isNaN(formData.pricePerDay) ? formData.pricePerDay : (formData.pricePerDay ? Number(formData.pricePerDay) : 0);
       const deposit = formData.deposit !== undefined && formData.deposit !== null && !isNaN(Number(formData.deposit)) ? Number(formData.deposit) : null;
-      // Rating can be 0-5, or null/undefined
-      // Get rating from form data, watch value, or getValues
-      const formRating = formData.rating !== undefined ? formData.rating : (ratingValue !== undefined ? ratingValue : allFormValues.rating);
-      console.log('Rating sources:', { 
-        handleSubmitData: data.rating, 
-        formDataRating: formData.rating,
-        watchValue: ratingValue, 
-        getValuesRating: allFormValues.rating,
-        finalRating: formRating 
-      });
       
-      const rating = formRating !== undefined && formRating !== null && formRating !== '' 
-        ? (typeof formRating === 'number' ? formRating : Number(formRating))
-        : (formRating === null || formRating === '' ? null : undefined);
-      // If rating is NaN, set to null
-      const finalRating = (rating !== undefined && rating !== null && !isNaN(rating)) ? rating : null;
-      
-      console.log('Form data received (handleSubmit):', data);
-      console.log('Form data received (getValues):', allFormValues);
-      console.log('Using formData:', formData);
-      console.log('Form data.rating:', formData.rating, typeof formData.rating);
-      console.log('Extracted values:', { pricePerDay, deposit, rating: formRating });
-      console.log('Final rating value:', finalRating);
-      
-      // CRITICAL: Ensure rating, specifications and categoryId are ALWAYS set (never undefined)
-      // Backend checks for !== undefined, so we must always provide these values
-      const finalRatingValue = finalRating !== undefined && finalRating !== null 
-        ? finalRating 
-        : (ratingValue !== undefined && ratingValue !== null 
-          ? ratingValue 
-          : null);
+      // YENİ MEKANİZMA 2: Yıldız (Rating) - State'den direkt al
+      const finalRatingValue = ratingState !== null && ratingState !== undefined 
+        ? ratingState 
+        : null;
+      console.log('✅ Rating from STATE:', ratingState);
+      console.log('✅ Final rating value:', finalRatingValue);
       
       const finalSpecifications = Object.keys(specificationsObj).length > 0 
         ? specificationsObj 
@@ -315,12 +299,10 @@ export const AddGearPage = () => {
       
       const finalCategoryIdValue = finalCategoryId || '';
       
-      console.log('CRITICAL VALUES (ADD):', {
-        finalRatingValue,
-        finalSpecifications,
-        finalCategoryIdValue,
-        ratingValue,
-        finalRating
+      console.log('🎯 FINAL VALUES TO SEND (ADD):', {
+        rating: finalRatingValue,
+        specifications: finalSpecifications,
+        categoryId: finalCategoryIdValue
       });
       
       // Ensure all values are explicitly set, NEVER undefined - use formData

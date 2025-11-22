@@ -35,6 +35,12 @@ export const EditGearPage = () => {
   const [allGear, setAllGear] = useState<Gear[]>([]);
   const [selectedRecommendedProducts, setSelectedRecommendedProducts] = useState<string[]>([]);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
+  
+  // YENİ: Direkt state ile rating yönetimi (React Hook Form'dan bağımsız)
+  const [ratingState, setRatingState] = useState<number | null>(null);
+  
+  // YENİ: Direkt state ile specifications yönetimi (React Hook Form'dan bağımsız)
+  const [specificationsState, setSpecificationsState] = useState<Array<{ key: string; value: string }>>([{ key: '', value: '' }]);
 
   const {
     register,
@@ -225,15 +231,26 @@ export const EditGearPage = () => {
         setSelectedRecommendedProducts([]);
       }
       
-      // Load specifications
+      // Load specifications - YENİ: State'e direkt yükle
       if (currentGear.specifications && Object.keys(currentGear.specifications).length > 0) {
         const specsArray = Object.entries(currentGear.specifications).map(([key, value]) => ({
           key,
           value: String(value),
         }));
         setSpecifications(specsArray);
+        setSpecificationsState(specsArray); // YENİ: State'e de yükle
       } else {
         setSpecifications([{ key: '', value: '' }]);
+        setSpecificationsState([{ key: '', value: '' }]); // YENİ: State'e de yükle
+      }
+      
+      // YENİ: Rating'i state'e direkt yükle
+      const gearRating = currentGear.rating ?? currentGear.rating_value ?? null;
+      if (gearRating !== null && gearRating !== undefined) {
+        const ratingNum = typeof gearRating === 'number' ? gearRating : parseFloat(String(gearRating));
+        setRatingState(isNaN(ratingNum) ? null : ratingNum);
+      } else {
+        setRatingState(null);
       }
       
       // Kategori hiyerarşisini belirle
