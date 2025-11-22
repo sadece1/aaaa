@@ -127,9 +127,24 @@ export const EditGearPage = () => {
       
       // Get actual values - check all possible field names from backend
       const gearData = currentGear as any;
-      const actualPricePerDay = gearData.pricePerDay ?? gearData.price_per_day ?? gearData.price ?? (typeof gearData.pricePerDay === 'number' ? gearData.pricePerDay : 0);
-      const actualDeposit = gearData.deposit ?? gearData.deposit_amount ?? (typeof gearData.deposit === 'number' ? gearData.deposit : null);
-      const actualRating = gearData.rating ?? gearData.rating_value ?? (typeof gearData.rating === 'number' ? gearData.rating : undefined);
+      
+      // Ensure pricePerDay is a valid number, not NaN
+      let actualPricePerDay = gearData.pricePerDay ?? gearData.price_per_day ?? gearData.price ?? 0;
+      if (typeof actualPricePerDay !== 'number' || isNaN(actualPricePerDay)) {
+        actualPricePerDay = 0;
+      }
+      
+      // Ensure deposit is a valid number or null
+      let actualDeposit = gearData.deposit ?? gearData.deposit_amount ?? null;
+      if (actualDeposit !== null && (typeof actualDeposit !== 'number' || isNaN(actualDeposit))) {
+        actualDeposit = null;
+      }
+      
+      // Ensure rating is a valid number or undefined
+      let actualRating = gearData.rating ?? gearData.rating_value ?? undefined;
+      if (actualRating !== undefined && (typeof actualRating !== 'number' || isNaN(actualRating))) {
+        actualRating = undefined;
+      }
       
       console.log('Loading gear data:', currentGear); // Debug log
       console.log('Extracted values:', { actualPricePerDay, actualDeposit, actualRating, pricePerDay: gearData.pricePerDay, price_per_day: gearData.price_per_day }); // Debug log
@@ -453,7 +468,7 @@ export const EditGearPage = () => {
               error={errors.name?.message}
             />
 
-            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box', position: 'relative' }}>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Açıklama
               </label>
@@ -474,7 +489,9 @@ export const EditGearPage = () => {
                   overflowWrap: 'break-word',
                   overflowX: 'hidden',
                   overflowY: 'auto',
-                  whiteSpace: 'pre-wrap'
+                  whiteSpace: 'pre-wrap',
+                  display: 'block',
+                  position: 'relative'
                 }}
               />
               {errors.description && (
@@ -584,6 +601,7 @@ export const EditGearPage = () => {
                 valueAsNumber: true,
               })}
               error={errors.pricePerDay?.message}
+              value={watch('pricePerDay') && !isNaN(Number(watch('pricePerDay'))) ? watch('pricePerDay') : ''}
             />
 
             <Input
