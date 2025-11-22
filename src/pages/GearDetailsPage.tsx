@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGearStore } from '@/store/gearStore';
 import { useFavoritesStore } from '@/store/favoritesStore';
+import { useAuthStore } from '@/store/authStore';
 import { SEO } from '@/components/SEO';
 import { ImageSlider } from '@/components/ImageSlider';
 import { ImageLightbox } from '@/components/ImageLightbox';
@@ -12,6 +13,8 @@ import { formatPrice } from '@/utils/validation';
 import { categoryService } from '@/services/categoryService';
 import { colorService } from '@/services/colorService';
 import { gearService } from '@/services/gearService';
+import { userOrderService } from '@/services/userOrderService';
+import { routes } from '@/config';
 import { Gear } from '@/types';
 
 // Mock gear data for details page - expanded with all 10 items
@@ -75,8 +78,10 @@ const categoryLabels: Record<string, string> = {
 
 export const GearDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { currentGear, fetchGearById, isLoading } = useGearStore();
   const { isFavorite, toggleFavorite } = useFavoritesStore();
+  const { user } = useAuthStore();
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [mainSliderIndex, setMainSliderIndex] = useState(0);
@@ -87,6 +92,7 @@ export const GearDetailsPage = () => {
   const [recommendedProducts, setRecommendedProducts] = useState<Gear[]>([]);
   const [isLoadingRecommended, setIsLoadingRecommended] = useState(false);
   const [enrichedGear, setEnrichedGear] = useState<Gear | null>(null);
+  const [isOrdering, setIsOrdering] = useState(false);
 
   // Helper function to enrich gear with specifications from gearService mock data
   const enrichGearWithSpecifications = (gearItem: Gear | null, gearId?: string): Gear | null => {
@@ -652,13 +658,60 @@ export const GearDetailsPage = () => {
                 {(() => {
                   const itemStatus = gear.status || (gear.available ? 'for-sale' : 'sold');
                   const favorite = isFavorite(gear.id);
+                  const canOrder = itemStatus === 'for-sale' || itemStatus === 'orderable' || (itemStatus !== 'sold' && gear.available);
                   
-                  if (itemStatus === 'for-sale' || (itemStatus !== 'sold' && itemStatus !== 'orderable' && gear.available)) {
+                  const handleBuy = async () => {
+                    if (!user) {
+                      navigate(routes.login);
+                      return;
+                    }
+
+                    if (!gear.id) {
+                      alert('Ürün bilgisi bulunamadı');
+                      return;
+                    }
+
+                    try {
+                      setIsOrdering(true);
+                      await userOrderService.createOrder({
+                        userId: user.id,
+                        gearId: gear.id,
+                        status: 'waiting',
+                        price: gear.pricePerDay || 0,
+                      });
+                      alert('Siparişiniz başarıyla oluşturuldu!');
+                      navigate(routes.profile);
+                    } catch (error) {
+                      console.error('Failed to create order:', error);
+                      alert(error instanceof Error ? error.message : 'Sipariş oluşturulamadı');
+                    } finally {
+                      setIsOrdering(false);
+                    }
+                  };
+                  
+                  if (canOrder) {
                     return (
                       <>
                         <button
+                          onClick={handleBuy}
+                          disabled={isOrdering}
+                          className="w-full px-4 py-3 rounded-lg text-base font-semibold transition-colors bg-primary-600 hover:bg-primary-700 text-white border border-primary-600 hover:border-primary-700 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isOrdering ? (
+                            <>
+                              <LoadingSpinner size="sm" />
+                              <span>Sipariş Oluşturuluyor...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>🛒</span>
+                              <span>Satın Al</span>
+                            </>
+                          )}
+                        </button>
+                        <button
                           onClick={() => toggleFavorite(gear.id)}
-                          className={`w-full px-4 py-2.5 rounded text-base font-medium transition-colors border flex items-center justify-center gap-2 ${
+                          className={`w-full px-4 py-2.5 rounded text-base font-medium transition-colors border flex items-center justify-center gap-2 mt-2 ${
                             favorite
                               ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40'
                               : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 border-primary-200 dark:border-primary-800'
