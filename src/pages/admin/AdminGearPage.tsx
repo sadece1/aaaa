@@ -840,7 +840,7 @@ export const AdminGearPage = () => {
                                           {/* Mobilde fiyat ve durum */}
                                           <div className="sm:hidden mt-1 flex items-center gap-2">
                                             <div className="text-xs font-semibold text-gray-900 dark:text-white">
-                                              ₺{item.pricePerDay}/gün
+                                              ₺{item.pricePerDay}
                                             </div>
                                             {getStatusBadge(item)}
                                           </div>
@@ -849,7 +849,7 @@ export const AdminGearPage = () => {
                                     </td>
                                             <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden sm:table-cell">
                                               <div className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">
-                                      ₺{item.pricePerDay}/gün
+                                      ₺{item.pricePerDay}
                                               </div>
                                       {item.deposit && (
                                                 <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -967,7 +967,7 @@ export const AdminGearPage = () => {
                               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-2 sm:mb-3">
                                 <div>
                                   <div className="text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400">
-                                    ₺{item.pricePerDay}/gün
+                                    ₺{item.pricePerDay}
                                   </div>
                                   {item.deposit && (
                                     <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -1101,7 +1101,7 @@ export const AdminGearPage = () => {
                                         )}
                                         <div className="flex items-center gap-2">
                                           <div className="text-xs font-semibold text-gray-900 dark:text-white">
-                                            ₺{item.pricePerDay}/gün
+                                            ₺{item.pricePerDay}
                                           </div>
                                           {getStatusBadge(item)}
                                         </div>
@@ -1116,7 +1116,7 @@ export const AdminGearPage = () => {
                                 </td>
                                 <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden sm:table-cell">
                                   <div className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">
-                                    ₺{item.pricePerDay}/gün
+                                    ₺{item.pricePerDay}
                                   </div>
                                   {item.deposit && (
                                     <div className="text-xs text-gray-500 dark:text-gray-400">
