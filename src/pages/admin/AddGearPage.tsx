@@ -32,6 +32,7 @@ export const AddGearPage = () => {
   const [specifications, setSpecifications] = useState<Array<{ key: string; value: string }>>([{ key: '', value: '' }]);
   const [allGear, setAllGear] = useState<Gear[]>([]);
   const [selectedRecommendedProducts, setSelectedRecommendedProducts] = useState<string[]>([]);
+  const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
 
   const {
     register,
