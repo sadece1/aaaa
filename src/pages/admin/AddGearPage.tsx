@@ -56,14 +56,23 @@ export const AddGearPage = () => {
       setParentCategories(rootCats);
     };
     loadRootCategories();
-    setParentCategories(rootCats);
     
     // Load brands and colors
-    const allBrands = brandService.getAllBrands();
-    setBrands(allBrands.map(b => b.name));
+    try {
+      const allBrands = brandService.getAllBrands();
+      setBrands(Array.isArray(allBrands) ? allBrands.map(b => b.name) : []);
+    } catch (error) {
+      console.error('Failed to load brands:', error);
+      setBrands([]);
+    }
     
-    const allColors = colorService.getAllColors();
-    setColors(allColors.map(c => c.name));
+    try {
+      const allColors = colorService.getAllColors();
+      setColors(Array.isArray(allColors) ? allColors.map(c => c.name) : []);
+    } catch (error) {
+      console.error('Failed to load colors:', error);
+      setColors([]);
+    }
     
     // Load all gear for recommended products selection
     const loadAllGear = async () => {
@@ -78,13 +87,23 @@ export const AddGearPage = () => {
     
     // Listen for updates
     const handleBrandsUpdate = () => {
-      const updatedBrands = brandService.getAllBrands();
-      setBrands(updatedBrands.map(b => b.name));
+      try {
+        const updatedBrands = brandService.getAllBrands();
+        setBrands(Array.isArray(updatedBrands) ? updatedBrands.map(b => b.name) : []);
+      } catch (error) {
+        console.error('Failed to update brands:', error);
+        setBrands([]);
+      }
     };
     
     const handleColorsUpdate = () => {
-      const updatedColors = colorService.getAllColors();
-      setColors(updatedColors.map(c => c.name));
+      try {
+        const updatedColors = colorService.getAllColors();
+        setColors(Array.isArray(updatedColors) ? updatedColors.map(c => c.name) : []);
+      } catch (error) {
+        console.error('Failed to update colors:', error);
+        setColors([]);
+      }
     };
     
     window.addEventListener('brandsUpdated', handleBrandsUpdate);
