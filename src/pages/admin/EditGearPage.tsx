@@ -129,21 +129,37 @@ export const EditGearPage = () => {
       const gearData = currentGear as any;
       
       // Ensure pricePerDay is a valid number, not NaN
+      // Backend returns price_per_day (snake_case) as string, so we need to convert it
       let actualPricePerDay = gearData.pricePerDay ?? gearData.price_per_day ?? gearData.price ?? 0;
+      if (typeof actualPricePerDay === 'string') {
+        actualPricePerDay = parseFloat(actualPricePerDay) || 0;
+      }
       if (typeof actualPricePerDay !== 'number' || isNaN(actualPricePerDay)) {
         actualPricePerDay = 0;
       }
       
       // Ensure deposit is a valid number or null
+      // Backend may return deposit as string
       let actualDeposit = gearData.deposit ?? gearData.deposit_amount ?? null;
-      if (actualDeposit !== null && (typeof actualDeposit !== 'number' || isNaN(actualDeposit))) {
-        actualDeposit = null;
+      if (actualDeposit !== null && actualDeposit !== undefined) {
+        if (typeof actualDeposit === 'string') {
+          actualDeposit = parseFloat(actualDeposit) || null;
+        }
+        if (typeof actualDeposit !== 'number' || isNaN(actualDeposit)) {
+          actualDeposit = null;
+        }
       }
       
       // Ensure rating is a valid number or undefined
+      // Backend may return rating as string or null
       let actualRating = gearData.rating ?? gearData.rating_value ?? undefined;
-      if (actualRating !== undefined && (typeof actualRating !== 'number' || isNaN(actualRating))) {
-        actualRating = undefined;
+      if (actualRating !== undefined && actualRating !== null) {
+        if (typeof actualRating === 'string') {
+          actualRating = parseFloat(actualRating) || undefined;
+        }
+        if (typeof actualRating !== 'number' || isNaN(actualRating)) {
+          actualRating = undefined;
+        }
       }
       
       console.log('Loading gear data:', currentGear); // Debug log
