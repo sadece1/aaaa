@@ -120,36 +120,50 @@ export const EditGearPage = () => {
 
   useEffect(() => {
     if (currentGear) {
+      console.log('Loading gear data:', currentGear); // Debug log
+      
       // Status'u belirle (available'dan veya mevcut status'tan)
       const status = currentGear.status || (currentGear.available ? 'for-sale' : 'sold');
       
+      // Get actual values - check all possible field names
+      const actualPricePerDay = currentGear.pricePerDay ?? currentGear.price_per_day ?? (currentGear as any).price ?? 0;
+      const actualDeposit = currentGear.deposit ?? (currentGear as any).deposit_amount ?? null;
+      const actualRating = currentGear.rating ?? (currentGear as any).rating_value ?? undefined;
+      
+      console.log('Extracted values:', { actualPricePerDay, actualDeposit, actualRating }); // Debug log
+      
       // Reset form with all gear data - use actual values, not defaults
-      // Check if values exist, use them; otherwise use defaults
       const formData = {
         name: currentGear.name || '',
         description: currentGear.description || '',
-        pricePerDay: (currentGear.pricePerDay !== undefined && currentGear.pricePerDay !== null) ? currentGear.pricePerDay : 0,
-        deposit: (currentGear.deposit !== undefined && currentGear.deposit !== null) ? currentGear.deposit : null,
+        pricePerDay: actualPricePerDay,
+        deposit: actualDeposit,
         brand: currentGear.brand || '',
         color: currentGear.color || '',
-        rating: (currentGear.rating !== undefined && currentGear.rating !== null) ? currentGear.rating : undefined,
+        rating: actualRating,
         status: status as GearStatus,
       };
       
-      // Use setTimeout to ensure form is ready before setting values
-      setTimeout(() => {
-        reset(formData);
+      console.log('Form data to set:', formData); // Debug log
+      
+      // Reset form immediately
+      reset(formData);
+      
+      // Then set values again after a short delay to ensure they stick
+      const timer = setTimeout(() => {
+        setValue('name', formData.name, { shouldValidate: false, shouldDirty: false });
+        setValue('description', formData.description, { shouldValidate: false, shouldDirty: false });
+        setValue('pricePerDay', formData.pricePerDay, { shouldValidate: false, shouldDirty: false });
+        setValue('deposit', formData.deposit, { shouldValidate: false, shouldDirty: false });
+        setValue('brand', formData.brand, { shouldValidate: false, shouldDirty: false });
+        setValue('color', formData.color, { shouldValidate: false, shouldDirty: false });
+        setValue('rating', formData.rating, { shouldValidate: false, shouldDirty: false });
+        setValue('status', formData.status, { shouldValidate: false, shouldDirty: false });
         
-        // Explicitly set all values using setValue to ensure they're loaded
-        setValue('name', formData.name, { shouldValidate: false });
-        setValue('description', formData.description, { shouldValidate: false });
-        setValue('pricePerDay', formData.pricePerDay, { shouldValidate: false });
-        setValue('deposit', formData.deposit, { shouldValidate: false });
-        setValue('brand', formData.brand, { shouldValidate: false });
-        setValue('color', formData.color, { shouldValidate: false });
-        setValue('rating', formData.rating, { shouldValidate: false });
-        setValue('status', formData.status, { shouldValidate: false });
-      }, 0);
+        console.log('Values set, current form values:', watch()); // Debug log
+      }, 100);
+      
+      return () => clearTimeout(timer);
       
       setImageUrls(currentGear.images && currentGear.images.length > 0 ? currentGear.images : []);
       setImageFiles([]);
@@ -421,23 +435,26 @@ export const EditGearPage = () => {
               error={errors.name?.message}
             />
 
-            <div className="w-full overflow-hidden">
+            <div className="w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Açıklama
               </label>
               <textarea
                 {...register('description', { required: 'Açıklama gereklidir' })}
                 rows={5}
-                className={`w-full box-border px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.description
                     ? 'border-red-500 focus:ring-red-500'
                     : 'border-gray-300 dark:border-gray-600'
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y`}
                 style={{ 
+                  width: '100%',
+                  maxWidth: '100%',
+                  boxSizing: 'border-box',
                   wordBreak: 'break-word', 
                   overflowWrap: 'break-word',
-                  maxWidth: '100%',
-                  boxSizing: 'border-box'
+                  overflowX: 'hidden',
+                  overflowY: 'auto'
                 }}
               />
               {errors.description && (
