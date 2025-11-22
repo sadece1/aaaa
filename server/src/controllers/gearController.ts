@@ -107,19 +107,60 @@ export const create = asyncHandler(async (req: AuthRequest, res: Response) => {
     ? (typeof req.body.deposit === 'string' ? parseFloat(req.body.deposit) : req.body.deposit)
     : null;
 
-  // Build gear data object
+  // Validate required fields (validation middleware should catch this, but double-check)
+  if (!req.body.name || String(req.body.name).trim() === '') {
+    res.status(400).json({
+      success: false,
+      message: 'Gear name is required',
+    });
+    return;
+  }
+
+  if (!req.body.description || String(req.body.description).trim() === '') {
+    res.status(400).json({
+      success: false,
+      message: 'Description is required',
+    });
+    return;
+  }
+
+  if (!req.body.category_id) {
+    res.status(400).json({
+      success: false,
+      message: 'Category ID is required',
+    });
+    return;
+  }
+
+  if (!price_per_day || price_per_day <= 0) {
+    res.status(400).json({
+      success: false,
+      message: 'Price per day must be a positive number',
+    });
+    return;
+  }
+
+  if (!req.body.status) {
+    res.status(400).json({
+      success: false,
+      message: 'Status is required',
+    });
+    return;
+  }
+
+  // Build gear data object - ensure required fields are not null
   const gearData: any = {
-    name: req.body.name || null,
-    description: req.body.description || null,
-    category_id: req.body.category_id || null,
+    name: String(req.body.name).trim(),
+    description: String(req.body.description).trim(),
+    category_id: req.body.category_id,
     images: images.length > 0 ? images : (req.body.images || []),
     price_per_day: price_per_day,
-    deposit: deposit !== null && deposit !== undefined ? deposit : null,
+    deposit: deposit !== null && deposit !== undefined ? deposit : undefined,
     available: req.body.available !== undefined ? (req.body.available === 'true' || req.body.available === true) : true,
-    status: req.body.status || null,
+    status: req.body.status,
     specifications: specifications || {},
-    brand: req.body.brand || null,
-    color: req.body.color || null,
+    brand: req.body.brand ? String(req.body.brand).trim() : undefined,
+    color: req.body.color ? String(req.body.color).trim() : undefined,
     recommended_products: recommended_products || [],
   };
 

@@ -11,18 +11,20 @@ import {
 } from '../controllers/gearController';
 import { authenticate } from '../middleware/auth';
 import { validate, validateQuery, createGearSchema, updateGearSchema, gearFiltersSchema } from '../validators';
+import { upload } from '../middleware/upload';
 
 const router = Router();
+
+// Multer middleware for parsing FormData (no file upload, just text fields)
+const parseFormData = upload.none();
 
 router.get('/', validateQuery(gearFiltersSchema), getAllGear);
 router.get('/search', search);
 router.get('/by-category/:categoryId', getByCategory);
 router.get('/recommended/:id', getRecommended);
 router.get('/:id', getSingleGear);
-// Note: validate middleware is skipped for FormData requests
-// Validation is done in controller after parsing FormData
-router.post('/', authenticate, create);
-router.put('/:id', authenticate, update);
+router.post('/', authenticate, parseFormData, validate(createGearSchema), create);
+router.put('/:id', authenticate, parseFormData, validate(updateGearSchema), update);
 router.delete('/:id', authenticate, remove);
 
 export default router;
