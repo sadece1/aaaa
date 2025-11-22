@@ -54,11 +54,22 @@ api.interceptors.response.use(
     if (error.response?.status === 400) {
       const errorData = error.response.data as { message?: string; errors?: Array<{ field: string; message: string }> };
       
+      // Log full error response for debugging
+      console.error('=== VALIDATION ERROR ===');
+      console.error('Full error response:', error.response.data);
+      console.error('Status:', error.response.status);
+      console.error('Headers:', error.response.headers);
+      
       if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
         // Build detailed validation error message
         const validationMessages = errorData.errors.map(err => `${err.field}: ${err.message}`).join('\n');
-        console.error('Validation errors:', errorData.errors);
+        console.error('Validation errors array:', errorData.errors);
+        console.error('Validation error details:', validationMessages);
+        alert(`VALIDATION HATALARI:\n\n${validationMessages}\n\nConsole'da detayları görebilirsiniz.`);
         return Promise.reject(new Error(`Validation error:\n${validationMessages}`));
+      } else {
+        console.error('No errors array found in response');
+        console.error('Error data:', errorData);
       }
     }
     
