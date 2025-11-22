@@ -116,8 +116,9 @@ export const gearService = {
         // Ensure rating is a number or null
         // Rating can be 0-5, or null/undefined
         console.log('Transforming rating in updateGear:', transformedData.rating, typeof transformedData.rating);
-        if (transformedData.rating !== undefined) {
-          if (transformedData.rating === null || transformedData.rating === '' || transformedData.rating === 'null') {
+        // Always include rating if it's in the data (even if null)
+        if ('rating' in transformedData) {
+          if (transformedData.rating === null || transformedData.rating === '' || transformedData.rating === 'null' || transformedData.rating === undefined) {
             transformedData.rating = null;
           } else {
             const parsed = typeof transformedData.rating === 'number' 
@@ -128,9 +129,24 @@ export const gearService = {
           }
           console.log('Transformed rating value:', transformedData.rating);
         } else {
-          // If rating is not provided in update, don't include it (undefined)
-          // This allows partial updates without overwriting existing rating
-          console.log('Rating is undefined, not including in update');
+          console.log('Rating key not in data, not including in update');
+        }
+        
+        // Ensure specifications is always included if in data
+        if ('specifications' in transformedData) {
+          if (!transformedData.specifications || typeof transformedData.specifications !== 'object') {
+            transformedData.specifications = {};
+          }
+          console.log('Transformed specifications:', transformedData.specifications);
+        }
+        
+        // Ensure category_id is always included if in data
+        if ('categoryId' in transformedData && !transformedData.category_id) {
+          transformedData.category_id = transformedData.categoryId;
+          delete transformedData.categoryId;
+        }
+        if ('category_id' in transformedData) {
+          console.log('Transformed category_id:', transformedData.category_id);
         }
       }
 

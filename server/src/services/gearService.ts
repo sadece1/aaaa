@@ -242,9 +242,10 @@ export const updateGear = async (
     updateFields.push('status = ?');
     updateValues.push(data.status);
   }
-  if (data.specifications) {
+  // Always update specifications if provided (even if empty object)
+  if (data.specifications !== undefined) {
     updateFields.push('specifications = ?');
-    updateValues.push(JSON.stringify(data.specifications));
+    updateValues.push(JSON.stringify(data.specifications || {}));
   }
   if (data.brand !== undefined) {
     updateFields.push('brand = ?');
@@ -254,9 +255,10 @@ export const updateGear = async (
     updateFields.push('color = ?');
     updateValues.push(data.color);
   }
+  // Always update rating if provided (even if null)
   if (data.rating !== undefined) {
     updateFields.push('rating = ?');
-    updateValues.push(data.rating);
+    updateValues.push(data.rating === null ? null : data.rating);
   }
   if (data.recommended_products) {
     updateFields.push('recommended_products = ?');

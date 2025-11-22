@@ -463,23 +463,28 @@ export const EditGearPage = () => {
       console.log('Extracted values:', { pricePerDay, deposit, rating });
       console.log('Final rating value:', finalRating);
       
+      // Ensure all values are explicitly set, not undefined
       const updates: Partial<Gear> = {
-        ...data,
         name: data.name || '',
         description: data.description || '',
-        category: finalCategorySlug || data.category,
-        categoryId: finalCategoryId,
+        category: finalCategorySlug || data.category || 'other',
+        categoryId: finalCategoryId || currentGear.categoryId, // Keep existing if not provided
         images: validImages,
         pricePerDay: pricePerDay,
-        deposit: deposit,
-        available: data.status === 'for-sale' || data.status === 'orderable' ? true : false, // Backward compatibility
+        deposit: deposit !== null ? deposit : null, // Explicitly set null
+        available: data.status === 'for-sale' || data.status === 'orderable' ? true : false,
         status: data.status ?? 'for-sale',
-        specifications: Object.keys(specificationsObj).length > 0 ? specificationsObj : undefined,
+        specifications: Object.keys(specificationsObj).length > 0 ? specificationsObj : (currentGear.specifications || {}), // Keep existing or empty object
         brand: data.brand || '',
         color: data.color || '',
-        rating: finalRating,
-        recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : undefined,
+        rating: finalRating !== undefined ? finalRating : (currentGear.rating !== undefined ? currentGear.rating : null), // Explicitly set, keep existing or null
+        recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : (currentGear.recommendedProducts || []),
       };
+      
+      console.log('Final updates object:', updates);
+      console.log('Updates.rating:', updates.rating, typeof updates.rating);
+      console.log('Updates.specifications:', updates.specifications);
+      console.log('Updates.categoryId:', updates.categoryId);
       
       console.log('Gear updates to send:', updates);
 
