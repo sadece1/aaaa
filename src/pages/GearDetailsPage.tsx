@@ -280,7 +280,7 @@ export const GearDetailsPage = () => {
           }
         })}
         <span className="text-xs font-medium text-gray-700 dark:text-gray-300 ml-1.5">
-          {rating.toFixed(1)} / 5.0
+          {typeof rating === 'number' ? rating.toFixed(1) : parseFloat(String(rating || 0)).toFixed(1)} / 5.0
         </span>
       </div>
     );

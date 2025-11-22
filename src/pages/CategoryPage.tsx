@@ -20,27 +20,33 @@ export const CategoryPage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
-    const loadCategoryData = () => {
+    const loadCategoryData = async () => {
       if (categorySlug) {
         setIsLoading(true);
-        // Get category info from categoryManagementService
-        const category = categoryManagementService.getCategoryBySlug(categorySlug);
-        
-        if (category) {
-          setCategoryInfo(category);
-          // Get subcategories
-          const children = categoryManagementService.getChildCategories(category.id);
-          setSubCategories(children);
-        } else {
-          // Category not found
+        try {
+          // Get category info from categoryManagementService
+          const category = await categoryManagementService.getCategoryBySlug(categorySlug);
+          
+          if (category) {
+            setCategoryInfo(category);
+            // Get subcategories
+            const children = await categoryManagementService.getChildCategories(category.id);
+            setSubCategories(children);
+          } else {
+            // Category not found
+            setCategoryInfo(null);
+            setIsLoading(false);
+            return;
+          }
+          
+          // Fetch all gear and filter by category
+          // Use reasonable limit (backend max is 100 anyway)
+          fetchGear({}, 1, 500);
+        } catch (error) {
+          console.error('Failed to load category data:', error);
           setCategoryInfo(null);
           setIsLoading(false);
-          return;
         }
-        
-        // Fetch all gear and filter by category
-        // Use a very high limit to get all items for proper filtering
-        fetchGear({}, 1, 10000);
       }
     };
 
@@ -68,15 +74,17 @@ export const CategoryPage = () => {
 
   useEffect(() => {
     if (categorySlug) {
-      const category = categoryManagementService.getCategoryBySlug(categorySlug);
-      if (!category) {
-        setIsLoading(false);
-        return;
-      }
+      const filterGear = async () => {
+        try {
+          const category = await categoryManagementService.getCategoryBySlug(categorySlug);
+          if (!category) {
+            setIsLoading(false);
+            return;
+          }
 
-      if (gear.length > 0) {
-        // Get all categories to build a mapping of IDs (including parent categories)
-        const allCategories = categoryManagementService.getAllCategories();
+          if (gear.length > 0) {
+            // Get all categories to build a mapping of IDs (including parent categories)
+            const allCategories = await categoryManagementService.getAllCategories();
         
         // Build a set of all category IDs that match (including parent and child categories)
         const matchingCategoryIds = new Set<string>();
@@ -326,7 +334,7 @@ export const CategoryPage = () => {
       } else if (!gearLoading) {
         // If gear is empty and not loading, try fetching again
         console.log('Gear is empty, fetching...');
-        fetchGear({}, 1, 10000);
+        fetchGear({}, 1, 500);
       }
     }
   }, [categorySlug, gear, gearLoading, fetchGear]);

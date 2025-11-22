@@ -14,8 +14,8 @@ export const FavoritesPage = () => {
   const [favoriteGear, setFavoriteGear] = useState<any[]>([]);
 
   useEffect(() => {
-    // Fetch all gear to filter favorites - use high limit to get all items
-    fetchGear({}, 1, 10000);
+    // Fetch all gear to filter favorites - use reasonable limit
+    fetchGear({}, 1, 500);
   }, [fetchGear]);
 
   useEffect(() => {

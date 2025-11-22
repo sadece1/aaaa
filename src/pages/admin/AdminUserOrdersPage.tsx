@@ -135,7 +135,7 @@ export const AdminUserOrdersPage = () => {
   const loadGears = async () => {
     setIsLoadingGears(true);
     try {
-      await fetchGear({}, 1, 10000);
+      await fetchGear({}, 1, 500);
     } catch (error) {
       console.error('Failed to load gears:', error);
     } finally {
