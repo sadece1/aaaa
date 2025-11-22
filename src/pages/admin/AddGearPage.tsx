@@ -238,22 +238,32 @@ export const AddGearPage = () => {
         }
       });
 
+      // Extract and validate form values
+      const pricePerDay = typeof data.pricePerDay === 'number' && !isNaN(data.pricePerDay) ? data.pricePerDay : (data.pricePerDay ? Number(data.pricePerDay) : 0);
+      const deposit = data.deposit !== undefined && data.deposit !== null && !isNaN(Number(data.deposit)) ? Number(data.deposit) : null;
+      const rating = data.rating !== undefined && data.rating !== null && !isNaN(Number(data.rating)) ? Number(data.rating) : undefined;
+      
+      console.log('Form data received:', data);
+      console.log('Extracted values:', { pricePerDay, deposit, rating });
+      
       const gearData: Omit<Gear, 'id' | 'createdAt' | 'updatedAt'> = {
         name: data.name || '',
         description: data.description || '',
         category: finalCategorySlug || data.category || 'other',
         categoryId: finalCategoryId,
         images: validImages,
-        pricePerDay: data.pricePerDay || 0,
-        deposit: data.deposit,
+        pricePerDay: pricePerDay,
+        deposit: deposit,
         available: data.status === 'for-sale' || data.status === 'orderable' ? true : false, // Backward compatibility
         status: data.status ?? 'for-sale',
         specifications: Object.keys(specificationsObj).length > 0 ? specificationsObj : undefined,
-        brand: data.brand,
-        color: data.color,
-        rating: data.rating,
+        brand: data.brand || '',
+        color: data.color || '',
+        rating: rating,
         recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : undefined,
       };
+      
+      console.log('Gear data to send:', gearData);
 
       // Use store method which handles the service call
       await addGear(gearData);
@@ -314,27 +324,41 @@ export const AddGearPage = () => {
             Yeni Ürün Ekle
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6">
-            <Input
-              label="Ürün Adı"
-              {...register('name', { required: 'Ürün adı gereklidir' })}
-              error={errors.name?.message}
-              placeholder="Örn: Premium Çadır 4 Kişilik"
-            />
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6" style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
+            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+              <Input
+                label="Ürün Adı"
+                {...register('name', { required: 'Ürün adı gereklidir' })}
+                error={errors.name?.message}
+                placeholder="Örn: Premium Çadır 4 Kişilik"
+                style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}
+              />
+            </div>
 
-            <div>
+            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Açıklama
               </label>
               <textarea
                 {...register('description', { required: 'Açıklama gereklidir' })}
                 rows={5}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.description
                     ? 'border-red-500 focus:ring-red-500'
                     : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y`}
                 placeholder="Ürün hakkında detaylı açıklama..."
+                style={{ 
+                  width: '100%',
+                  maxWidth: '100%',
+                  minWidth: 0,
+                  boxSizing: 'border-box',
+                  wordBreak: 'break-word', 
+                  overflowWrap: 'break-word',
+                  overflowX: 'hidden',
+                  overflowY: 'auto',
+                  whiteSpace: 'pre-wrap'
+                }}
               />
               {errors.description && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>

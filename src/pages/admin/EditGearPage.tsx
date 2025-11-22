@@ -377,21 +377,33 @@ export const EditGearPage = () => {
         }
       });
       
+      // Extract and validate form values
+      const pricePerDay = typeof data.pricePerDay === 'number' && !isNaN(data.pricePerDay) ? data.pricePerDay : (data.pricePerDay ? Number(data.pricePerDay) : 0);
+      const deposit = data.deposit !== undefined && data.deposit !== null && !isNaN(Number(data.deposit)) ? Number(data.deposit) : null;
+      const rating = data.rating !== undefined && data.rating !== null && !isNaN(Number(data.rating)) ? Number(data.rating) : undefined;
+      
+      console.log('Form data received:', data);
+      console.log('Extracted values:', { pricePerDay, deposit, rating });
+      
       const updates: Partial<Gear> = {
         ...data,
+        name: data.name || '',
+        description: data.description || '',
         category: finalCategorySlug || data.category,
         categoryId: finalCategoryId,
         images: validImages,
+        pricePerDay: pricePerDay,
+        deposit: deposit,
         available: data.status === 'for-sale' || data.status === 'orderable' ? true : false, // Backward compatibility
         status: data.status ?? 'for-sale',
         specifications: Object.keys(specificationsObj).length > 0 ? specificationsObj : undefined,
+        brand: data.brand || '',
+        color: data.color || '',
+        rating: rating,
         recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : undefined,
       };
       
-      // Handle deposit: if it's 0 or empty, send null instead
-      if (updates.deposit === 0 || updates.deposit === null || updates.deposit === undefined) {
-        updates.deposit = null;
-      }
+      console.log('Gear updates to send:', updates);
 
       await updateGearInStore(id, updates);
       navigate(routes.adminGear);
@@ -462,11 +474,14 @@ export const EditGearPage = () => {
           </h1>
 
           <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6" style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
-            <Input
-              label="Ürün Adı"
-              {...register('name', { required: 'Ürün adı gereklidir' })}
-              error={errors.name?.message}
-            />
+            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+              <Input
+                label="Ürün Adı"
+                {...register('name', { required: 'Ürün adı gereklidir' })}
+                error={errors.name?.message}
+                style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}
+              />
+            </div>
 
             <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box', position: 'relative' }}>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -601,7 +616,6 @@ export const EditGearPage = () => {
                 valueAsNumber: true,
               })}
               error={errors.pricePerDay?.message}
-              value={watch('pricePerDay') && !isNaN(Number(watch('pricePerDay'))) ? watch('pricePerDay') : ''}
             />
 
             <Input
@@ -613,7 +627,6 @@ export const EditGearPage = () => {
                 valueAsNumber: true,
               })}
               error={errors.deposit?.message}
-              value={watch('deposit') && !isNaN(Number(watch('deposit'))) ? watch('deposit') : ''}
             />
 
             {/* Marka */}
