@@ -447,7 +447,12 @@ export const EditGearPage = () => {
       // Extract and validate form values
       const pricePerDay = typeof data.pricePerDay === 'number' && !isNaN(data.pricePerDay) ? data.pricePerDay : (data.pricePerDay ? Number(data.pricePerDay) : 0);
       const deposit = data.deposit !== undefined && data.deposit !== null && !isNaN(Number(data.deposit)) ? Number(data.deposit) : null;
-      const rating = data.rating !== undefined && data.rating !== null && !isNaN(Number(data.rating)) ? Number(data.rating) : undefined;
+      // Rating can be 0-5, or null/undefined
+      const rating = data.rating !== undefined && data.rating !== null && data.rating !== '' 
+        ? (typeof data.rating === 'number' ? data.rating : Number(data.rating))
+        : (data.rating === null || data.rating === '' ? null : undefined);
+      // If rating is NaN, set to null
+      const finalRating = (rating !== undefined && rating !== null && !isNaN(rating)) ? rating : null;
       
       console.log('Form data received:', data);
       console.log('Extracted values:', { pricePerDay, deposit, rating });
@@ -466,7 +471,7 @@ export const EditGearPage = () => {
         specifications: Object.keys(specificationsObj).length > 0 ? specificationsObj : undefined,
         brand: data.brand || '',
         color: data.color || '',
-        rating: rating,
+        rating: finalRating,
         recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : undefined,
       };
       

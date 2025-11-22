@@ -88,13 +88,20 @@ const transformFormData = (req: Request, res: Response, next: NextFunction) => {
   }
 
   // Parse rating - convert string to number or keep as number
+  // Rating can be 0-5, or null/undefined
   if (req.body.rating !== undefined && req.body.rating !== null && req.body.rating !== '') {
     const parsed = typeof req.body.rating === 'string'
       ? parseFloat(req.body.rating)
       : req.body.rating;
-    req.body.rating = isNaN(parsed) ? undefined : parsed;
+    req.body.rating = isNaN(parsed) ? null : parsed;
+  } else if (req.body.rating === '' || req.body.rating === null) {
+    req.body.rating = null;
   } else {
-    req.body.rating = undefined;
+    // If rating is not provided, don't set it (let it be undefined so it won't be updated)
+    // But for create, we should set it to null
+    if (req.method === 'POST') {
+      req.body.rating = null;
+    }
   }
 
   // Convert string boolean to boolean

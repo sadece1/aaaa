@@ -82,7 +82,9 @@ export const create = asyncHandler(async (req: AuthRequest, res: Response) => {
     specifications: req.body.specifications || {},
     brand: req.body.brand,
     color: req.body.color,
-    rating: req.body.rating !== undefined && req.body.rating !== null ? Number(req.body.rating) : null,
+    rating: req.body.rating !== undefined && req.body.rating !== null && req.body.rating !== '' 
+      ? (typeof req.body.rating === 'number' ? req.body.rating : Number(req.body.rating))
+      : null,
     recommended_products: req.body.recommended_products || [],
   };
 
