@@ -323,8 +323,31 @@ export const AddGearPage = () => {
       console.log('gearData.rating:', gearData.rating, typeof gearData.rating);
       console.log('gearData.specifications:', gearData.specifications);
       console.log('gearData.categoryId:', gearData.categoryId);
+      console.log('gearData keys:', Object.keys(gearData));
+      console.log('gearData values:', Object.values(gearData));
+
+      // DOUBLE CHECK: Ensure rating is included
+      if (gearData.rating === undefined) {
+        console.warn('⚠️ Rating is undefined in gearData! Adding manually...');
+        gearData.rating = finalRating !== undefined ? finalRating : (ratingValue !== undefined ? ratingValue : null);
+        console.log('Added rating manually:', gearData.rating);
+      }
       
-      console.log('Gear data to send:', gearData);
+      // DOUBLE CHECK: Ensure specifications is included
+      if (gearData.specifications === undefined) {
+        console.warn('⚠️ Specifications is undefined in gearData! Adding manually...');
+        gearData.specifications = Object.keys(specificationsObj).length > 0 ? specificationsObj : {};
+        console.log('Added specifications manually:', gearData.specifications);
+      }
+      
+      // DOUBLE CHECK: Ensure categoryId is included
+      if (!gearData.categoryId) {
+        console.warn('⚠️ CategoryId is missing in gearData! Adding manually...');
+        gearData.categoryId = finalCategoryId || '';
+        console.log('Added categoryId manually:', gearData.categoryId);
+      }
+
+      console.log('FINAL GEARDATA BEFORE SEND:', gearData);
 
       // Use store method which handles the service call
       await addGear(gearData);

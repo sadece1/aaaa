@@ -529,8 +529,31 @@ export const EditGearPage = () => {
       console.log('Updates.rating:', updates.rating, typeof updates.rating);
       console.log('Updates.specifications:', updates.specifications);
       console.log('Updates.categoryId:', updates.categoryId);
+      console.log('Updates keys:', Object.keys(updates));
+      console.log('Updates values:', Object.values(updates));
+
+      // DOUBLE CHECK: Ensure rating is included
+      if (updates.rating === undefined) {
+        console.warn('⚠️ Rating is undefined in updates! Adding manually...');
+        updates.rating = finalRating !== undefined ? finalRating : (ratingValue !== undefined ? ratingValue : null);
+        console.log('Added rating manually:', updates.rating);
+      }
       
-      console.log('Gear updates to send:', updates);
+      // DOUBLE CHECK: Ensure specifications is included
+      if (updates.specifications === undefined) {
+        console.warn('⚠️ Specifications is undefined in updates! Adding manually...');
+        updates.specifications = Object.keys(specificationsObj).length > 0 ? specificationsObj : (currentGear.specifications || {});
+        console.log('Added specifications manually:', updates.specifications);
+      }
+      
+      // DOUBLE CHECK: Ensure categoryId is included
+      if (!updates.categoryId) {
+        console.warn('⚠️ CategoryId is missing in updates! Adding manually...');
+        updates.categoryId = finalCategoryId || currentGear.categoryId;
+        console.log('Added categoryId manually:', updates.categoryId);
+      }
+
+      console.log('FINAL UPDATES BEFORE SEND:', updates);
 
       await updateGearInStore(id, updates);
       navigate(routes.adminGear);
