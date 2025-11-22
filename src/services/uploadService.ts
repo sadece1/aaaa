@@ -68,11 +68,10 @@ export const uploadService = {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
-    // If path already starts with /uploads, use api base URL
-    // In development, use proxy, in production use config
+    // Production'da tam URL oluştur (backend validator URI bekliyor)
     const apiBaseUrl = config.apiBaseUrl.startsWith('http') 
       ? config.apiBaseUrl 
-      : '/api';
+      : `${window.location.origin}/api`;
     return `${apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`;
   },
 };
