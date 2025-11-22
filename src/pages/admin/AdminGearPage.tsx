@@ -16,6 +16,7 @@ type SortOption = 'name' | 'price' | 'status' | 'date';
 export const AdminGearPage = () => {
   const { gear, fetchGear, isLoading, deleteGear } = useGearStore();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [backendCategoryMap, setBackendCategoryMap] = useState<Map<string, string>>(new Map()); // UUID -> frontend category ID
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('category');
@@ -28,6 +29,62 @@ export const AdminGearPage = () => {
     fetchGear({}, 1, 10000);
     const allCategories = categoryManagementService.getAllCategories();
     setCategories(allCategories);
+    
+    // Fetch backend categories and create mapping
+    const fetchBackendCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        const backendCategoriesResponse = await response.json();
+        if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
+          const backendCategories = backendCategoriesResponse.data;
+          const map = new Map<string, string>();
+          
+          // Map backend UUIDs to frontend category IDs
+          backendCategories.forEach((bc: any) => {
+            const backendSlug = (bc.slug || '').toLowerCase().trim();
+            const backendName = (bc.name || '').toLowerCase().trim();
+            
+            // Find matching frontend category
+            const matchingFrontendCategory = allCategories.find(fc => {
+              const frontendSlug = (fc.slug || '').toLowerCase().trim();
+              const frontendName = (fc.name || '').toLowerCase().trim();
+              
+              // Exact match
+              if (backendSlug === frontendSlug || backendName === frontendName) {
+                return true;
+              }
+              
+              // Partial match
+              const backendWords = backendName.split(/\s+/);
+              const frontendWords = frontendName.split(/\s+/);
+              const hasMatchingWord = backendWords.some(bw => 
+                frontendWords.some(fw => fw.includes(bw) || bw.includes(fw))
+              );
+              if (hasMatchingWord) {
+                return true;
+              }
+              
+              // Slug contains match
+              if (backendSlug.includes(frontendSlug) || frontendSlug.includes(backendSlug)) {
+                return true;
+              }
+              
+              return false;
+            });
+            
+            if (matchingFrontendCategory) {
+              map.set(bc.id, matchingFrontendCategory.id);
+            }
+          });
+          
+          setBackendCategoryMap(map);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch backend categories for mapping:', error);
+      }
+    };
+    
+    fetchBackendCategories();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // İstatistikler
@@ -52,21 +109,28 @@ export const AdminGearPage = () => {
     const uncategorized: Gear[] = [];
 
     gear.forEach((item) => {
-      const categoryId = item.categoryId || item.category;
-      let categoryKey = categoryId;
+      // Get category_id from item (could be categoryId or category_id from backend)
+      const itemCategoryId = (item as any).categoryId || (item as any).category_id;
+      let categoryKey: string | null = null;
       
-      if (item.categoryId) {
-        const cat = categories.find(c => c.id === item.categoryId || c.slug === item.categoryId);
-        if (cat) {
-          categoryKey = cat.slug || cat.id;
+      // Try to find category by frontend ID first
+      let category = categories.find(c => c.id === itemCategoryId || c.slug === itemCategoryId);
+      
+      // If not found and itemCategoryId is a UUID, try backend category map
+      if (!category && itemCategoryId && backendCategoryMap.has(itemCategoryId)) {
+        const frontendCategoryId = backendCategoryMap.get(itemCategoryId);
+        if (frontendCategoryId) {
+          category = categories.find(c => c.id === frontendCategoryId);
         }
-      } else if (typeof item.category === 'string') {
-        const cat = categories.find(c => c.slug === item.category || c.id === item.category);
-        if (cat) {
-          categoryKey = cat.slug || cat.id;
-        } else {
-          categoryKey = item.category;
-        }
+      }
+      
+      // If still not found, try to match by category slug
+      if (!category && item.category) {
+        category = categories.find(c => c.slug === item.category);
+      }
+      
+      if (category) {
+        categoryKey = category.slug || category.id;
       }
 
       if (categoryKey && categories.some(c => c.slug === categoryKey || c.id === categoryKey)) {
@@ -102,7 +166,7 @@ export const AdminGearPage = () => {
     }
 
     return sorted;
-  }, [gear, categories]);
+  }, [gear, categories, backendCategoryMap]);
 
   // İlk yüklemede tüm kategorileri açık yap
   useEffect(() => {
@@ -946,7 +1010,24 @@ export const AdminGearPage = () => {
                           </tr>
                         ) : (
                           filteredAndSortedGear.map((item) => {
-                            const category = categories.find(c => c.id === item.categoryId || c.slug === item.categoryId);
+                            // Get category_id from item (could be categoryId or category_id from backend)
+                            const itemCategoryId = (item as any).categoryId || (item as any).category_id;
+                            
+                            // Try to find category by frontend ID first
+                            let category = categories.find(c => c.id === itemCategoryId || c.slug === itemCategoryId);
+                            
+                            // If not found and itemCategoryId is a UUID, try backend category map
+                            if (!category && itemCategoryId && backendCategoryMap.has(itemCategoryId)) {
+                              const frontendCategoryId = backendCategoryMap.get(itemCategoryId);
+                              if (frontendCategoryId) {
+                                category = categories.find(c => c.id === frontendCategoryId);
+                              }
+                            }
+                            
+                            // If still not found, try to match by category slug
+                            if (!category && item.category) {
+                              category = categories.find(c => c.slug === item.category);
+                            }
                             return (
                               <tr
                                 key={item.id}
