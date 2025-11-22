@@ -335,31 +335,35 @@ export const AddGearPage = () => {
               />
             </div>
 
-            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box', position: 'relative' }}>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Açıklama
               </label>
-              <textarea
-                {...register('description', { required: 'Açıklama gereklidir' })}
-                rows={5}
-                className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  errors.description
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y`}
-                placeholder="Ürün hakkında detaylı açıklama..."
-                style={{ 
-                  width: '100%',
-                  maxWidth: '100%',
-                  minWidth: 0,
-                  boxSizing: 'border-box',
-                  wordBreak: 'break-word', 
-                  overflowWrap: 'break-word',
-                  overflowX: 'hidden',
-                  overflowY: 'auto',
-                  whiteSpace: 'pre-wrap'
-                }}
-              />
+              <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+                <textarea
+                  {...register('description', { required: 'Açıklama gereklidir' })}
+                  rows={5}
+                  className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                    errors.description
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y`}
+                  placeholder="Ürün hakkında detaylı açıklama..."
+                  style={{ 
+                    width: '100%',
+                    maxWidth: '100%',
+                    minWidth: 0,
+                    boxSizing: 'border-box',
+                    wordBreak: 'break-word', 
+                    overflowWrap: 'break-word',
+                    overflowX: 'hidden',
+                    overflowY: 'auto',
+                    whiteSpace: 'pre-wrap',
+                    display: 'block',
+                    position: 'relative'
+                  }}
+                />
+              </div>
               {errors.description && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
               )}

@@ -149,7 +149,7 @@ export const getGearById = async (id: string): Promise<Gear | null> => {
  * Create new gear
  */
 export const createGear = async (
-  data: Omit<Gear, 'id' | 'created_at' | 'updated_at' | 'rating'>,
+  data: Omit<Gear, 'id' | 'created_at' | 'updated_at'>,
   userId?: string
 ): Promise<Gear> => {
   const id = generateId();
@@ -158,8 +158,8 @@ export const createGear = async (
     `INSERT INTO gear (
       id, name, description, category_id, images, price_per_day,
       deposit, available, status, specifications, brand, color,
-      recommended_products, owner_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      rating, recommended_products, owner_id
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id,
       data.name ?? null,
@@ -173,6 +173,7 @@ export const createGear = async (
       JSON.stringify(data.specifications || {}),
       data.brand ?? null,
       data.color ?? null,
+      data.rating ?? null,
       JSON.stringify(data.recommended_products || []),
       userId ?? null,
     ]
@@ -252,6 +253,10 @@ export const updateGear = async (
   if (data.color !== undefined) {
     updateFields.push('color = ?');
     updateValues.push(data.color);
+  }
+  if (data.rating !== undefined) {
+    updateFields.push('rating = ?');
+    updateValues.push(data.rating);
   }
   if (data.recommended_products) {
     updateFields.push('recommended_products = ?');
