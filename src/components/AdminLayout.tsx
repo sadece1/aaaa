@@ -31,6 +31,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: routes.adminBlogs, label: 'Bloglar', icon: '📝' },
     { path: routes.adminCategories, label: 'Kategoriler', icon: '🏷️' },
     { path: routes.adminBrands, label: 'Markalar', icon: '🏭' },
+    { path: routes.adminReferences, label: 'Referanslar', icon: '📸' },
     { path: routes.adminColors, label: 'Renkler', icon: '🎨' },
     { path: routes.adminUserOrders, label: 'Sipariş Yönetimi', icon: '📦' },
     { path: routes.adminMessages, label: 'Mesajlar', icon: '💬' },

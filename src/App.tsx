@@ -49,6 +49,7 @@ const AdminCategoriesPage = lazy(() => import('@/pages/admin/AdminCategoriesPage
 const AddCategoryPage = lazy(() => import('@/pages/admin/AddCategoryPage').then(m => ({ default: m.AddCategoryPage })));
 const EditCategoryPage = lazy(() => import('@/pages/admin/EditCategoryPage').then(m => ({ default: m.EditCategoryPage })));
 const AdminBrandsPage = lazy(() => import('@/pages/admin/AdminBrandsPage').then(m => ({ default: m.AdminBrandsPage })));
+const AdminReferencesPage = lazy(() => import('@/pages/admin/AdminReferencesPage').then(m => ({ default: m.AdminReferencesPage })));
 const AdminColorsPage = lazy(() => import('@/pages/admin/AdminColorsPage').then(m => ({ default: m.AdminColorsPage })));
 const AdminChangePasswordPage = lazy(() => import('@/pages/admin/AdminChangePasswordPage').then(m => ({ default: m.AdminChangePasswordPage })));
 const AdminUserOrdersPage = lazy(() => import('@/pages/admin/AdminUserOrdersPage').then(m => ({ default: m.AdminUserOrdersPage })));
@@ -256,6 +257,14 @@ function AppContent() {
                   element={
                     <ProtectedRoute requireAdmin>
                       <AdminBrandsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={routes.adminReferences}
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminReferencesPage />
                     </ProtectedRoute>
                   }
                 />

@@ -83,3 +83,5 @@ export * from './categoryValidator';
 export * from './contactValidator';
 export * from './appointmentValidator';
 export * from './newsletterValidator';
+export * from './referenceValidator';
+export * from './brandValidator';

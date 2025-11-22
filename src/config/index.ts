@@ -51,5 +51,6 @@ export const routes = {
   adminColors: '/admin/colors',
   adminChangePassword: '/admin/change-password',
   adminUserOrders: '/admin/user-orders',
+  adminReferences: '/admin/references',
 } as const;
 

@@ -2,83 +2,22 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { SEO } from '@/components/SEO';
-
-interface Reference {
-  id: number;
-  image: string;
-  title: string;
-  location?: string;
-  year?: string;
-}
-
-interface Brand {
-  id: number;
-  name: string;
-  logo: string;
-}
-
-// Sample data - you can replace with real data from API
-const brands: Brand[] = [
-  { id: 1, name: 'Coleman', logo: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=200&fit=crop' },
-  { id: 2, name: 'The North Face', logo: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=300&h=200&fit=crop' },
-  { id: 3, name: 'Patagonia', logo: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=300&h=200&fit=crop' },
-  { id: 4, name: 'Mountain Hardwear', logo: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=300&h=200&fit=crop' },
-  { id: 5, name: 'REI', logo: 'https://images.unsplash.com/photo-1464822759844-d150ad9bf229?w=300&h=200&fit=crop' },
-  { id: 6, name: 'Kelty', logo: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=300&h=200&fit=crop' },
-];
-
-const references: Reference[] = [
-  { 
-    id: 1, 
-    image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=800&h=600&fit=crop',
-    title: '1999 İstanbul',
-    location: 'İstanbul, Türkiye',
-    year: '1999'
-  },
-  { 
-    id: 2, 
-    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&h=600&fit=crop',
-    title: '2005 Antalya',
-    location: 'Antalya, Türkiye',
-    year: '2005'
-  },
-  { 
-    id: 3, 
-    image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=600&fit=crop',
-    title: '2010 Kapadokya',
-    location: 'Kapadokya, Türkiye',
-    year: '2010'
-  },
-  { 
-    id: 4, 
-    image: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=600&fit=crop',
-    title: '2015 Bolu',
-    location: 'Bolu, Türkiye',
-    year: '2015'
-  },
-  { 
-    id: 5, 
-    image: 'https://images.unsplash.com/photo-1464822759844-d150ad9bf229?w=800&h=600&fit=crop',
-    title: '2018 Muğla',
-    location: 'Muğla, Türkiye',
-    year: '2018'
-  },
-  { 
-    id: 6, 
-    image: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=800&h=600&fit=crop',
-    title: '2020 Çanakkale',
-    location: 'Çanakkale, Türkiye',
-    year: '2020'
-  },
-];
+import { referenceService, Reference } from '@/services/referenceService';
+import { brandService, Brand } from '@/services/brandService';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 export const ReferencesPage = () => {
-  const [selectedReference, setSelectedReference] = useState<number | null>(null);
+  const [references, setReferences] = useState<Reference[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedReference, setSelectedReference] = useState<string | null>(null);
   const [isLightAnimating, setIsLightAnimating] = useState(false);
   const modalLightOverlayRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    loadData();
+    
     // Hero animation
     if (heroRef.current) {
       const title = heroRef.current.querySelector('.hero-title');
@@ -98,7 +37,23 @@ export const ReferencesPage = () => {
     }
   }, []);
 
-  const handleImageClick = (referenceId: number) => {
+  const loadData = async () => {
+    setIsLoading(true);
+    try {
+      const [refsData, brandsData] = await Promise.all([
+        referenceService.getAllReferences(),
+        brandService.getAllBrands(),
+      ]);
+      setReferences(refsData);
+      setBrands(brandsData.filter(b => b.logo)); // Only show brands with logos
+    } catch (error) {
+      console.error('Failed to load references data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleImageClick = (referenceId: string) => {
     setSelectedReference(referenceId);
     setIsLightAnimating(true);
 
@@ -201,17 +156,22 @@ export const ReferencesPage = () => {
               <div className="w-24 h-1 bg-primary-600 dark:bg-primary-400 rounded-full mx-auto mt-4"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {references.map((reference, index) => (
-                <motion.div
-                  key={reference.id}
-                  className="group relative cursor-pointer"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  onClick={() => handleImageClick(reference.id)}
-                >
+            {isLoading ? (
+              <div className="flex justify-center py-12">
+                <LoadingSpinner size="lg" />
+              </div>
+            ) : references.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                {references.map((reference, index) => (
+                  <motion.div
+                    key={reference.id}
+                    className="group relative cursor-pointer"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    onClick={() => handleImageClick(reference.id)}
+                  >
                   {/* Elegant Image Frame */}
                   <div className="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-4 border-white dark:border-gray-800 group-hover:border-primary-400 dark:group-hover:border-primary-600">
                     {/* Image */}
@@ -255,8 +215,15 @@ export const ReferencesPage = () => {
                     <div className="absolute inset-0 rounded-2xl border-2 border-primary-400/0 group-hover:border-primary-400/50 transition-all duration-300 pointer-events-none" />
                   </div>
                 </motion.div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">
+                  Henüz referans eklenmemiş
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -279,28 +246,40 @@ export const ReferencesPage = () => {
               <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent z-10 pointer-events-none" />
               <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent z-10 pointer-events-none" />
               
-              <div className="brands-carousel-container">
-                <div className="brands-carousel-track">
-                  {/* Duplicate brands for seamless infinite loop */}
-                  {[...brands, ...brands].map((brand, index) => (
-                    <motion.div
-                      key={`brand-${brand.id}-${index}`}
-                      className="brand-carousel-item group relative flex-shrink-0 mx-2"
-                      whileHover={{ y: -3, scale: 1.05 }}
-                    >
-                      {/* Yuvarlak Marka Logo */}
-                      <div className="relative w-full aspect-square rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-4 border-white dark:border-gray-800 group-hover:border-primary-400 dark:group-hover:border-primary-500">
-                        <img
-                          src={brand.logo}
-                          alt={brand.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </div>
-                    </motion.div>
-                  ))}
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <LoadingSpinner size="lg" />
                 </div>
-              </div>
+              ) : brands.length > 0 ? (
+                <div className="brands-carousel-container">
+                  <div className="brands-carousel-track">
+                    {/* Duplicate brands for seamless infinite loop */}
+                    {[...brands, ...brands].map((brand, index) => (
+                      <motion.div
+                        key={`brand-${brand.id}-${index}`}
+                        className="brand-carousel-item group relative flex-shrink-0 mx-2"
+                        whileHover={{ y: -3, scale: 1.05 }}
+                      >
+                        {/* Yuvarlak Marka Logo */}
+                        <div className="relative w-full aspect-square rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-4 border-white dark:border-gray-800 group-hover:border-primary-400 dark:group-hover:border-primary-500">
+                          <img
+                            src={brand.logo || ''}
+                            alt={brand.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-gray-500 dark:text-gray-400 text-lg">
+                    Henüz marka eklenmemiş
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </section>
