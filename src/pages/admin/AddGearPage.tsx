@@ -50,7 +50,11 @@ export const AddGearPage = () => {
   const ratingValue = watch('rating');
 
   useEffect(() => {
-    const rootCats = categoryManagementService.getRootCategories();
+    const loadRootCategories = async () => {
+      const rootCats = await categoryManagementService.getRootCategories();
+      setParentCategories(rootCats);
+    };
+    loadRootCategories();
     setParentCategories(rootCats);
     
     // Load brands and colors
@@ -94,11 +98,14 @@ export const AddGearPage = () => {
   // Ana kategori değiştiğinde alt kategorileri güncelle
   useEffect(() => {
     if (selectedParentCategory) {
-      const subCats = categoryManagementService.getChildCategories(selectedParentCategory);
-      setSubCategories(subCats);
-      setSelectedSubCategory('');
-      setSelectedFinalCategory('');
-      setFinalCategories([]);
+      const loadSubCategories = async () => {
+        const subCats = await categoryManagementService.getChildCategories(selectedParentCategory);
+        setSubCategories(subCats);
+        setSelectedSubCategory('');
+        setSelectedFinalCategory('');
+        setFinalCategories([]);
+      };
+      loadSubCategories();
     } else {
       setSubCategories([]);
       setSelectedSubCategory('');
@@ -110,9 +117,12 @@ export const AddGearPage = () => {
   // Alt kategori değiştiğinde final kategorileri güncelle
   useEffect(() => {
     if (selectedSubCategory) {
-      const finalCats = categoryManagementService.getChildCategories(selectedSubCategory);
-      setFinalCategories(finalCats);
-      setSelectedFinalCategory('');
+      const loadFinalCategories = async () => {
+        const finalCats = await categoryManagementService.getChildCategories(selectedSubCategory);
+        setFinalCategories(finalCats);
+        setSelectedFinalCategory('');
+      };
+      loadFinalCategories();
     } else {
       setFinalCategories([]);
       setSelectedFinalCategory('');
@@ -121,28 +131,36 @@ export const AddGearPage = () => {
 
   // Final kategori seçildiğinde form value'sunu güncelle
   useEffect(() => {
-    if (selectedFinalCategory) {
-      const category = categoryManagementService.getCategoryById(selectedFinalCategory);
-      if (category) {
-        setValue('categoryId', category.id);
-        setValue('category', category.slug);
-        console.log('✅ Final category selected:', { id: category.id, slug: category.slug, name: category.name });
+    const updateCategoryValue = async () => {
+      if (selectedFinalCategory) {
+        const category = await categoryManagementService.getCategoryById(selectedFinalCategory);
+        if (category) {
+          setValue('categoryId', category.id);
+          setValue('category', category.slug);
+          setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
+          console.log('✅ Final category selected:', { id: category.id, slug: category.slug, name: category.name });
+        }
+      } else if (selectedSubCategory) {
+        const category = await categoryManagementService.getCategoryById(selectedSubCategory);
+        if (category) {
+          setValue('categoryId', category.id);
+          setValue('category', category.slug);
+          setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
+          console.log('✅ Sub category selected:', { id: category.id, slug: category.slug, name: category.name });
+        }
+      } else if (selectedParentCategory) {
+        const category = await categoryManagementService.getCategoryById(selectedParentCategory);
+        if (category) {
+          setValue('categoryId', category.id);
+          setValue('category', category.slug);
+          setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
+          console.log('✅ Parent category selected:', { id: category.id, slug: category.slug, name: category.name });
+        }
+      } else {
+        setSelectedCategoryName('');
       }
-    } else if (selectedSubCategory) {
-      const category = categoryManagementService.getCategoryById(selectedSubCategory);
-      if (category) {
-        setValue('categoryId', category.id);
-        setValue('category', category.slug);
-        console.log('✅ Sub category selected:', { id: category.id, slug: category.slug, name: category.name });
-      }
-    } else if (selectedParentCategory) {
-      const category = categoryManagementService.getCategoryById(selectedParentCategory);
-      if (category) {
-        setValue('categoryId', category.id);
-        setValue('category', category.slug);
-        console.log('✅ Parent category selected:', { id: category.id, slug: category.slug, name: category.name });
-      }
-    }
+    };
+    updateCategoryValue();
   }, [selectedFinalCategory, selectedSubCategory, selectedParentCategory, setValue]);
 
   const onSubmit = async (data: Partial<Gear>) => {
@@ -153,7 +171,7 @@ export const AddGearPage = () => {
       let finalCategorySlug = '';
       
       if (finalCategoryId) {
-        const category = categoryManagementService.getCategoryById(finalCategoryId);
+        const category = await categoryManagementService.getCategoryById(finalCategoryId);
         if (category) {
           finalCategorySlug = category.slug;
         }
@@ -382,11 +400,7 @@ export const AddGearPage = () => {
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                   <p className="text-sm text-blue-800 dark:text-blue-200">
                     <strong>Seçilen Kategori:</strong>{' '}
-                    {(() => {
-                      const selectedId = selectedFinalCategory || selectedSubCategory || selectedParentCategory;
-                      const category = categoryManagementService.getCategoryById(selectedId);
-                      return category ? `${category.icon || ''} ${category.name}` : '';
-                    })()}
+                    {selectedCategoryName}
                   </p>
                 </div>
               )}

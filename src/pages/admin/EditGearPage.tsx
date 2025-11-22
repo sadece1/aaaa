@@ -47,8 +47,11 @@ export const EditGearPage = () => {
   const ratingValue = watch('rating');
 
   useEffect(() => {
-    const rootCats = categoryManagementService.getRootCategories();
-    setParentCategories(rootCats);
+    const loadRootCategories = async () => {
+      const rootCats = await categoryManagementService.getRootCategories();
+      setParentCategories(rootCats);
+    };
+    loadRootCategories();
     
     // Load brands and colors
     const allBrands = brandService.getAllBrands();
@@ -145,35 +148,38 @@ export const EditGearPage = () => {
       // Kategori hiyerarşisini belirle
       const categoryId = currentGear.categoryId;
       if (categoryId) {
-        const category = categoryManagementService.getCategoryById(categoryId);
-        if (category) {
-          // Parent kategoriyi bul
-          let current: Category | undefined = category;
-          const path: Category[] = [];
-          
-          while (current) {
-            path.unshift(current);
-            if (current.parentId) {
-              current = categoryManagementService.getCategoryById(current.parentId);
-            } else {
-              break;
+        const loadCategoryHierarchy = async () => {
+          const category = await categoryManagementService.getCategoryById(categoryId);
+          if (category) {
+            // Parent kategoriyi bul
+            let current: Category | null = category;
+            const path: Category[] = [];
+            
+            while (current) {
+              path.unshift(current);
+              if (current.parentId) {
+                current = await categoryManagementService.getCategoryById(current.parentId);
+              } else {
+                break;
+              }
+            }
+            
+            if (path.length > 0) {
+              setSelectedParentCategory(path[0].id);
+              if (path.length > 1) {
+                setSelectedSubCategory(path[1].id);
+                const subCats = await categoryManagementService.getChildCategories(path[0].id);
+                setSubCategories(subCats);
+              }
+              if (path.length > 2) {
+                setSelectedFinalCategory(path[2].id);
+                const finalCats = await categoryManagementService.getChildCategories(path[1].id);
+                setFinalCategories(finalCats);
+              }
             }
           }
-          
-          if (path.length > 0) {
-            setSelectedParentCategory(path[0].id);
-            if (path.length > 1) {
-              setSelectedSubCategory(path[1].id);
-              const subCats = categoryManagementService.getChildCategories(path[0].id);
-              setSubCategories(subCats);
-            }
-            if (path.length > 2) {
-              setSelectedFinalCategory(path[2].id);
-              const finalCats = categoryManagementService.getChildCategories(path[1].id);
-              setFinalCategories(finalCats);
-            }
-          }
-        }
+        };
+        loadCategoryHierarchy();
       }
     }
   }, [currentGear, reset, setValue]);
@@ -181,52 +187,69 @@ export const EditGearPage = () => {
   // Ana kategori değiştiğinde alt kategorileri güncelle
   useEffect(() => {
     if (selectedParentCategory) {
-      const subCats = categoryManagementService.getChildCategories(selectedParentCategory);
-      setSubCategories(subCats);
-      if (!selectedSubCategory) {
-        setSelectedFinalCategory('');
-        setFinalCategories([]);
-      }
+      const loadSubCategories = async () => {
+        const subCats = await categoryManagementService.getChildCategories(selectedParentCategory);
+        setSubCategories(subCats);
+        if (!selectedSubCategory) {
+          setSelectedFinalCategory('');
+          setFinalCategories([]);
+        }
+      };
+      loadSubCategories();
     } else {
       setSubCategories([]);
+      setSelectedSubCategory('');
+      setSelectedFinalCategory('');
       setFinalCategories([]);
     }
-  }, [selectedParentCategory]);
+  }, [selectedParentCategory, selectedSubCategory]);
 
   // Alt kategori değiştiğinde final kategorileri güncelle
   useEffect(() => {
     if (selectedSubCategory) {
-      const finalCats = categoryManagementService.getChildCategories(selectedSubCategory);
-      setFinalCategories(finalCats);
-      if (!selectedFinalCategory) {
-        setSelectedFinalCategory('');
-      }
+      const loadFinalCategories = async () => {
+        const finalCats = await categoryManagementService.getChildCategories(selectedSubCategory);
+        setFinalCategories(finalCats);
+        if (!selectedFinalCategory) {
+          setSelectedFinalCategory('');
+        }
+      };
+      loadFinalCategories();
     } else {
       setFinalCategories([]);
+      setSelectedFinalCategory('');
     }
-  }, [selectedSubCategory]);
+  }, [selectedSubCategory, selectedFinalCategory]);
 
   // Final kategori seçildiğinde form value'sunu güncelle
   useEffect(() => {
-    if (selectedFinalCategory) {
-      const category = categoryManagementService.getCategoryById(selectedFinalCategory);
-      if (category) {
-        setValue('categoryId', category.id);
-        setValue('category', category.slug);
+    const updateCategoryValue = async () => {
+      if (selectedFinalCategory) {
+        const category = await categoryManagementService.getCategoryById(selectedFinalCategory);
+        if (category) {
+          setValue('categoryId', category.id);
+          setValue('category', category.slug);
+          setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
+        }
+      } else if (selectedSubCategory) {
+        const category = await categoryManagementService.getCategoryById(selectedSubCategory);
+        if (category) {
+          setValue('categoryId', category.id);
+          setValue('category', category.slug);
+          setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
+        }
+      } else if (selectedParentCategory) {
+        const category = await categoryManagementService.getCategoryById(selectedParentCategory);
+        if (category) {
+          setValue('categoryId', category.id);
+          setValue('category', category.slug);
+          setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
+        }
+      } else {
+        setSelectedCategoryName('');
       }
-    } else if (selectedSubCategory) {
-      const category = categoryManagementService.getCategoryById(selectedSubCategory);
-      if (category) {
-        setValue('categoryId', category.id);
-        setValue('category', category.slug);
-      }
-    } else if (selectedParentCategory) {
-      const category = categoryManagementService.getCategoryById(selectedParentCategory);
-      if (category) {
-        setValue('categoryId', category.id);
-        setValue('category', category.slug);
-      }
-    }
+    };
+    updateCategoryValue();
   }, [selectedFinalCategory, selectedSubCategory, selectedParentCategory, setValue]);
 
   const onSubmit = async (data: Partial<Gear>) => {
@@ -239,7 +262,7 @@ export const EditGearPage = () => {
       let finalCategorySlug = '';
       
       if (finalCategoryId) {
-        const category = categoryManagementService.getCategoryById(finalCategoryId);
+        const category = await categoryManagementService.getCategoryById(finalCategoryId);
         if (category) {
           finalCategorySlug = category.slug;
         }

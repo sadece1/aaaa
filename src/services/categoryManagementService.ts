@@ -116,5 +116,15 @@ export const categoryManagementService = {
       return [];
     }
   },
+
+  async getRootCategories(): Promise<Category[]> {
+    try {
+      const allCategories = await this.getAllCategories();
+      return allCategories.filter(cat => !cat.parentId);
+    } catch (error) {
+      console.error('Failed to fetch root categories:', error);
+      return [];
+    }
+  },
 };
 
