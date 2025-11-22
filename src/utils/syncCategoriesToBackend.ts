@@ -31,7 +31,7 @@ export async function syncCategoriesToBackend(): Promise<{
 
   try {
     // Get all frontend categories
-    const frontendCategories = categoryManagementService.getAllCategories();
+    const frontendCategories = await categoryManagementService.getAllCategories();
     console.log(`📦 Found ${frontendCategories.length} frontend categories`);
 
     // Get all backend categories
@@ -157,7 +157,7 @@ export async function syncCategoriesToBackend(): Promise<{
         // No progress made, there might be circular dependencies or missing parents
         console.warn(`⚠️  Warning: ${remainingCategories.length} categories could not be processed. Possible circular dependencies or missing parents.`);
         for (const cat of remainingCategories) {
-          const parent = categoryManagementService.getCategoryById(cat.parentId!);
+          const parent = await categoryManagementService.getCategoryById(cat.parentId!);
           const errorMsg = `Could not create "${cat.name}": Parent "${parent?.name || cat.parentId}" not found in backend`;
           console.error(`❌ ${errorMsg}`);
           result.errors.push(errorMsg);

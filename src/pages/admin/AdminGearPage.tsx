@@ -27,8 +27,11 @@ export const AdminGearPage = () => {
 
   useEffect(() => {
     fetchGear({}, 1, 500); // Reasonable limit for admin page
-    const allCategories = categoryManagementService.getAllCategories();
-    setCategories(allCategories);
+    const loadCategories = async () => {
+      const allCategories = await categoryManagementService.getAllCategories();
+      setCategories(allCategories);
+    };
+    loadCategories();
     
     // Fetch backend categories and create mapping
     const fetchBackendCategories = async () => {

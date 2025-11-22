@@ -25,8 +25,9 @@ export const AddCategoryPage = () => {
   const parentIdValue = watch('parentId');
 
   useEffect(() => {
-    const loadCategories = () => {
-      setCategories(categoryManagementService.getAllCategories());
+    const loadCategories = async () => {
+      const categories = await categoryManagementService.getAllCategories();
+      setCategories(categories);
     };
 
     loadCategories();

@@ -58,9 +58,9 @@ export const EditCategoryPage = () => {
   const watchedParentId = watch('parentId');
 
   useEffect(() => {
-    const loadCategories = () => {
+    const loadCategories = async () => {
       console.log('🔄 Loading categories...');
-      const allCategories = categoryManagementService.getAllCategories();
+      const allCategories = await categoryManagementService.getAllCategories();
       console.log('📦 Loaded categories:', allCategories.length);
       console.log('🏠 Root categories:', allCategories.filter(c => !c.parentId || c.parentId === null || c.parentId === '').map(c => ({ id: c.id, name: c.name, parentId: c.parentId })));
       
@@ -68,7 +68,7 @@ export const EditCategoryPage = () => {
       setCategories([...allCategories]);
       
       if (id) {
-        const found = categoryManagementService.getCategoryById(id);
+        const found = await categoryManagementService.getCategoryById(id);
         if (found) {
           setCategory(found);
           reset(found);
@@ -85,9 +85,9 @@ export const EditCategoryPage = () => {
     const handleCategoryUpdate = (e?: Event) => {
       console.log('📢 Category update event received!', e?.type || 'custom');
       // Small delay to ensure localStorage is updated
-      setTimeout(() => {
+      setTimeout(async () => {
         console.log('🔄 Reloading categories after update...');
-        const allCategories = categoryManagementService.getAllCategories();
+        const allCategories = await categoryManagementService.getAllCategories();
         console.log('📦 Reloaded categories:', allCategories.length);
         // Force state update by creating a new array reference
         setCategories([...allCategories]);
@@ -150,10 +150,10 @@ export const EditCategoryPage = () => {
 
   // Reload categories when page becomes visible (user switches tabs/windows)
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const handleVisibilityChange = async () => {
       if (!document.hidden) {
         console.log('👁️ Page became visible, reloading categories...');
-        const allCategories = categoryManagementService.getAllCategories();
+        const allCategories = await categoryManagementService.getAllCategories();
         // Force state update by creating a new array reference
         setCategories([...allCategories]);
       }
@@ -192,7 +192,7 @@ export const EditCategoryPage = () => {
     }
 
     // Refresh categories before checking to ensure we have latest data
-    const allCategories = categoryManagementService.getAllCategories();
+    const allCategories = await categoryManagementService.getAllCategories();
     setCategories([...allCategories]);
 
     // Mevcut kategori ana kategori olmalı
@@ -240,7 +240,7 @@ export const EditCategoryPage = () => {
       const created = await categoryManagementService.createCategory(newColumnCategory);
       
       // Refresh categories
-      const refreshedCategories = categoryManagementService.getAllCategories();
+      const refreshedCategories = await categoryManagementService.getAllCategories();
       setCategories([...refreshedCategories]);
       window.dispatchEvent(new Event('categoriesUpdated'));
       
@@ -294,7 +294,7 @@ export const EditCategoryPage = () => {
       await categoryManagementService.createCategory(newSubCategory);
       
       // Refresh categories
-      const allCategories = categoryManagementService.getAllCategories();
+      const allCategories = await categoryManagementService.getAllCategories();
       setCategories(allCategories);
       window.dispatchEvent(new Event('categoriesUpdated'));
       
