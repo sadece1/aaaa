@@ -116,6 +116,27 @@ export const update = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const isAdmin = req.user.role === 'admin';
 
+  // CRITICAL: Parse rating before sending to service
+  // Ensure rating is properly parsed from req.body
+  if (req.body.rating !== undefined && req.body.rating !== null && req.body.rating !== '') {
+    req.body.rating = typeof req.body.rating === 'number' ? req.body.rating : Number(req.body.rating);
+    if (isNaN(req.body.rating)) {
+      req.body.rating = null;
+    }
+  } else {
+    req.body.rating = null; // Explicitly set to null if not provided or empty
+  }
+
+  // Ensure specifications is an object, even if empty
+  if (req.body.specifications === undefined || req.body.specifications === null) {
+    req.body.specifications = {};
+  }
+
+  // Ensure category_id is explicitly set to null if empty string
+  if (req.body.category_id === '') {
+    req.body.category_id = null;
+  }
+
   const gear = await updateGear(id, req.body, req.user.id, isAdmin);
 
   res.status(200).json({

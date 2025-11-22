@@ -112,7 +112,7 @@ export const getGear = async (query: any) => {
     images: parseJson<string[]>(g.images) || [],
     specifications: parseJson<Record<string, any>>(g.specifications) || {},
     recommended_products: parseJson<string[]>(g.recommended_products) || [],
-    rating: g.rating ? parseFloat(g.rating) : null,
+    rating: g.rating !== null && g.rating !== undefined ? (typeof g.rating === 'number' ? g.rating : parseFloat(String(g.rating))) : null,
     price_per_day: g.price_per_day ? parseFloat(g.price_per_day) : 0,
     deposit: g.deposit ? parseFloat(g.deposit) : null,
   }));
@@ -258,7 +258,11 @@ export const updateGear = async (
   // Always update rating if provided (even if null)
   if (data.rating !== undefined) {
     updateFields.push('rating = ?');
-    updateValues.push(data.rating === null ? null : data.rating);
+    // Ensure rating is a number or null (not string)
+    const ratingValue = data.rating === null || data.rating === undefined 
+      ? null 
+      : (typeof data.rating === 'number' ? data.rating : parseFloat(String(data.rating)));
+    updateValues.push(isNaN(ratingValue) ? null : ratingValue);
   }
   if (data.recommended_products) {
     updateFields.push('recommended_products = ?');
