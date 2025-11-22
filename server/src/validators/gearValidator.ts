@@ -33,6 +33,7 @@ export const createGearSchema = Joi.object({
   color: Joi.string().max(50).trim().optional(),
   available: Joi.boolean().optional().default(true),
   recommended_products: Joi.array().items(Joi.string().uuid()).max(4).optional(),
+  rating: Joi.number().min(0).max(5).precision(2).allow(null).optional(),
 });
 
 export const updateGearSchema = Joi.object({
@@ -48,6 +49,7 @@ export const updateGearSchema = Joi.object({
   color: Joi.string().max(50).trim().optional(),
   available: Joi.boolean().optional(),
   recommended_products: Joi.array().items(Joi.string().uuid()).max(4).optional(),
+  rating: Joi.number().min(0).max(5).precision(2).allow(null).optional(),
 });
 
 export const gearFiltersSchema = Joi.object({
