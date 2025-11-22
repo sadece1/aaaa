@@ -118,7 +118,10 @@ app.use(express.urlencoded({
 }));
 
 // Serve uploaded files
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+// Serve from both /uploads and /api/uploads for compatibility
+const uploadsDir = path.join(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
+app.use('/uploads', express.static(uploadsDir));
+app.use('/api/uploads', express.static(uploadsDir));
 
 // Rate limiting - General API
 const generalLimiter = rateLimit({
