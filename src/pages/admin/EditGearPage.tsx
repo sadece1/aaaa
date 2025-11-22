@@ -428,7 +428,7 @@ export const EditGearPage = () => {
             Ürün Düzenle
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-x-hidden">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6" style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
             <Input
               label="Ürün Adı"
               {...register('name', { required: 'Ürün adı gereklidir' })}
