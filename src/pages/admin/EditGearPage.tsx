@@ -54,11 +54,21 @@ export const EditGearPage = () => {
     loadRootCategories();
     
     // Load brands and colors
-    const allBrands = brandService.getAllBrands();
-    setBrands(allBrands.map(b => b.name));
+    try {
+      const allBrands = brandService.getAllBrands();
+      setBrands(Array.isArray(allBrands) ? allBrands.map(b => b.name) : []);
+    } catch (error) {
+      console.error('Failed to load brands:', error);
+      setBrands([]);
+    }
     
-    const allColors = colorService.getAllColors();
-    setColors(allColors.map(c => c.name));
+    try {
+      const allColors = colorService.getAllColors();
+      setColors(Array.isArray(allColors) ? allColors.map(c => c.name) : []);
+    } catch (error) {
+      console.error('Failed to load colors:', error);
+      setColors([]);
+    }
     
     // Load all gear for recommended products selection
     const loadAllGear = async () => {
@@ -73,13 +83,23 @@ export const EditGearPage = () => {
     
     // Listen for updates
     const handleBrandsUpdate = () => {
-      const updatedBrands = brandService.getAllBrands();
-      setBrands(updatedBrands.map(b => b.name));
+      try {
+        const updatedBrands = brandService.getAllBrands();
+        setBrands(Array.isArray(updatedBrands) ? updatedBrands.map(b => b.name) : []);
+      } catch (error) {
+        console.error('Failed to update brands:', error);
+        setBrands([]);
+      }
     };
     
     const handleColorsUpdate = () => {
-      const updatedColors = colorService.getAllColors();
-      setColors(updatedColors.map(c => c.name));
+      try {
+        const updatedColors = colorService.getAllColors();
+        setColors(Array.isArray(updatedColors) ? updatedColors.map(c => c.name) : []);
+      } catch (error) {
+        console.error('Failed to update colors:', error);
+        setColors([]);
+      }
     };
     
     window.addEventListener('brandsUpdated', handleBrandsUpdate);
@@ -429,7 +449,7 @@ export const EditGearPage = () => {
                   required
                 >
                   <option value="">Ana Kategori Seçiniz</option>
-                  {parentCategories.map((cat) => (
+                  {Array.isArray(parentCategories) && parentCategories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.icon} {cat.name}
                     </option>
@@ -452,7 +472,7 @@ export const EditGearPage = () => {
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="">Alt Kategori Seçiniz (İsteğe Bağlı)</option>
-                    {subCategories.map((cat) => (
+                    {Array.isArray(subCategories) && subCategories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.icon} {cat.name}
                       </option>
@@ -475,7 +495,7 @@ export const EditGearPage = () => {
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="">Alt Alt Kategori Seçiniz (İsteğe Bağlı)</option>
-                    {finalCategories.map((cat) => (
+                    {Array.isArray(finalCategories) && finalCategories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.name}
                       </option>
@@ -539,12 +559,12 @@ export const EditGearPage = () => {
                 placeholder="Marka adı girin (ör: Coleman, MSR...)"
               />
               <datalist id="brands-list">
-                {brands.map((brand) => (
+                {Array.isArray(brands) && brands.map((brand) => (
                   <option key={brand} value={brand} />
                 ))}
               </datalist>
               <div className="flex flex-wrap gap-2 mt-2">
-                {brands.slice(0, 10).map((brand) => (
+                {Array.isArray(brands) && brands.slice(0, 10).map((brand) => (
                   <button
                     key={brand}
                     type="button"
@@ -574,12 +594,12 @@ export const EditGearPage = () => {
                 placeholder="Renk girin (ör: Siyah, Beyaz, Mavi...)"
               />
               <datalist id="colors-list">
-                {colors.map((color) => (
+                {Array.isArray(colors) && colors.map((color) => (
                   <option key={color} value={color} />
                 ))}
               </datalist>
               <div className="flex flex-wrap gap-2 mt-2">
-                {colors.slice(0, 10).map((color) => {
+                {Array.isArray(colors) && colors.slice(0, 10).map((color) => {
                   const colorObj = colorService.getColorByName(color);
                   return (
                     <button
@@ -659,7 +679,7 @@ export const EditGearPage = () => {
                     Mevcut Resimler:
                   </p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-3">
-                    {imageUrls.map((url, index) => (
+                    {Array.isArray(imageUrls) && imageUrls.map((url, index) => (
                       <div key={index} className="relative group">
                         <img
                           src={url}
@@ -700,7 +720,7 @@ export const EditGearPage = () => {
                 />
                 {imageFiles.length > 0 && (
                   <div className="mt-3 space-y-2">
-                    {imageFiles.map((file, index) => (
+                    {Array.isArray(imageFiles) && imageFiles.map((file, index) => (
                       <div key={index} className="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-700 rounded">
                         <span className="text-sm text-gray-700 dark:text-gray-300 truncate flex-1">
                           {file.name} ({(file.size / 1024).toFixed(2)} KB)
@@ -747,7 +767,7 @@ export const EditGearPage = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Teknik Bilgi
               </label>
-              {specifications.map((spec, index) => (
+              {Array.isArray(specifications) && specifications.map((spec, index) => (
                 <div key={index} className="flex flex-col sm:flex-row gap-2 mb-2">
                   <Input
                     type="text"
@@ -821,7 +841,7 @@ export const EditGearPage = () => {
               </label>
               <div className="max-h-60 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-700">
                 {allGear.filter(g => g.id !== id).length > 0 ? (
-                  allGear.filter(g => g.id !== id).map((item) => (
+                  Array.isArray(allGear) && allGear.filter(g => g.id !== id).map((item) => (
                     <div key={item.id} className="flex items-center space-x-2 py-2">
                       <input
                         type="checkbox"
