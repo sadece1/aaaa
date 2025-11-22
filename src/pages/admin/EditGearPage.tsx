@@ -124,28 +124,32 @@ export const EditGearPage = () => {
       const status = currentGear.status || (currentGear.available ? 'for-sale' : 'sold');
       
       // Reset form with all gear data - use actual values, not defaults
+      // Check if values exist, use them; otherwise use defaults
       const formData = {
         name: currentGear.name || '',
         description: currentGear.description || '',
-        pricePerDay: currentGear.pricePerDay ?? 0,
-        deposit: currentGear.deposit ?? null,
+        pricePerDay: (currentGear.pricePerDay !== undefined && currentGear.pricePerDay !== null) ? currentGear.pricePerDay : 0,
+        deposit: (currentGear.deposit !== undefined && currentGear.deposit !== null) ? currentGear.deposit : null,
         brand: currentGear.brand || '',
         color: currentGear.color || '',
-        rating: currentGear.rating ?? undefined,
+        rating: (currentGear.rating !== undefined && currentGear.rating !== null) ? currentGear.rating : undefined,
         status: status as GearStatus,
       };
       
-      reset(formData);
-      
-      // Explicitly set all values using setValue to ensure they're loaded
-      setValue('name', formData.name);
-      setValue('description', formData.description);
-      setValue('pricePerDay', formData.pricePerDay);
-      setValue('deposit', formData.deposit);
-      setValue('brand', formData.brand);
-      setValue('color', formData.color);
-      setValue('rating', formData.rating);
-      setValue('status', formData.status);
+      // Use setTimeout to ensure form is ready before setting values
+      setTimeout(() => {
+        reset(formData);
+        
+        // Explicitly set all values using setValue to ensure they're loaded
+        setValue('name', formData.name, { shouldValidate: false });
+        setValue('description', formData.description, { shouldValidate: false });
+        setValue('pricePerDay', formData.pricePerDay, { shouldValidate: false });
+        setValue('deposit', formData.deposit, { shouldValidate: false });
+        setValue('brand', formData.brand, { shouldValidate: false });
+        setValue('color', formData.color, { shouldValidate: false });
+        setValue('rating', formData.rating, { shouldValidate: false });
+        setValue('status', formData.status, { shouldValidate: false });
+      }, 0);
       
       setImageUrls(currentGear.images && currentGear.images.length > 0 ? currentGear.images : []);
       setImageFiles([]);
@@ -410,26 +414,31 @@ export const EditGearPage = () => {
             Ürün Düzenle
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-hidden">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-x-hidden">
             <Input
               label="Ürün Adı"
               {...register('name', { required: 'Ürün adı gereklidir' })}
               error={errors.name?.message}
             />
 
-            <div>
+            <div className="w-full overflow-hidden">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Açıklama
               </label>
               <textarea
                 {...register('description', { required: 'Açıklama gereklidir' })}
                 rows={5}
-                className={`w-full max-w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 overflow-wrap-break-word break-words ${
+                className={`w-full box-border px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.description
                     ? 'border-red-500 focus:ring-red-500'
                     : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
-                style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y`}
+                style={{ 
+                  wordBreak: 'break-word', 
+                  overflowWrap: 'break-word',
+                  maxWidth: '100%',
+                  boxSizing: 'border-box'
+                }}
               />
               {errors.description && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
