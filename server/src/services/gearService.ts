@@ -142,6 +142,9 @@ export const getGearById = async (id: string): Promise<Gear | null> => {
     images: parseJson<string[]>(item.images) || [],
     specifications: parseJson<Record<string, any>>(item.specifications) || {},
     recommended_products: parseJson<string[]>(item.recommended_products) || [],
+    rating: item.rating !== null && item.rating !== undefined 
+      ? (typeof item.rating === 'number' ? item.rating : parseFloat(String(item.rating))) 
+      : null,
   };
 };
 
