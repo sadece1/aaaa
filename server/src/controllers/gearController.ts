@@ -118,13 +118,23 @@ export const update = asyncHandler(async (req: AuthRequest, res: Response) => {
 
   // CRITICAL: Parse rating before sending to service
   // Ensure rating is properly parsed from req.body
+  console.log('🔧 [update controller] Rating received:', {
+    value: req.body.rating,
+    type: typeof req.body.rating,
+    isUndefined: req.body.rating === undefined,
+    isNull: req.body.rating === null,
+    isEmpty: req.body.rating === ''
+  });
+  
   if (req.body.rating !== undefined && req.body.rating !== null && req.body.rating !== '') {
     req.body.rating = typeof req.body.rating === 'number' ? req.body.rating : Number(req.body.rating);
     if (isNaN(req.body.rating)) {
       req.body.rating = null;
     }
+    console.log('🔧 [update controller] Rating parsed to:', req.body.rating, typeof req.body.rating);
   } else {
     req.body.rating = null; // Explicitly set to null if not provided or empty
+    console.log('⚠️ [update controller] Rating set to null');
   }
 
   // Ensure specifications is an object, even if empty

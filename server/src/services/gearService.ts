@@ -262,7 +262,17 @@ export const updateGear = async (
     const ratingValue = data.rating === null || data.rating === undefined 
       ? null 
       : (typeof data.rating === 'number' ? data.rating : parseFloat(String(data.rating)));
-    updateValues.push(isNaN(ratingValue) ? null : ratingValue);
+    const finalRatingValue = isNaN(ratingValue) ? null : ratingValue;
+    updateValues.push(finalRatingValue);
+    console.log('🔧 [updateGear] Rating update:', {
+      original: data.rating,
+      type: typeof data.rating,
+      parsed: ratingValue,
+      final: finalRatingValue,
+      isNaN: isNaN(ratingValue)
+    });
+  } else {
+    console.log('⚠️ [updateGear] Rating is undefined, not updating');
   }
   if (data.recommended_products) {
     updateFields.push('recommended_products = ?');
