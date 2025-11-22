@@ -44,15 +44,33 @@ export const gearService = {
 
   async getGearById(id: string): Promise<Gear> {
     try {
-      const response = await api.get<{ success: boolean; data: Gear } | Gear>(`/gear/${id}`);
+      const response = await api.get<{ success: boolean; data: any } | any>(`/gear/${id}`);
       
-      // Backend returns { success: true, data: gear }
+      // Backend returns { success: true, data: gear } with snake_case fields
+      let gearData: any;
       if ((response.data as any).success && (response.data as any).data) {
-        return (response.data as any).data;
+        gearData = (response.data as any).data;
+      } else {
+        gearData = response.data;
       }
       
-      // Direct gear object
-      return response.data as Gear;
+      // Transform snake_case to camelCase and ensure proper types
+      const transformed: Gear = {
+        ...gearData,
+        pricePerDay: typeof gearData.price_per_day === 'string' 
+          ? parseFloat(gearData.price_per_day) || 0
+          : (gearData.pricePerDay ?? gearData.price_per_day ?? 0),
+        deposit: gearData.deposit !== null && gearData.deposit !== undefined
+          ? (typeof gearData.deposit === 'string' ? parseFloat(gearData.deposit) || null : gearData.deposit)
+          : null,
+        rating: gearData.rating !== null && gearData.rating !== undefined
+          ? (typeof gearData.rating === 'string' ? parseFloat(gearData.rating) || undefined : gearData.rating)
+          : undefined,
+        categoryId: gearData.category_id ?? gearData.categoryId,
+        recommendedProducts: gearData.recommended_products ?? gearData.recommendedProducts ?? [],
+      };
+      
+      return transformed as Gear;
     } catch (error: any) {
       // Always throw error - no mock fallback
       throw error;
