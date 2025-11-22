@@ -25,6 +25,7 @@ import adminRoutes from './routes/admin.routes';
 import apiKeysRoutes from './routes/apiKeys.routes';
 import referencesRoutes from './routes/references.routes';
 import brandsRoutes from './routes/brands.routes';
+import userOrdersRoutes from './routes/userOrders.routes';
 import { getAll as getAllMessages } from './controllers/contactController';
 import { authenticate, authorizeAdmin } from './middleware/auth';
 
@@ -213,6 +214,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/api-keys', apiKeysRoutes);
 app.use('/api/references', referencesRoutes);
 app.use('/api/brands', brandsRoutes);
+app.use('/api/user-orders', userOrdersRoutes);
 
 // 404 handler
 app.use(notFoundHandler);

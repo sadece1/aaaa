@@ -24,7 +24,7 @@ export const getDashboardStats = async () => {
 export const getAllUsers = async (query: any) => {
   const { page, limit, offset } = getPaginationParams(query);
   const [countResult] = await pool.execute<Array<any>>('SELECT COUNT(*) as total FROM users');
-  const total = countResult[0].total;
+  const total = countResult[0]?.total || 0;
 
   const [users] = await pool.execute<Array<any>>(
     'SELECT id, email, name, avatar, role, is_active, created_at, updated_at FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?',
