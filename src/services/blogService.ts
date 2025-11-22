@@ -35,7 +35,23 @@ export const blogService = {
   },
 
   async createBlog(blog: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<BlogPost> {
-    const response = await api.post<{ success: boolean; data: BlogPost } | BlogPost>('/blogs', blog);
+    // Transform frontend format to backend format
+    const backendData: any = {
+      title: blog.title,
+      excerpt: blog.excerpt,
+      content: blog.content,
+      author: blog.author,
+      author_avatar: blog.authorAvatar,
+      category: blog.category,
+      image: blog.image,
+      read_time: (blog as any).read_time || blog.readTime || 5,
+      published_at: (blog as any).published_at || blog.publishedAt || new Date().toISOString().split('T')[0],
+      tags: blog.tags || [],
+      featured: blog.featured || false,
+      recommended_posts: (blog as any).recommended_posts || blog.recommendedPosts || [],
+    };
+    
+    const response = await api.post<{ success: boolean; data: BlogPost } | BlogPost>('/blogs', backendData);
     
     // Backend returns { success: true, data: blog }
     if ((response.data as any).success && (response.data as any).data) {

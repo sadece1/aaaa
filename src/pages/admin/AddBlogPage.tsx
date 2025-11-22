@@ -74,7 +74,7 @@ export const AddBlogPage = () => {
       await addBlog({
         ...data,
         image: finalImageUrl,
-        publishedAt: data.publishedAt || new Date().toISOString().split('T')[0], // Ensure publishedAt is set
+        publishedAt: data.publishedAt || new Date().toISOString().split('T')[0],
         readTime: data.readTime || 5,
         views: 0,
         recommendedPosts: selectedRecommendedPosts.length > 0 ? selectedRecommendedPosts : undefined,
@@ -108,17 +108,23 @@ export const AddBlogPage = () => {
             />
 
             <Input
-              label="Özet"
-              {...register('excerpt', { required: 'Özet gereklidir' })}
+              label="Özet (En az 20 karakter)"
+              {...register('excerpt', { 
+                required: 'Özet gereklidir',
+                minLength: { value: 20, message: 'Özet en az 20 karakter olmalıdır' }
+              })}
               error={errors.excerpt?.message}
             />
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                İçerik
+                İçerik (En az 100 karakter)
               </label>
               <textarea
-                {...register('content', { required: 'İçerik gereklidir' })}
+                {...register('content', { 
+                  required: 'İçerik gereklidir',
+                  minLength: { value: 100, message: 'İçerik en az 100 karakter olmalıdır' }
+                })}
                 rows={10}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.content ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
