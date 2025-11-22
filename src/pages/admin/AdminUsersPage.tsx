@@ -248,137 +248,253 @@ export const AdminUsersPage = () => {
               <LoadingSpinner size="lg" />
             </div>
           ) : filteredUsers.length > 0 ? (
-            <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Ad Soyad
-                      </th>
-                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        E-posta
-                      </th>
-                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Rol
-                      </th>
-                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Kayıt Tarihi
-                      </th>
-                      <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        İşlemler
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    {filteredUsers.map((user) => (
-                      <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                        {editingId === user.id ? (
-                          <>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                              <Input
-                                value={editingName}
-                                onChange={(e) => setEditingName(e.target.value)}
-                                className="w-full text-sm"
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {filteredUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-700"
+                  >
+                    {editingId === user.id ? (
+                      <div className="space-y-3">
+                        <Input
+                          label="Ad Soyad"
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
+                          className="w-full text-sm"
+                        />
+                        <Input
+                          label="E-posta"
+                          value={editingEmail}
+                          onChange={(e) => setEditingEmail(e.target.value)}
+                          className="w-full text-sm"
+                          disabled
+                        />
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Rol
+                          </label>
+                          <select
+                            value={editingRole}
+                            onChange={(e) => setEditingRole(e.target.value as 'user' | 'admin')}
+                            className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                          >
+                            <option value="user">Müşteri</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        </div>
+                        <div className="flex gap-2 pt-2">
+                          <Button variant="primary" size="sm" onClick={handleSaveEdit} className="flex-1">
+                            Kaydet
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={handleCancelEdit} className="flex-1">
+                            İptal
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center flex-1 min-w-0">
+                            {user.avatar ? (
+                              <img
+                                src={user.avatar}
+                                alt={user.name}
+                                className="h-10 w-10 rounded-full mr-3 flex-shrink-0"
                               />
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                              <Input
-                                value={editingEmail}
-                                onChange={(e) => setEditingEmail(e.target.value)}
-                                className="w-full text-sm"
-                                disabled
-                              />
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                              <select
-                                value={editingRole}
-                                onChange={(e) => setEditingRole(e.target.value as 'user' | 'admin')}
-                                className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
-                              >
-                                <option value="user">Müşteri</option>
-                                <option value="admin">Admin</option>
-                              </select>
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                              {new Date(user.createdAt).toLocaleDateString('tr-TR')}
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <div className="flex justify-end gap-2">
-                                <Button variant="primary" size="sm" onClick={handleSaveEdit}>
-                                  Kaydet
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={handleCancelEdit}>
-                                  İptal
-                                </Button>
+                            ) : (
+                              <div className="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center mr-3 flex-shrink-0">
+                                <span className="text-primary-600 dark:text-primary-400 font-semibold text-sm">
+                                  {user.name.charAt(0).toUpperCase()}
+                                </span>
                               </div>
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                {user.avatar ? (
-                                  <img
-                                    src={user.avatar}
-                                    alt={user.name}
-                                    className="h-8 w-8 sm:h-10 sm:w-10 rounded-full mr-2 sm:mr-3"
-                                  />
-                                ) : (
-                                  <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center mr-2 sm:mr-3">
-                                    <span className="text-primary-600 dark:text-primary-400 font-semibold text-xs sm:text-sm">
-                                      {user.name.charAt(0).toUpperCase()}
-                                    </span>
-                                  </div>
-                                )}
-                                <div className="text-sm sm:text-base font-medium text-gray-900 dark:text-white">
-                                  {user.name}
-                                </div>
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {user.name}
                               </div>
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                              {user.email}
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                              <span
-                                className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                                  user.role === 'admin'
-                                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                                }`}
-                              >
-                                {user.role === 'admin' ? 'Admin' : 'Müşteri'}
-                              </span>
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                              {new Date(user.createdAt).toLocaleDateString('tr-TR')}
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleEdit(user)}
-                                >
-                                  ✏️ Düzenle
-                                </Button>
-                                <Button
-                                  variant="danger"
-                                  size="sm"
-                                  onClick={() => handleDelete(user.id)}
-                                >
-                                  🗑️ Sil
-                                </Button>
+                              <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                {user.email}
                               </div>
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <span
+                              className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                user.role === 'admin'
+                                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                                  : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                              }`}
+                            >
+                              {user.role === 'admin' ? 'Admin' : 'Müşteri'}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {new Date(user.createdAt).toLocaleDateString('tr-TR')}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(user)}
+                            className="flex-1 text-xs"
+                          >
+                            ✏️ Düzenle
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => handleDelete(user.id)}
+                            className="flex-1 text-xs"
+                          >
+                            🗑️ Sil
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
-            </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-700">
+                      <tr>
+                        <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Ad Soyad
+                        </th>
+                        <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          E-posta
+                        </th>
+                        <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Rol
+                        </th>
+                        <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden lg:table-cell">
+                          Kayıt Tarihi
+                        </th>
+                        <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          İşlemler
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                      {filteredUsers.map((user) => (
+                        <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          {editingId === user.id ? (
+                            <>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <Input
+                                  value={editingName}
+                                  onChange={(e) => setEditingName(e.target.value)}
+                                  className="w-full text-sm"
+                                />
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <Input
+                                  value={editingEmail}
+                                  onChange={(e) => setEditingEmail(e.target.value)}
+                                  className="w-full text-sm"
+                                  disabled
+                                />
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <select
+                                  value={editingRole}
+                                  onChange={(e) => setEditingRole(e.target.value as 'user' | 'admin')}
+                                  className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                                >
+                                  <option value="user">Müşteri</option>
+                                  <option value="admin">Admin</option>
+                                </select>
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                                {new Date(user.createdAt).toLocaleDateString('tr-TR')}
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div className="flex justify-end gap-2">
+                                  <Button variant="primary" size="sm" onClick={handleSaveEdit}>
+                                    Kaydet
+                                  </Button>
+                                  <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                                    İptal
+                                  </Button>
+                                </div>
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  {user.avatar ? (
+                                    <img
+                                      src={user.avatar}
+                                      alt={user.name}
+                                      className="h-8 w-8 sm:h-10 sm:w-10 rounded-full mr-2 sm:mr-3"
+                                    />
+                                  ) : (
+                                    <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center mr-2 sm:mr-3">
+                                      <span className="text-primary-600 dark:text-primary-400 font-semibold text-xs sm:text-sm">
+                                        {user.name.charAt(0).toUpperCase()}
+                                      </span>
+                                    </div>
+                                  )}
+                                  <div className="text-sm sm:text-base font-medium text-gray-900 dark:text-white">
+                                    {user.name}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <div className="max-w-xs truncate" title={user.email}>
+                                  {user.email}
+                                </div>
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <span
+                                  className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                    user.role === 'admin'
+                                      ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                                      : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                                  }`}
+                                >
+                                  {user.role === 'admin' ? 'Admin' : 'Müşteri'}
+                                </span>
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                                {new Date(user.createdAt).toLocaleDateString('tr-TR')}
+                              </td>
+                              <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleEdit(user)}
+                                  >
+                                    ✏️ Düzenle
+                                  </Button>
+                                  <Button
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() => handleDelete(user.id)}
+                                  >
+                                    🗑️ Sil
+                                  </Button>
+                                </div>
+                              </td>
+                            </>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
           ) : (
             <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md p-8 sm:p-12 text-center">
               <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">👥</div>
