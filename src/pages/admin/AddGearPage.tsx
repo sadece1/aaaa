@@ -187,17 +187,41 @@ export const AddGearPage = () => {
   const onSubmit = async (data: Partial<Gear>) => {
     setIsSubmitting(true);
     try {
-      // Get all form values using getValues() as fallback
+      // MANUALLY GET ALL VALUES - Don't trust handleSubmit
       const allFormValues = getValues();
+      const watchedValues = watch();
+      
+      // Get values directly from form inputs
+      const nameInput = document.querySelector<HTMLInputElement>('input[name="name"]');
+      const descriptionInput = document.querySelector<HTMLTextAreaElement>('textarea[name="description"]');
+      const priceInput = document.querySelector<HTMLInputElement>('input[name="pricePerDay"]');
+      const depositInput = document.querySelector<HTMLInputElement>('input[name="deposit"]');
+      const brandInput = document.querySelector<HTMLInputElement>('input[name="brand"]');
+      const colorInput = document.querySelector<HTMLInputElement>('input[name="color"]');
+      const ratingInput = document.querySelector<HTMLInputElement>('input[name="rating"]');
+      const statusInput = document.querySelector<HTMLSelectElement>('select[name="status"]');
+      
+      // Collect all values manually
+      const manualData: any = {
+        name: nameInput?.value || allFormValues.name || watchedValues.name || data.name || '',
+        description: descriptionInput?.value || allFormValues.description || watchedValues.description || data.description || '',
+        pricePerDay: priceInput?.value || allFormValues.pricePerDay || watchedValues.pricePerDay || data.pricePerDay || 0,
+        deposit: depositInput?.value || allFormValues.deposit || watchedValues.deposit || data.deposit || null,
+        brand: brandInput?.value || allFormValues.brand || watchedValues.brand || data.brand || '',
+        color: colorInput?.value || allFormValues.color || watchedValues.color || data.color || '',
+        rating: ratingInput?.value || allFormValues.rating || watchedValues.rating || ratingValue || data.rating || null,
+        status: statusInput?.value || allFormValues.status || watchedValues.status || data.status || 'for-sale',
+      };
+      
       console.log('=== FORM SUBMIT DEBUG (ADD) ===');
       console.log('handleSubmit data:', data);
       console.log('getValues() all values:', allFormValues);
-      console.log('watch() rating:', watch('rating'));
-      console.log('watch() all:', watch());
+      console.log('watch() all:', watchedValues);
+      console.log('ratingValue:', ratingValue);
+      console.log('MANUAL DATA COLLECTED:', manualData);
       
-      // Use getValues if data is empty
-      const formData = Object.keys(data).length > 0 ? data : allFormValues;
-      console.log('Using formData:', formData);
+      // Use manual data
+      const formData = manualData;
       // Son seçilen kategoriyi belirle
       let finalCategoryId = selectedFinalCategory || selectedSubCategory || selectedParentCategory;
       let finalCategorySlug = '';
