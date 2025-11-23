@@ -106,6 +106,9 @@ export const CategoryPage = () => {
         const childCategories = allCategories.filter(c => c.parentId === category.id);
         childCategories.forEach(child => matchingCategoryIds.add(child.id));
         
+        // Also add the category ID itself to matchingCategoryIds (for direct UUID matching)
+        // This ensures gear with categoryId matching the backend UUID will be found
+        
         // Filter gear by category slug or categoryId
         console.log('Filtering gear for category:', categorySlug, 'Category ID:', category.id);
         console.log('Matching category IDs:', Array.from(matchingCategoryIds));

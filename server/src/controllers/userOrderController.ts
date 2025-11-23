@@ -42,12 +42,24 @@ export const getAllUserOrders = asyncHandler(async (req: AuthRequest, res: Respo
   });
 });
 
-export const getSingleUserOrder = asyncHandler(async (req: Request, res: Response) => {
+export const getSingleUserOrder = asyncHandler(async (req: AuthRequest, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ success: false, message: 'Authentication required' });
+    return;
+  }
+
   const { id } = req.params;
   const order = await getUserOrderById(id);
   
   if (!order) {
     res.status(404).json({ success: false, message: 'User order not found' });
+    return;
+  }
+
+  // Non-admin users can only see their own orders
+  const isAdmin = req.user.role === 'admin';
+  if (!isAdmin && order.user_id !== req.user.id) {
+    res.status(403).json({ success: false, message: 'You can only view your own orders' });
     return;
   }
 
