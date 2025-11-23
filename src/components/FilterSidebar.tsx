@@ -237,7 +237,7 @@ export const FilterSidebar = ({
               <div className="space-y-2">
                 <div>
                   <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-                    Minimum Fiyat (₺/gün)
+                    Minimum Fiyat (₺)
                   </label>
                   <input
                     type="number"
