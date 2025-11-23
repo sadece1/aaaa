@@ -800,7 +800,7 @@ export const AdminGearPage = () => {
                                           <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase hidden md:table-cell">
                                     Durum
                                   </th>
-                                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left sm:text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                                     İşlemler
                                   </th>
                                 </tr>
@@ -860,21 +860,21 @@ export const AdminGearPage = () => {
                                     <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden md:table-cell">
                                               {getStatusBadge(item)}
                                     </td>
-                                    <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
-                                      <div className="flex items-center justify-end gap-2 sm:gap-3">
+                                    <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 text-left sm:text-right text-xs sm:text-sm font-medium">
+                                      <div className="flex items-center justify-start sm:justify-end gap-1.5 sm:gap-2 md:gap-3 flex-wrap">
                                         <Link
                                           to={`/admin/gear/edit/${item.id}`}
-                                                  className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium whitespace-nowrap"
+                                                  className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium px-1.5 sm:px-0"
                                         >
                                                   <span className="hidden sm:inline">✏️ Düzenle</span>
-                                                  <span className="sm:hidden">✏️</span>
+                                                  <span className="sm:hidden text-base">✏️</span>
                                         </Link>
                                         <button
                                           onClick={() => handleDelete(item.id)}
-                                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium whitespace-nowrap"
+                                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium px-1.5 sm:px-0"
                                         >
                                                   <span className="hidden sm:inline">🗑️ Sil</span>
-                                                  <span className="sm:hidden">🗑️</span>
+                                                  <span className="sm:hidden text-base">🗑️</span>
                                         </button>
                                       </div>
                                     </td>
@@ -1026,7 +1026,7 @@ export const AdminGearPage = () => {
                           <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase hidden md:table-cell">
                             Durum
                           </th>
-                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                          <th className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 text-left sm:text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                             İşlemler
                           </th>
                         </tr>
@@ -1127,21 +1127,21 @@ export const AdminGearPage = () => {
                                 <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap hidden md:table-cell">
                                   {getStatusBadge(item)}
                                 </td>
-                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
-                                  <div className="flex items-center justify-end gap-2 sm:gap-3">
+                                <td className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-4 text-left sm:text-right text-xs sm:text-sm font-medium">
+                                  <div className="flex items-center justify-start sm:justify-end gap-1.5 sm:gap-2 md:gap-3 flex-wrap">
                                     <Link
                                       to={`/admin/gear/edit/${item.id}`}
-                                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium whitespace-nowrap"
+                                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 font-medium px-1.5 sm:px-0"
                                     >
                                       <span className="hidden sm:inline">✏️ Düzenle</span>
-                                      <span className="sm:hidden">✏️</span>
+                                      <span className="sm:hidden text-base">✏️</span>
                                     </Link>
                                     <button
                                       onClick={() => handleDelete(item.id)}
-                                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium whitespace-nowrap"
+                                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-medium px-1.5 sm:px-0"
                                     >
                                       <span className="hidden sm:inline">🗑️ Sil</span>
-                                      <span className="sm:hidden">🗑️</span>
+                                      <span className="sm:hidden text-base">🗑️</span>
                                     </button>
                                   </div>
                                 </td>
