@@ -170,7 +170,7 @@ export const EditGearPage = () => {
       // Ensure rating is a valid number or null (0 is valid!)
       // Backend may return rating as string or null
       let actualRating: number | null = null;
-      const rawRating = gearData.rating ?? gearData.rating_value;
+      const rawRating = gearData.rating;
       if (rawRating !== undefined && rawRating !== null && rawRating !== '') {
         if (typeof rawRating === 'string') {
           const trimmed = rawRating.trim();
@@ -265,10 +265,10 @@ export const EditGearPage = () => {
       }
       
       // YENİ: Rating'i state'e direkt yükle - MEVCUT DEĞERİ KORU (0 dahil!)
-      const gearRating = currentGear.rating ?? currentGear.rating_value;
+      const gearRating = currentGear.rating;
       let finalRating: number | null = null;
       
-      if (gearRating !== null && gearRating !== undefined && gearRating !== '') {
+      if (gearRating !== null && gearRating !== undefined) {
         if (typeof gearRating === 'number') {
           finalRating = isNaN(gearRating) ? null : gearRating;
         } else if (typeof gearRating === 'string') {
@@ -374,6 +374,43 @@ export const EditGearPage = () => {
       }
     }
   }, [currentGear, reset, setValue]);
+
+  // CRITICAL: Separate useEffect to ALWAYS update rating state when currentGear.rating changes
+  useEffect(() => {
+    if (currentGear && currentGear.rating !== undefined) {
+      const gearRating = currentGear.rating;
+      let finalRating: number | null = null;
+      
+      if (gearRating !== null && gearRating !== undefined) {
+        if (typeof gearRating === 'number') {
+          finalRating = isNaN(gearRating) ? null : gearRating;
+        } else if (typeof gearRating === 'string') {
+          const trimmed = String(gearRating).trim();
+          if (trimmed === '' || trimmed === 'null') {
+            finalRating = null;
+          } else {
+            const parsed = parseFloat(trimmed);
+            finalRating = isNaN(parsed) ? null : parsed;
+          }
+        } else {
+          finalRating = null;
+        }
+      } else {
+        finalRating = null;
+      }
+      
+      // Only update if different to avoid infinite loops
+      if (ratingState !== finalRating) {
+        console.log('🔄 [EditGearPage] Rating state sync:', {
+          currentState: ratingState,
+          newState: finalRating,
+          gearRating: gearRating,
+          gearRatingType: typeof gearRating
+        });
+        setRatingState(finalRating);
+      }
+    }
+  }, [currentGear?.rating, currentGear?.id, ratingState]); // Only depend on rating and id, not entire currentGear
 
   // Ana kategori değiştiğinde alt kategorileri güncelle
   useEffect(() => {
@@ -580,8 +617,8 @@ export const EditGearPage = () => {
         finalRatingValue = ratingState;
       } else {
         // State'de değer yok, currentGear'den al
-        const gearRating = currentGear.rating ?? currentGear.rating_value;
-        if (gearRating !== null && gearRating !== undefined && gearRating !== '') {
+        const gearRating = currentGear.rating;
+        if (gearRating !== null && gearRating !== undefined) {
           if (typeof gearRating === 'number') {
             finalRatingValue = isNaN(gearRating) ? null : gearRating;
           } else if (typeof gearRating === 'string') {
