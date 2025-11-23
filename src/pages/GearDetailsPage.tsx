@@ -417,7 +417,15 @@ export const GearDetailsPage = () => {
               />
 
               {/* Product Title & Category */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 border border-gray-200 dark:border-gray-700 mb-4">
+              <div 
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 border border-gray-200 dark:border-gray-700 mb-4"
+                style={{
+                  width: '100%',
+                  maxWidth: '100%',
+                  overflowX: 'hidden',
+                  boxSizing: 'border-box',
+                }}
+              >
                 <div className="flex flex-wrap items-center gap-2 mb-3">
                   <span className="inline-flex items-center px-2.5 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded text-sm font-medium">
                     {categoryLabels[gear.category] || gear.category}
@@ -445,9 +453,13 @@ export const GearDetailsPage = () => {
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
                     overflowX: 'hidden',
-                    overflowY: 'hidden',
-                    overflow: 'hidden',
+                    overflowY: 'visible',
                     maxWidth: '100%',
+                    width: '100%',
+                    minWidth: 0,
+                    boxSizing: 'border-box',
+                    whiteSpace: 'normal',
+                    display: 'block',
                   }}
                 >
                   {gear.name}
