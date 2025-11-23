@@ -133,6 +133,7 @@ export const CategoryPage = () => {
           // Build a map of backend UUID category IDs to their slugs
           const backendCategorySlugMap = new Map<string, string>();
           const backendCategoryNameMap = new Map<string, string>();
+          const backendCategoryIdSet = new Set<string>(); // Track all backend category IDs
           backendCategories.forEach(backendCat => {
             // Handle both snake_case and camelCase field names
             const catId = backendCat.id;
@@ -142,12 +143,23 @@ export const CategoryPage = () => {
             if (catId && catSlug) {
               const normalizedSlug = String(catSlug).toLowerCase().trim();
               backendCategorySlugMap.set(catId, normalizedSlug);
+              backendCategoryIdSet.add(catId); // Add to set for direct matching
               if (catName) {
                 backendCategoryNameMap.set(catId, String(catName).toLowerCase().trim());
               }
               console.log('Backend category:', catId, '-> slug:', normalizedSlug, 'name:', catName);
             } else {
               console.warn('Backend category missing id or slug:', backendCat);
+            }
+          });
+          
+          // Add backend category IDs that match the current category slug to matchingCategoryIds
+          backendCategories.forEach(backendCat => {
+            const catId = backendCat.id;
+            const catSlug = backendCat.slug?.toLowerCase().trim();
+            if (catId && catSlug && matchingSlugs.has(catSlug)) {
+              matchingCategoryIds.add(catId);
+              console.log('Added backend category ID to matching set:', catId, 'slug:', catSlug);
             }
           });
           
