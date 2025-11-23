@@ -69,13 +69,23 @@ const transformFormData = (req: Request, res: Response, next: NextFunction) => {
   }
 
   // Convert string numbers to numbers (required fields)
-  if (req.body.price_per_day !== undefined && req.body.price_per_day !== null && req.body.price_per_day !== '') {
-    const parsed = typeof req.body.price_per_day === 'string' 
-      ? parseFloat(req.body.price_per_day) 
-      : req.body.price_per_day;
+  // Support both pricePerDay (camelCase) and price_per_day (snake_case)
+  const pricePerDay = req.body.pricePerDay ?? req.body.price_per_day;
+  if (pricePerDay !== undefined && pricePerDay !== null && pricePerDay !== '') {
+    const parsed = typeof pricePerDay === 'string' 
+      ? parseFloat(pricePerDay) 
+      : pricePerDay;
     req.body.price_per_day = isNaN(parsed) ? undefined : parsed;
+    // Remove camelCase version if it exists
+    if (req.body.pricePerDay !== undefined) {
+      delete req.body.pricePerDay;
+    }
   } else {
     req.body.price_per_day = undefined;
+    // Remove camelCase version if it exists
+    if (req.body.pricePerDay !== undefined) {
+      delete req.body.pricePerDay;
+    }
   }
 
   if (req.body.deposit !== undefined && req.body.deposit !== null && req.body.deposit !== '') {

@@ -104,6 +104,20 @@ export const gearService = {
       let transformedData: any = data;
       if (!(data instanceof FormData)) {
         transformedData = { ...data };
+        
+        // Convert pricePerDay to price_per_day
+        if (transformedData.pricePerDay !== undefined) {
+          transformedData.price_per_day = transformedData.pricePerDay;
+          delete transformedData.pricePerDay;
+          console.log('Transformed pricePerDay to price_per_day:', transformedData.price_per_day);
+        }
+        
+        // Convert recommendedProducts to recommended_products
+        if (transformedData.recommendedProducts !== undefined) {
+          transformedData.recommended_products = transformedData.recommendedProducts;
+          delete transformedData.recommendedProducts;
+        }
+        
         // Convert categoryId to category_id
         if (transformedData.categoryId !== undefined) {
           transformedData.category_id = transformedData.categoryId;
