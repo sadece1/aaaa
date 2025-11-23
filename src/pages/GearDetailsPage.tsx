@@ -445,6 +445,8 @@ export const GearDetailsPage = () => {
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
                     overflowX: 'hidden',
+                    overflowY: 'hidden',
+                    overflow: 'hidden',
                     maxWidth: '100%',
                   }}
                 >
