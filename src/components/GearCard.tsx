@@ -182,9 +182,9 @@ export const GearCard = ({ gear }: GearCardProps) => {
           {/* Price and Status */}
           <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
             <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Günlük Fiyat</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Fiyat</div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatPrice(gear.pricePerDay)}
+                {formatPrice(gear.pricePerDay ?? gear.price ?? 0)}
               </div>
             </div>
             

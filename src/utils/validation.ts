@@ -12,11 +12,22 @@ export const sanitizeInput = (input: string): string => {
   return input.trim().replace(/[<>]/g, '');
 };
 
-export const formatPrice = (price: number): string => {
+export const formatPrice = (price: number | undefined | null): string => {
+  // Handle undefined, null, or NaN
+  if (price === undefined || price === null || isNaN(Number(price))) {
+    return '₺0,00';
+  }
+  
+  const numPrice = typeof price === 'string' ? parseFloat(price) : Number(price);
+  
+  if (isNaN(numPrice)) {
+    return '₺0,00';
+  }
+  
   return new Intl.NumberFormat('tr-TR', {
     style: 'currency',
     currency: 'TRY',
-  }).format(price);
+  }).format(numPrice);
 };
 
 export const formatDate = (date: string | Date | undefined | null): string => {
