@@ -20,7 +20,7 @@ export interface UserPayload {
 }
 
 // Request with authenticated user and cookies
-export interface AuthRequest extends Request {
+export interface AuthRequest extends Omit<Request, 'cookies'> {
   user?: UserPayload;
   cookies?: {
     token?: string;
