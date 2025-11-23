@@ -435,9 +435,6 @@ export const HomePage = () => {
                           <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                             {formatPrice(item.pricePerDay ?? item.price ?? 0)}
                           </span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">
-                            /gün
-                          </span>
                         </div>
                         {item.rating && (
                           <div className="flex items-center text-yellow-500">
