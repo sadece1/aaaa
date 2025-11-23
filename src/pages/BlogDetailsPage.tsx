@@ -6,6 +6,7 @@ import { SEO } from '@/components/SEO';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { formatDate } from '@/utils/validation';
+import { sanitizeBlogContent } from '@/utils/security';
 import { routes } from '@/config';
 import { useBlogStore } from '@/store/blogStore';
 import { BlogPost } from '@/types';
@@ -254,7 +255,7 @@ export const BlogDetailsPage = () => {
             <div 
               ref={contentRef}
               className="prose prose-lg dark:prose-invert max-w-none p-8 md:p-12 text-gray-700 dark:text-gray-300"
-              dangerouslySetInnerHTML={{ __html: post.content || '' }}
+              dangerouslySetInnerHTML={{ __html: sanitizeBlogContent(post.content || '') }}
               style={{
                 '--tw-prose-headings': '#1f2937',
                 '--tw-prose-body': '#4b5563',

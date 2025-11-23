@@ -129,8 +129,11 @@ export const GearCard = ({ gear }: GearCardProps) => {
             style={{
               wordBreak: 'break-word',
               overflowWrap: 'break-word',
+              overflow: 'hidden',
               overflowX: 'hidden',
+              overflowY: 'hidden',
               maxWidth: '100%',
+              boxSizing: 'border-box',
             }}
           >
             {gear.name}
