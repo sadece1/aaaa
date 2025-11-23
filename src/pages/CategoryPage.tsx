@@ -153,6 +153,50 @@ export const CategoryPage = () => {
             }
           });
           
+          // Build a set of matching slugs and names (including parent and child) - MUST BE BEFORE using matchingSlugs
+          const matchingSlugs = new Set<string>();
+          const matchingNames = new Set<string>();
+          
+          const addCategoryToMatching = (cat: Category) => {
+            if (cat.slug) {
+              matchingSlugs.add(cat.slug.toLowerCase().trim());
+            }
+            if (cat.name) {
+              matchingNames.add(cat.name.toLowerCase().trim());
+              // Also add partial name matches for better matching
+              // e.g., "Kamp Ocakları" -> "ocakları", "ocak", "kamp"
+              const nameWords = cat.name.toLowerCase().trim().split(/\s+/);
+              nameWords.forEach(word => {
+                if (word.length > 2) {
+                  matchingNames.add(word);
+                }
+              });
+            }
+          };
+          
+          addCategoryToMatching(category);
+          if (categorySlug) {
+            matchingSlugs.add(categorySlug.toLowerCase().trim());
+          }
+          
+          // Add parent category slugs and names
+          let currentCategory: Category | null = category;
+          while (currentCategory?.parentId) {
+            const parent = allCategories.find(c => c.id === currentCategory!.parentId);
+            if (parent) {
+              addCategoryToMatching(parent);
+              currentCategory = parent;
+            } else {
+              break;
+            }
+          }
+          
+          // Add child category slugs and names
+          const childCategories = allCategories.filter(c => c.parentId === category.id);
+          childCategories.forEach(child => {
+            addCategoryToMatching(child);
+          });
+          
           // Add backend category IDs that match the current category slug to matchingCategoryIds
           backendCategories.forEach(backendCat => {
             const catId = backendCat.id;
@@ -162,10 +206,6 @@ export const CategoryPage = () => {
               console.log('Added backend category ID to matching set:', catId, 'slug:', catSlug);
             }
           });
-          
-          // Build a set of matching slugs and names (including parent and child)
-          const matchingSlugs = new Set<string>();
-          const matchingNames = new Set<string>();
           
           const addCategoryToMatching = (cat: Category) => {
             if (cat.slug) {
