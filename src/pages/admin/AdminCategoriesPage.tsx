@@ -268,39 +268,39 @@ export const AdminCategoriesPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-3"
         >
-          <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all shadow-sm hover:shadow-md">
-            <div className="flex items-center space-x-4 flex-1 min-w-0">
-              <span className="text-2xl flex-shrink-0">{category.icon || '📁'}</span>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all shadow-sm hover:shadow-md gap-3 sm:gap-4">
+            <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+              <span className="text-xl sm:text-2xl flex-shrink-0">{category.icon || '📁'}</span>
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 dark:text-white text-lg mb-1">
+                <div className="font-semibold text-gray-900 dark:text-white text-base sm:text-lg mb-1 truncate">
                   {category.name}
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1 truncate">
                   {getCategoryPath(category)}
                 </div>
                 {category.description && (
-                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 line-clamp-2">
                     {category.description}
                   </div>
                 )}
-                <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                  <span className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">Slug: {category.slug}</span>
+                <div className="flex flex-wrap gap-1 sm:gap-2 text-xs text-gray-400 dark:text-gray-500 mt-2">
+                  <span className="bg-gray-100 dark:bg-gray-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs">Slug: {category.slug}</span>
                   {hasChildren && (
-                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-2 py-1 rounded ml-2">
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs">
                       {children.length} alt kategori
                     </span>
                   )}
                   {searchIsRootCategory && (
-                    <span className="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 px-2 py-1 rounded ml-2">
-                      🏠 Ana Kategori (Navbar'da görünür)
+                    <span className="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs">
+                      🏠 Ana Kategori
                     </span>
                   )}
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-2 flex-shrink-0 ml-4">
-              <Link to={`/admin/categories/edit/${category.id}`}>
-                <Button variant="primary" size="sm">
+            <div className="flex items-center space-x-2 flex-shrink-0 sm:ml-4">
+              <Link to={`/admin/categories/edit/${category.id}`} className="flex-1 sm:flex-initial">
+                <Button variant="primary" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
                   Düzenle
                 </Button>
               </Link>
@@ -310,6 +310,7 @@ export const AdminCategoriesPage = () => {
                 onClick={() => handleDelete(category.id)}
                 disabled={!searchCanDelete}
                 title={hasChildren ? 'Önce alt kategorileri silin' : 'Kategoriyi sil'}
+                className="flex-1 sm:flex-initial text-xs sm:text-sm"
               >
                 Sil
               </Button>
@@ -327,8 +328,8 @@ export const AdminCategoriesPage = () => {
         transition={{ delay: level * 0.05 }}
         className={level > 0 ? 'ml-8 mt-2' : 'mb-2'}
       >
-        <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all shadow-sm hover:shadow-md group">
-          <div className="flex items-center space-x-3 flex-1 min-w-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all shadow-sm hover:shadow-md group gap-3 sm:gap-4">
+          <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
             {hasChildren ? (
               <button
                 onClick={() => toggleExpand(category.id)}
@@ -349,25 +350,25 @@ export const AdminCategoriesPage = () => {
             <span className="text-2xl flex-shrink-0">{category.icon || '📁'}</span>
             
             <div className="flex-1 min-w-0">
-              <div className="font-semibold text-gray-900 dark:text-white text-base mb-1">
+              <div className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base mb-1 truncate">
                 {category.name}
               </div>
               {category.description && (
-                <div className="text-xs text-gray-400 dark:text-gray-500 mb-1">
+                <div className="text-xs text-gray-400 dark:text-gray-500 mb-1 line-clamp-2">
                   {category.description}
                 </div>
               )}
-              <div className="flex items-center space-x-2 mt-1">
-                <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
+                <span className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 px-1.5 sm:px-2 py-0.5 rounded">
                   {category.slug}
                 </span>
                 {hasChildren && (
-                  <span className="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">
+                  <span className="text-[10px] sm:text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-1.5 sm:px-2 py-0.5 rounded">
                     {children.length} alt kategori
                   </span>
                 )}
                 {category.order !== undefined && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                     Sıra: {category.order}
                   </span>
                 )}
@@ -375,7 +376,7 @@ export const AdminCategoriesPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 flex-shrink-0 ml-4">
+          <div className="flex items-center space-x-2 flex-shrink-0 sm:ml-4">
             <div className="flex items-center space-x-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
               <button
                 onClick={() => handleOrderChange(category.id, 'up')}
@@ -399,8 +400,8 @@ export const AdminCategoriesPage = () => {
               </button>
             </div>
 
-            <Link to={`/admin/categories/edit/${category.id}`}>
-              <Button variant="primary" size="sm">
+            <Link to={`/admin/categories/edit/${category.id}`} className="flex-1 sm:flex-initial">
+              <Button variant="primary" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
                 Düzenle
               </Button>
             </Link>
@@ -410,6 +411,7 @@ export const AdminCategoriesPage = () => {
               onClick={() => handleDelete(category.id)}
               disabled={!canDelete}
               title={hasChildren ? 'Önce alt kategorileri silin' : 'Kategoriyi sil'}
+              className="flex-1 sm:flex-initial text-xs sm:text-sm"
             >
               Sil
             </Button>
@@ -439,31 +441,33 @@ export const AdminCategoriesPage = () => {
       <AdminLayout>
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
                 Kategori Yönetimi
               </h1>
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-xs sm:text-sm md:text-base text-gray-500 dark:text-gray-400">
                 Kategorilerinizi yönetin, düzenleyin ve organize edin
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col xs:flex-row gap-2">
               <Button 
                 variant="outline" 
-                size="lg"
+                size="sm"
                 onClick={handleSyncToBackend}
                 disabled={isSyncing}
-                className="flex items-center space-x-2"
+                className="flex items-center justify-center space-x-2 text-xs sm:text-sm"
               >
                 <span>{isSyncing ? '⏳' : '🔄'}</span>
-                <span>{isSyncing ? 'Senkronize Ediliyor...' : 'Backend\'e Senkronize Et'}</span>
+                <span className="hidden sm:inline">{isSyncing ? 'Senkronize Ediliyor...' : 'Backend\'e Senkronize Et'}</span>
+                <span className="sm:hidden">{isSyncing ? 'Yükleniyor...' : 'Senkronize'}</span>
               </Button>
-            <Link to={routes.adminAddCategory}>
-              <Button variant="primary" size="lg">
-                <span className="flex items-center space-x-2">
+            <Link to={routes.adminAddCategory} className="w-full xs:w-auto">
+              <Button variant="primary" size="sm" className="w-full xs:w-auto">
+                <span className="flex items-center justify-center space-x-2 text-xs sm:text-sm">
                   <span>➕</span>
-                  <span>Yeni Kategori Ekle</span>
+                  <span className="hidden sm:inline">Yeni Kategori Ekle</span>
+                  <span className="sm:hidden">Yeni Ekle</span>
                 </span>
               </Button>
             </Link>
@@ -471,18 +475,18 @@ export const AdminCategoriesPage = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg"
+              className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 sm:p-5 md:p-6 text-white shadow-lg"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm font-medium mb-1">Toplam Kategori</p>
-                  <p className="text-3xl font-bold">{getTotalCategories()}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-blue-100 text-xs sm:text-sm font-medium mb-1 truncate">Toplam Kategori</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold">{getTotalCategories()}</p>
                 </div>
-                <div className="text-4xl opacity-80">📁</div>
+                <div className="text-3xl sm:text-4xl opacity-80 flex-shrink-0 ml-2">📁</div>
               </div>
             </motion.div>
 
@@ -490,14 +494,14 @@ export const AdminCategoriesPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg"
+              className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 sm:p-5 md:p-6 text-white shadow-lg"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100 text-sm font-medium mb-1">Ana Kategori</p>
-                  <p className="text-3xl font-bold">{getTotalRootCategories()}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-green-100 text-xs sm:text-sm font-medium mb-1 truncate">Ana Kategori</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold">{getTotalRootCategories()}</p>
                 </div>
-                <div className="text-4xl opacity-80">🏷️</div>
+                <div className="text-3xl sm:text-4xl opacity-80 flex-shrink-0 ml-2">🏷️</div>
               </div>
             </motion.div>
 
@@ -505,48 +509,50 @@ export const AdminCategoriesPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg"
+              className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 sm:p-5 md:p-6 text-white shadow-lg"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm font-medium mb-1">Alt Kategorili</p>
-                  <p className="text-3xl font-bold">{getTotalWithChildren()}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-purple-100 text-xs sm:text-sm font-medium mb-1 truncate">Alt Kategorili</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold">{getTotalWithChildren()}</p>
                 </div>
-                <div className="text-4xl opacity-80">🔗</div>
+                <div className="text-3xl sm:text-4xl opacity-80 flex-shrink-0 ml-2">🔗</div>
               </div>
             </motion.div>
           </div>
 
           {/* Search and Actions */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
-            <div className="flex items-center space-x-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <div className="flex-1 relative">
                 <input
                   type="text"
                   placeholder="Kategori ara... (isim, slug, açıklama)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2.5 pl-10 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 pl-8 sm:pl-10 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm sm:text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400"
                 />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                <span className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base sm:text-lg">
                   🔍
                 </span>
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-sm sm:text-base"
                   >
                     ✕
                   </button>
                 )}
               </div>
               {!searchQuery && (
-                <div className="flex items-center space-x-2">
-                  <Button variant="outline" size="sm" onClick={expandAll}>
-                    Tümünü Aç
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={expandAll} className="text-xs sm:text-sm flex-1 sm:flex-initial">
+                    <span className="hidden sm:inline">Tümünü Aç</span>
+                    <span className="sm:hidden">Aç</span>
                   </Button>
-                  <Button variant="outline" size="sm" onClick={collapseAll}>
-                    Tümünü Kapat
+                  <Button variant="outline" size="sm" onClick={collapseAll} className="text-xs sm:text-sm flex-1 sm:flex-initial">
+                    <span className="hidden sm:inline">Tümünü Kapat</span>
+                    <span className="sm:hidden">Kapat</span>
                   </Button>
                 </div>
               )}
@@ -556,7 +562,7 @@ export const AdminCategoriesPage = () => {
           {/* Categories List */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
             {displayCategories.length > 0 ? (
-              <div className="p-6">
+              <div className="p-3 sm:p-4 md:p-6">
                 <AnimatePresence mode="popLayout">
                   {displayCategories.map((category) => renderCategory(category))}
                 </AnimatePresence>

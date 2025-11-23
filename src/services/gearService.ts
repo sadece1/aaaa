@@ -62,7 +62,7 @@ export const gearService = {
       });
       
       if ((response.data as any).success && (response.data as any).data) {
-        return {
+      return {
           data: transformedGearList,
           total: (response.data as any).pagination?.total || transformedGearList.length,
           page: (response.data as any).pagination?.page || page,

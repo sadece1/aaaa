@@ -55,7 +55,7 @@ export const FilterSidebar = ({
     if (type === 'gear') {
       const loadBrandsAndColors = () => {
         try {
-          const allBrands = brandService.getAllBrands();
+        const allBrands = brandService.getAllBrands();
           setBrands(Array.isArray(allBrands) ? allBrands.map(b => b.name) : []);
         } catch (error) {
           console.error('Failed to load brands:', error);
@@ -63,7 +63,7 @@ export const FilterSidebar = ({
         }
         
         try {
-          const allColors = colorService.getAllColors();
+        const allColors = colorService.getAllColors();
           setColors(Array.isArray(allColors) ? allColors.map(c => c.name) : []);
         } catch (error) {
           console.error('Failed to load colors:', error);
@@ -76,7 +76,7 @@ export const FilterSidebar = ({
       // Listen for updates
       const handleBrandsUpdate = () => {
         try {
-          const updatedBrands = brandService.getAllBrands();
+        const updatedBrands = brandService.getAllBrands();
           setBrands(Array.isArray(updatedBrands) ? updatedBrands.map(b => b.name) : []);
         } catch (error) {
           console.error('Failed to update brands:', error);
@@ -86,7 +86,7 @@ export const FilterSidebar = ({
       
       const handleColorsUpdate = () => {
         try {
-          const updatedColors = colorService.getAllColors();
+        const updatedColors = colorService.getAllColors();
           setColors(Array.isArray(updatedColors) ? updatedColors.map(c => c.name) : []);
         } catch (error) {
           console.error('Failed to update colors:', error);

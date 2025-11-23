@@ -156,24 +156,25 @@ export const AdminBrandsPage = () => {
     <>
       <SEO title="Marka Yönetimi" description="Markaları yönetin" />
       <AdminLayout>
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
             Marka Yönetimi
           </h1>
           {!isAdding && (
-            <Button variant="primary" onClick={() => setIsAdding(true)}>
-              + Yeni Marka Ekle
+            <Button variant="primary" onClick={() => setIsAdding(true)} className="w-full sm:w-auto text-sm sm:text-base">
+              <span className="hidden sm:inline">+ Yeni Marka Ekle</span>
+              <span className="sm:hidden">+ Yeni Ekle</span>
             </Button>
           )}
         </div>
 
         {/* Add Form */}
         {isAdding && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-5 md:p-6 mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
               Yeni Marka Ekle
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex-1">
                 <Input
                   label="Marka Adı"
@@ -185,36 +186,37 @@ export const AdminBrandsPage = () => {
                       handleAdd();
                     }
                   }}
+                  className="text-sm sm:text-base"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Marka Logosu
                 </label>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                   {newBrandLogoPreview && (
                     <img
                       src={newBrandLogoPreview}
                       alt="Logo preview"
-                      className="w-20 h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600 flex-shrink-0"
                     />
                   )}
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleLogoSelect(e, false)}
-                    className="block w-full text-sm text-gray-500 dark:text-gray-400
-                      file:mr-4 file:py-2 file:px-4
+                    className="block w-full text-xs sm:text-sm text-gray-500 dark:text-gray-400
+                      file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-2 sm:file:px-4
                       file:rounded-lg file:border-0
-                      file:text-sm file:font-semibold
+                      file:text-xs sm:file:text-sm file:font-semibold
                       file:bg-primary-50 file:text-primary-700
                       hover:file:bg-primary-100
                       dark:file:bg-primary-900 dark:file:text-primary-300"
                   />
                 </div>
               </div>
-              <div className="flex items-end gap-2">
-                <Button variant="primary" onClick={handleAdd} disabled={uploadingLogo}>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2">
+                <Button variant="primary" onClick={handleAdd} disabled={uploadingLogo} className="w-full sm:w-auto text-sm sm:text-base">
                   {uploadingLogo ? 'Yükleniyor...' : 'Kaydet'}
                 </Button>
                 <Button variant="outline" onClick={() => {
@@ -222,7 +224,7 @@ export const AdminBrandsPage = () => {
                   setNewBrandName('');
                   setNewBrandLogo(null);
                   setNewBrandLogoPreview('');
-                }}>
+                }} className="w-full sm:w-auto text-sm sm:text-base">
                   İptal
                 </Button>
               </div>
@@ -241,10 +243,10 @@ export const AdminBrandsPage = () => {
               {brands.map((brand) => (
                 <div
                   key={brand.id}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   {editingId === brand.id ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       <div className="flex-1">
                         <Input
                           label="Marka Adı"
@@ -258,58 +260,59 @@ export const AdminBrandsPage = () => {
                             }
                           }}
                           autoFocus
+                          className="text-sm sm:text-base"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Marka Logosu
                         </label>
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                           {editingLogoPreview && (
                             <img
                               src={editingLogoPreview}
                               alt="Logo preview"
-                              className="w-20 h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600 flex-shrink-0"
                             />
                           )}
                           <input
                             type="file"
                             accept="image/*"
                             onChange={(e) => handleLogoSelect(e, true)}
-                            className="block w-full text-sm text-gray-500 dark:text-gray-400
-                              file:mr-4 file:py-2 file:px-4
+                            className="block w-full text-xs sm:text-sm text-gray-500 dark:text-gray-400
+                              file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-2 sm:file:px-4
                               file:rounded-lg file:border-0
-                              file:text-sm file:font-semibold
+                              file:text-xs sm:file:text-sm file:font-semibold
                               file:bg-primary-50 file:text-primary-700
                               hover:file:bg-primary-100
                               dark:file:bg-primary-900 dark:file:text-primary-300"
                           />
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Button variant="primary" size="sm" onClick={handleSaveEdit} disabled={uploadingLogo}>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Button variant="primary" size="sm" onClick={handleSaveEdit} disabled={uploadingLogo} className="w-full sm:w-auto text-xs sm:text-sm">
                           {uploadingLogo ? 'Yükleniyor...' : 'Kaydet'}
                         </Button>
-                        <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                        <Button variant="outline" size="sm" onClick={handleCancelEdit} className="w-full sm:w-auto text-xs sm:text-sm">
                           İptal
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                         {brand.logo && (
                           <img
                             src={brand.logo}
                             alt={brand.name}
-                            className="w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                            className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600 flex-shrink-0"
                           />
                         )}
-                        <div>
-                          <div className="font-semibold text-lg text-gray-900 dark:text-white">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white truncate">
                             {brand.name}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
                             Oluşturulma: {new Date(brand.createdAt).toLocaleDateString('tr-TR')}
                           </div>
                         </div>
@@ -319,6 +322,7 @@ export const AdminBrandsPage = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleEdit(brand)}
+                          className="flex-1 sm:flex-initial text-xs sm:text-sm"
                         >
                           Düzenle
                         </Button>
@@ -326,6 +330,7 @@ export const AdminBrandsPage = () => {
                           variant="danger"
                           size="sm"
                           onClick={() => handleDelete(brand.id)}
+                          className="flex-1 sm:flex-initial text-xs sm:text-sm"
                         >
                           Sil
                         </Button>

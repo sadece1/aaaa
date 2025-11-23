@@ -58,20 +58,21 @@ export const AdminNewslettersPage = () => {
     <>
       <SEO title="Bülten Abonelikleri" description="Bülten aboneliklerini yönetin" />
       <AdminLayout>
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
               Bülten Abonelikleri
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">
               Toplam: {subscriptions.length} | Aktif: {activeSubscriptions} | İptal: {subscriptions.length - activeSubscriptions}
             </p>
           </div>
           <button
             onClick={handleExport}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-xs sm:text-sm whitespace-nowrap w-full sm:w-auto"
           >
-            📥 CSV Dışa Aktar
+            <span className="hidden sm:inline">📥 CSV Dışa Aktar</span>
+            <span className="sm:hidden">📥 Dışa Aktar</span>
           </button>
         </div>
 
@@ -80,79 +81,143 @@ export const AdminNewslettersPage = () => {
             <LoadingSpinner size="lg" />
           </div>
         ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    E-posta
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Durum
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Abone Olma Tarihi
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    İptal Tarihi
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    İşlemler
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {subscriptions.length > 0 ? (
-                  subscriptions.map((subscription: NewsletterSubscription) => (
-                    <tr key={subscription.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                        {subscription.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            subscription.subscribed
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                          }`}
-                        >
-                          {subscription.subscribed ? 'Aktif' : 'İptal'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {formatDate(subscription.subscribedAt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {subscription.unsubscribedAt ? formatDate(subscription.unsubscribedAt) : '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        {subscription.subscribed && (
-                          <button
-                            onClick={() => handleUnsubscribe(subscription.id)}
-                            className="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 mr-4"
-                          >
-                            İptal Et
-                          </button>
-                        )}
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-3">
+              {subscriptions.length > 0 ? (
+                subscriptions.map((subscription: NewsletterSubscription) => (
+                  <div
+                    key={subscription.id}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-700"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white truncate mb-1">
+                          {subscription.email}
+                        </div>
+                        <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
+                          <span>Abone: {formatDate(subscription.subscribedAt)}</span>
+                          {subscription.unsubscribedAt && (
+                            <span>İptal: {formatDate(subscription.unsubscribedAt)}</span>
+                          )}
+                        </div>
+                      </div>
+                      <span
+                        className={`px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ml-2 ${
+                          subscription.subscribed
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                        }`}
+                      >
+                        {subscription.subscribed ? 'Aktif' : 'İptal'}
+                      </span>
+                    </div>
+                    <div className="flex gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+                      {subscription.subscribed && (
                         <button
-                          onClick={() => handleDelete(subscription.id)}
-                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                          onClick={() => handleUnsubscribe(subscription.id)}
+                          className="flex-1 px-3 py-1.5 text-xs font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors"
                         >
-                          Sil
+                          İptal Et
                         </button>
-                      </td>
+                      )}
+                      <button
+                        onClick={() => handleDelete(subscription.id)}
+                        className="flex-1 px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">Henüz abone yok</p>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        E-posta
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Durum
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Abone Olma Tarihi
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden lg:table-cell">
+                        İptal Tarihi
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        İşlemler
+                      </th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                      Henüz abone yok
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {subscriptions.length > 0 ? (
+                      subscriptions.map((subscription: NewsletterSubscription) => (
+                        <tr key={subscription.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                            <div className="max-w-xs truncate" title={subscription.email}>
+                              {subscription.email}
+                            </div>
+                          </td>
+                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                subscription.subscribed
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                              }`}
+                            >
+                              {subscription.subscribed ? 'Aktif' : 'İptal'}
+                            </span>
+                          </td>
+                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            {formatDate(subscription.subscribedAt)}
+                          </td>
+                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 hidden lg:table-cell">
+                            {subscription.unsubscribedAt ? formatDate(subscription.unsubscribedAt) : '-'}
+                          </td>
+                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex items-center justify-end gap-2">
+                              {subscription.subscribed && (
+                                <button
+                                  onClick={() => handleUnsubscribe(subscription.id)}
+                                  className="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 text-xs sm:text-sm"
+                                >
+                                  İptal Et
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleDelete(subscription.id)}
+                                className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-xs sm:text-sm"
+                              >
+                                Sil
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                          Henüz abone yok
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
         )}
       </AdminLayout>
     </>

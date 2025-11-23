@@ -56,7 +56,7 @@ export const AdminDashboard = () => {
       <SEO title="Yönetici Paneli" description="Yönetici kontrol paneli" />
       <AdminLayout>
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8">
             Yönetici Paneli
           </h1>
 
@@ -67,7 +67,7 @@ export const AdminDashboard = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
                 {stats.map((stat, index) => (
                   <motion.div
                     key={stat.label}
@@ -77,19 +77,19 @@ export const AdminDashboard = () => {
                   >
                     <Link
                       to={stat.link}
-                      className="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                      className="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-5 md:p-6 hover:shadow-lg transition-shadow"
                     >
                       <div className="flex items-center justify-between">
-                        <div>
-                          <div className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-1">
                             {stat.value}
                           </div>
-                          <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
+                          <div className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 truncate">{stat.label}</div>
                         </div>
-                        <div className="relative">
-                          <div className="text-5xl">{stat.icon}</div>
+                        <div className="relative flex-shrink-0 ml-2">
+                          <div className="text-3xl sm:text-4xl md:text-5xl">{stat.icon}</div>
                           {stat.badge && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                            <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center">
                               !
                             </span>
                           )}
@@ -101,7 +101,7 @@ export const AdminDashboard = () => {
               </div>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
                 {quickActions.map((action, index) => (
                   <motion.div
                     key={action.label}
@@ -111,10 +111,10 @@ export const AdminDashboard = () => {
                   >
                     <Link
                       to={action.link}
-                      className="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-all hover:scale-105 text-center"
+                      className="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-5 md:p-6 hover:shadow-lg transition-all hover:scale-105 text-center"
                     >
-                      <div className="text-4xl mb-3">{action.icon}</div>
-                      <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <div className="text-3xl sm:text-4xl md:text-5xl mb-2 sm:mb-3">{action.icon}</div>
+                      <div className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white">
                         {action.label}
                       </div>
                     </Link>
@@ -123,43 +123,43 @@ export const AdminDashboard = () => {
               </div>
 
               {/* Recent Activity */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Recent Messages */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-5 md:p-6"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                       Son Mesajlar
                     </h2>
                     <Link
                       to={routes.adminMessages}
-                      className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                      className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:underline whitespace-nowrap"
                     >
                       Tümünü Gör
                     </Link>
                   </div>
                   {messages.slice(0, 5).length > 0 ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       {messages.slice(0, 5).map((message) => (
                         <div
                           key={message.id}
-                          className={`p-3 rounded-lg ${message.read ? 'bg-gray-50 dark:bg-gray-700' : 'bg-primary-50 dark:bg-primary-900'}`}
+                          className={`p-2 sm:p-3 rounded-lg ${message.read ? 'bg-gray-50 dark:bg-gray-700' : 'bg-primary-50 dark:bg-primary-900'}`}
                         >
                           <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="font-semibold text-gray-900 dark:text-white">
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
                                 {message.name}
                               </div>
-                              <div className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                              <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
                                 {message.subject}
                               </div>
                             </div>
                             {!message.read && (
-                              <span className="ml-2 bg-primary-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                              <span className="ml-2 bg-primary-500 text-white text-[10px] sm:text-xs font-bold rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
                                 !
                               </span>
                             )}
@@ -168,7 +168,7 @@ export const AdminDashboard = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 dark:text-gray-400">Henüz mesaj yok</p>
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Henüz mesaj yok</p>
                   )}
                 </motion.div>
 
@@ -177,37 +177,37 @@ export const AdminDashboard = () => {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-5 md:p-6"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                       Son Randevular
                     </h2>
                     <Link
                       to={routes.adminAppointments}
-                      className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                      className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:underline whitespace-nowrap"
                     >
                       Tümünü Gör
                     </Link>
                   </div>
                   {appointments.slice(0, 5).length > 0 ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       {appointments.slice(0, 5).map((appointment) => (
                         <div
                           key={appointment.id}
-                          className="p-3 rounded-lg bg-gray-50 dark:bg-gray-700"
+                          className="p-2 sm:p-3 rounded-lg bg-gray-50 dark:bg-gray-700"
                         >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="font-semibold text-gray-900 dark:text-white">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
                                 {appointment.name}
                               </div>
-                              <div className="text-sm text-gray-600 dark:text-gray-400">
+                              <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                                 {appointment.date} - {appointment.time}
                               </div>
                             </div>
                             <span
-                              className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-semibold rounded-full whitespace-nowrap flex-shrink-0 ${
                                 appointment.status === 'pending'
                                   ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                                   : appointment.status === 'confirmed'
@@ -224,7 +224,7 @@ export const AdminDashboard = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 dark:text-gray-400">Henüz randevu yok</p>
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Henüz randevu yok</p>
                   )}
                 </motion.div>
               </div>

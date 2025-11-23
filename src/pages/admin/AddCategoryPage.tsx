@@ -131,12 +131,12 @@ export const AddCategoryPage = () => {
     <>
       <SEO title="Yeni Kategori Ekle" description="Yeni kategori ekleyin" />
       <AdminLayout>
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+        <div className="max-w-2xl mx-auto px-2 sm:px-4">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8">
             Yeni Kategori Ekle
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 md:p-6">
             <input
               type="hidden"
               {...register('parentId', {
@@ -166,25 +166,25 @@ export const AddCategoryPage = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Açıklama
               </label>
               <textarea
                 {...register('description')}
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                 Hiyerarşi Seviyesi *
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                 {categoryTypeOptions.map((option) => (
                   <label
                     key={option.value}
-                    className={`relative flex flex-col gap-2 rounded-xl border p-4 cursor-pointer transition-all ${
+                    className={`relative flex flex-col gap-1.5 sm:gap-2 rounded-xl border p-3 sm:p-4 cursor-pointer transition-all ${
                       categoryType === option.value
                         ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                         : 'border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500'
@@ -202,14 +202,14 @@ export const AddCategoryPage = () => {
                         setCategoryType(option.value);
                       }}
                     />
-                    <div className="text-2xl">{option.icon}</div>
-                    <div className="font-semibold text-gray-900 dark:text-white">{option.title}</div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{option.description}</p>
+                    <div className="text-xl sm:text-2xl">{option.icon}</div>
+                    <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">{option.title}</div>
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{option.description}</p>
                     {option.disabled && option.disabledReason && (
-                      <p className="text-xs text-red-500">{option.disabledReason}</p>
+                      <p className="text-[10px] sm:text-xs text-red-500">{option.disabledReason}</p>
                     )}
                     {categoryType === option.value && (
-                      <span className="absolute top-3 right-3 text-primary-600 dark:text-primary-400 font-semibold">
+                      <span className="absolute top-2 right-2 sm:top-3 sm:right-3 text-primary-600 dark:text-primary-400 font-semibold text-sm sm:text-base">
                         ✓
                       </span>
                     )}
@@ -219,11 +219,11 @@ export const AddCategoryPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                 Üst Kategori
               </label>
               {categoryType === 'root' && (
-                <div className="w-full px-4 py-3 text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 rounded-lg border border-dashed border-gray-300 dark:border-gray-600">
+                <div className="w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 rounded-lg border border-dashed border-gray-300 dark:border-gray-600">
                   Bu kategori ana başlık olarak oluşturulacak ve navbar üzerinde direkt görünecek.
                 </div>
               )}
@@ -233,7 +233,7 @@ export const AddCategoryPage = () => {
                   <select
                     value={parentIdValue || ''}
                     onChange={(e) => setValue('parentId', e.target.value, { shouldValidate: true })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="">Ana başlık seçin</option>
                     {rootCategories.map((cat) => (
@@ -243,7 +243,7 @@ export const AddCategoryPage = () => {
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                     Sütun kategorileri yalnızca ana başlıkların altında yer alabilir.
                   </p>
                 </div>
@@ -254,7 +254,7 @@ export const AddCategoryPage = () => {
                   <select
                     value={parentIdValue || ''}
                     onChange={(e) => setValue('parentId', e.target.value, { shouldValidate: true })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="">Sütun kategorisi seçin</option>
                     {columnCategories.map((cat) => (
@@ -263,14 +263,14 @@ export const AddCategoryPage = () => {
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                     Alt kategoriler yalnızca sütun kategorileri altında oluşturulabilir.
                   </p>
                 </div>
               )}
 
               {errors.parentId && categoryType !== 'root' && (
-                <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.parentId.message}</p>
+                <p className="mt-2 text-xs sm:text-sm text-red-600 dark:text-red-400">{errors.parentId.message}</p>
               )}
             </div>
 
@@ -278,6 +278,7 @@ export const AddCategoryPage = () => {
               label="İkon (emoji) - Opsiyonel"
               {...register('icon')}
               placeholder="🏕️ (boş bırakılabilir)"
+              className="text-sm sm:text-base"
             />
 
             <Input
@@ -285,16 +286,18 @@ export const AddCategoryPage = () => {
               type="number"
               {...register('order', { valueAsNumber: true })}
               placeholder="0"
+              className="text-sm sm:text-base"
             />
 
-            <div className="flex space-x-4">
-              <Button type="submit" variant="primary">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <Button type="submit" variant="primary" className="w-full sm:w-auto text-sm sm:text-base">
                 Kaydet
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => navigate(routes.adminCategories)}
+                className="w-full sm:w-auto text-sm sm:text-base"
               >
                 İptal
               </Button>

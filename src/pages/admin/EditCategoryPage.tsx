@@ -419,7 +419,7 @@ export const EditCategoryPage = () => {
     <>
       <SEO title="Kategori Düzenle" description="Kategoriyi düzenleyin" />
       <AdminLayout>
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto px-2 sm:px-4 space-y-4 sm:space-y-6">
           {/* Breadcrumb */}
           <nav className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
             <Link to={routes.admin} className="hover:text-primary-600 dark:hover:text-primary-400">
@@ -436,7 +436,7 @@ export const EditCategoryPage = () => {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">
                 Kategori Düzenle
               </h1>
               {categoryPath.length > 0 && (
@@ -467,14 +467,14 @@ export const EditCategoryPage = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden"
           >
-            <div className="p-6 space-y-6">
+            <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
               {/* Basic Information */}
-              <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <span className="mr-2">📝</span>
+              <div className="border-b border-gray-200 dark:border-gray-700 pb-4 sm:pb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">
+                  <span className="mr-2 text-base sm:text-lg">📝</span>
                   Temel Bilgiler
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div className="md:col-span-2">
                     <Input
                       label="Kategori Adı *"
@@ -500,7 +500,7 @@ export const EditCategoryPage = () => {
                     <input
                       {...register('slug', { required: 'Slug gereklidir' })}
                       disabled={autoGenerateSlug}
-                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                      className={`w-full px-3 sm:px-4 py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                         errors.slug
                           ? 'border-red-500 focus:ring-red-500'
                           : 'border-gray-300 dark:border-gray-600'
@@ -510,21 +510,21 @@ export const EditCategoryPage = () => {
                       placeholder="kategori-adi"
                     />
                     {errors.slug && (
-                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.slug.message}</p>
+                      <p className="mt-1 text-xs sm:text-sm text-red-600 dark:text-red-400">{errors.slug.message}</p>
                     )}
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                       URL'de görünecek kısa isim (örn: /category/kamp-malzemeleri)
                     </p>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Açıklama
                     </label>
                     <textarea
                       {...register('description')}
                       rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-y"
                       placeholder="Kategori hakkında açıklama..."
                     />
                   </div>
@@ -532,35 +532,36 @@ export const EditCategoryPage = () => {
               </div>
 
               {/* Icon Selection */}
-              <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <span className="mr-2">🎨</span>
+              <div className="border-b border-gray-200 dark:border-gray-700 pb-4 sm:pb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">
+                  <span className="mr-2 text-base sm:text-lg">🎨</span>
                   İkon
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
                     <Input
                       label="İkon (Emoji)"
                       {...register('icon', { required: false })}
                       placeholder="🏕️"
                       maxLength={2}
+                      className="text-sm sm:text-base"
                     />
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                       Kategoriyi temsil eden bir emoji seçin
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                       Hızlı Seçim
                     </label>
-                    <div className="grid grid-cols-8 gap-2">
+                    <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
                       {commonIcons.map((icon) => (
                         <button
                           key={icon}
                           type="button"
                           onClick={() => setValue('icon', icon)}
-                          className={`p-3 text-2xl rounded-lg border-2 transition-all hover:scale-110 ${
+                          className={`p-2 sm:p-3 text-xl sm:text-2xl rounded-lg border-2 transition-all hover:scale-110 ${
                             watchedIcon === icon
                               ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                               : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600'
@@ -586,34 +587,34 @@ export const EditCategoryPage = () => {
               </div>
 
               {/* Category Info & Order */}
-              <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <span className="mr-2">🔗</span>
+              <div className="border-b border-gray-200 dark:border-gray-700 pb-4 sm:pb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">
+                  <span className="mr-2 text-base sm:text-lg">🔗</span>
                   Kategori Bilgileri
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* Mevcut Kategori Bilgileri */}
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{category.icon || '📦'}</span>
-                      <div className="flex-1">
-                        <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <span className="text-xl sm:text-2xl flex-shrink-0">{category.icon || '📦'}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
                           {category.name}
                         </div>
                         {categoryPath.length > 0 && (
-                          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          <div className="flex items-center flex-wrap gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
                             <span>Konum:</span>
                             {categoryPath.map((cat, index) => (
                               <span key={cat.id} className="flex items-center gap-1">
                                 <span>{cat.icon}</span>
-                                <span>{cat.name}</span>
+                                <span className="truncate">{cat.name}</span>
                                 {index < categoryPath.length - 1 && <span>›</span>}
                               </span>
                             ))}
                           </div>
                         )}
                         {!category.parentId && (
-                          <div className="text-xs text-primary-600 dark:text-primary-400 mt-1 font-medium">
+                          <div className="text-[10px] sm:text-xs text-primary-600 dark:text-primary-400 mt-1 font-medium">
                             🏠 Ana Kategori (Navbar'da görünür)
                           </div>
                         )}
@@ -642,23 +643,24 @@ export const EditCategoryPage = () => {
                     exit={{ opacity: 0, height: 0 }}
                     className="border-b border-gray-200 dark:border-gray-700 pb-6"
                   >
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                      <span className="mr-2">📋</span>
-                      Sütun Kategorisi Ekle (1. Adım)
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">
+                      <span className="mr-2 text-base sm:text-lg">📋</span>
+                      <span className="hidden sm:inline">Sütun Kategorisi Ekle (1. Adım)</span>
+                      <span className="sm:hidden">Sütun Ekle</span>
                     </h2>
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-4">
-                      <div className="flex items-center space-x-2 mb-4 p-3 bg-white dark:bg-gray-700 rounded-lg">
-                        <span className="text-lg">🎯</span>
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4">
+                      <div className="flex items-center space-x-2 mb-3 sm:mb-4 p-2 sm:p-3 bg-white dark:bg-gray-700 rounded-lg">
+                        <span className="text-base sm:text-lg flex-shrink-0">🎯</span>
+                        <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                           Ana Kategori: <span className="font-medium text-blue-600 dark:text-blue-400">
                             {category.icon} {category.name}
                           </span>
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Sütun Adı * (Örn: Kamp Mutfağı)
                           </label>
                           <input
@@ -666,11 +668,11 @@ export const EditCategoryPage = () => {
                             value={columnCategoryForm.columnName}
                             onChange={(e) => setColumnCategoryForm(prev => ({ ...prev, columnName: e.target.value }))}
                             placeholder="Örn: Kamp Mutfağı, Kamp Mobilyaları"
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                            className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             İkon
                           </label>
                           <input
@@ -679,7 +681,7 @@ export const EditCategoryPage = () => {
                             onChange={(e) => setColumnCategoryForm(prev => ({ ...prev, columnIcon: e.target.value }))}
                             placeholder="🔸"
                             maxLength={2}
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center text-xl"
+                            className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center text-lg sm:text-xl"
                           />
                         </div>
                       </div>
@@ -689,8 +691,10 @@ export const EditCategoryPage = () => {
                         variant="primary"
                         onClick={handleAddColumnCategory}
                         disabled={!columnCategoryForm.columnName.trim()}
+                        className="w-full sm:w-auto text-sm sm:text-base"
                       >
-                        ➕ Sütun Kategorisi Ekle
+                        <span className="hidden sm:inline">➕ Sütun Kategorisi Ekle</span>
+                        <span className="sm:hidden">➕ Sütun Ekle</span>
                       </Button>
 
                       {/* Existing Column Categories */}
@@ -743,14 +747,15 @@ export const EditCategoryPage = () => {
                     exit={{ opacity: 0, height: 0 }}
                     className="border-b border-gray-200 dark:border-gray-700 pb-6"
                   >
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                      <span className="mr-2">➕</span>
-                      Alt Kategori Ekle (2. Adım)
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">
+                      <span className="mr-2 text-base sm:text-lg">➕</span>
+                      <span className="hidden sm:inline">Alt Kategori Ekle (2. Adım)</span>
+                      <span className="sm:hidden">Alt Kategori Ekle</span>
                     </h2>
-                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 space-y-4">
-                      <div className="flex items-center space-x-2 mb-4 p-3 bg-white dark:bg-gray-700 rounded-lg">
-                        <span className="text-lg">📂</span>
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4">
+                      <div className="flex items-center space-x-2 mb-3 sm:mb-4 p-2 sm:p-3 bg-white dark:bg-gray-700 rounded-lg">
+                        <span className="text-base sm:text-lg flex-shrink-0">📂</span>
+                        <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                           Seçili sütun: <span className="font-medium text-green-600 dark:text-green-400">
                             {categories.find(c => c.id === selectedColumnId)?.icon} {categories.find(c => c.id === selectedColumnId)?.name}
                           </span>
@@ -758,16 +763,16 @@ export const EditCategoryPage = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Alt Kategori Adı * (Örn: Kamp Ocakları)
                         </label>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                           <input
                             type="text"
                             value={subCategoryForm.subCategoryName}
                             onChange={(e) => setSubCategoryForm(prev => ({ ...prev, subCategoryName: e.target.value }))}
                             placeholder="Örn: Kamp Ocakları, Termos ve Mug"
-                            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                            className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' && subCategoryForm.subCategoryName.trim()) {
                                 handleAddSubCategory();
@@ -779,11 +784,12 @@ export const EditCategoryPage = () => {
                             variant="primary"
                             onClick={handleAddSubCategory}
                             disabled={!subCategoryForm.subCategoryName.trim()}
+                            className="w-full sm:w-auto text-sm sm:text-base"
                           >
                             ➕ Ekle
                           </Button>
                         </div>
-                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                           Alt kategori adını yazıp Enter'a basabilir veya butona tıklayabilirsiniz
                         </p>
                       </div>
@@ -796,19 +802,19 @@ export const EditCategoryPage = () => {
                             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                               Mevcut Alt Kategoriler ({subCategories.length})
                             </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 sm:max-h-60 overflow-y-auto">
                               {subCategories.map((subCat) => (
                                 <div
                                   key={subCat.id}
                                   className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
                                 >
-                                  <div className="flex items-center space-x-2">
-                                    <span>{subCat.icon}</span>
-                                    <span className="text-sm text-gray-900 dark:text-white">{subCat.name}</span>
+                                  <div className="flex items-center space-x-2 flex-1 min-w-0">
+                                    <span className="flex-shrink-0">{subCat.icon}</span>
+                                    <span className="text-xs sm:text-sm text-gray-900 dark:text-white truncate">{subCat.name}</span>
                                   </div>
                                   <Link
                                     to={`/admin/categories/edit/${subCat.id}`}
-                                    className="text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                                    className="text-[10px] sm:text-xs text-primary-600 dark:text-primary-400 hover:underline flex-shrink-0 ml-2"
                                   >
                                     Düzenle
                                   </Link>
@@ -824,11 +830,12 @@ export const EditCategoryPage = () => {
               </AnimatePresence>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-between gap-2 sm:gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => navigate(routes.adminCategories)}
+                  className="w-full sm:w-auto text-sm sm:text-base"
                 >
                   İptal
                 </Button>
@@ -836,6 +843,7 @@ export const EditCategoryPage = () => {
                   type="submit"
                   variant="primary"
                   isLoading={isSubmitting}
+                  className="w-full sm:w-auto text-sm sm:text-base"
                 >
                   {isSubmitting ? 'Kaydediliyor...' : '✅ Kategoriyi Güncelle'}
                 </Button>

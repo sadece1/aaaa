@@ -212,12 +212,12 @@ export const AdminUserOrdersPage = () => {
       <AdminLayout>
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                 Sipariş Yönetimi
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mt-1">
                 Kullanıcı siparişlerini oluşturun ve yönetin
               </p>
             </div>
@@ -228,14 +228,15 @@ export const AdminUserOrdersPage = () => {
                 setEditingOrder(null);
                 setIsFormOpen(true);
               }}
+              className="w-full sm:w-auto"
             >
               + Yeni Sipariş Ekle
             </Button>
           </div>
 
           {/* Filters */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 md:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Arama
@@ -304,19 +305,19 @@ export const AdminUserOrdersPage = () => {
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
                   >
-                    <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+                      <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                         {editingOrder ? 'Sipariş Düzenle' : 'Yeni Sipariş Ekle'}
                       </h2>
                       <button
                         onClick={handleCancel}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl sm:text-2xl"
                       >
                         ×
                       </button>
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                       {/* Kullanıcı Seçimi */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -475,16 +476,16 @@ export const AdminUserOrdersPage = () => {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-3 pt-4">
+                      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
                         <Button
                           type="button"
                           variant="secondary"
                           onClick={handleCancel}
-                          className="flex-1"
+                          className="w-full sm:flex-1"
                         >
                           İptal
                         </Button>
-                        <Button type="submit" variant="primary" className="flex-1">
+                        <Button type="submit" variant="primary" className="w-full sm:flex-1">
                           {editingOrder ? 'Güncelle' : 'Kaydet'}
                         </Button>
                       </div>
@@ -501,42 +502,132 @@ export const AdminUserOrdersPage = () => {
               <LoadingSpinner size="lg" />
             </div>
           ) : filteredOrders.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center">
-              <div className="text-6xl mb-4">📦</div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 sm:p-12 text-center">
+              <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">📦</div>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                 Sipariş bulunamadı
               </h3>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 {orders.length === 0
                   ? 'Henüz sipariş eklenmemiş'
                   : 'Filtrelere uygun sipariş bulunamadı'}
               </p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <>
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-3 sm:space-y-4">
+              {filteredOrders.map((order) => {
+                const gear = gears[order.gearId];
+                const user = users.find(u => u.id === order.userId);
+                const statusInfo = getStatusInfo(order.status);
+
+                return (
+                  <div key={order.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          {user?.name || 'Bilinmeyen'}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                          {user?.email || '-'}
+                        </div>
+                      </div>
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ml-2 ${statusInfo.bg} ${statusInfo.text}`}>
+                        {statusInfo.label}
+                      </span>
+                    </div>
+                    
+                    <div className="mb-3">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Ürün</div>
+                      <div 
+                        className="text-sm text-gray-900 dark:text-white"
+                        style={{
+                          wordBreak: 'break-word',
+                          overflowWrap: 'break-word',
+                        }}
+                      >
+                        {gear?.name || 'Ürün yükleniyor...'}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Fiyat</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          {formatPrice(order.price)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Tarih</div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                          {formatDate(order.createdAt)}
+                        </div>
+                      </div>
+                    </div>
+
+                    {(order.publicNote || order.privateNote) && (
+                      <div className="mb-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Notlar</div>
+                        <div className="text-xs text-gray-900 dark:text-white">
+                          {order.publicNote && (
+                            <div className="mb-1">
+                              <span className="text-gray-500">Kullanıcı:</span> {order.publicNote}
+                            </div>
+                          )}
+                          {order.privateNote && (
+                            <div>
+                              <span className="text-gray-500">Admin:</span> {order.privateNote}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+                      <button
+                        onClick={() => handleEdit(order)}
+                        className="flex-1 px-3 py-2 text-xs sm:text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+                      >
+                        Düzenle
+                      </button>
+                      <button
+                        onClick={() => handleDelete(order.id)}
+                        className="flex-1 px-3 py-2 text-xs sm:text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Kullanıcı
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Ürün
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Durum
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Fiyat
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">
                         Notlar
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden xl:table-cell">
                         Tarih
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-4 md:px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         İşlemler
                       </th>
                     </tr>
@@ -549,37 +640,32 @@ export const AdminUserOrdersPage = () => {
 
                       return (
                         <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                             <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                                 {user?.name || 'Bilinmeyen'}
                               </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                                 {user?.email || '-'}
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 max-w-xs">
+                          <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 max-w-xs">
                             <div 
-                              className="text-sm text-gray-900 dark:text-white"
+                              className="text-xs sm:text-sm text-gray-900 dark:text-white"
                               style={{
                                 wordBreak: 'break-word',
                                 overflowWrap: 'break-word',
                                 overflow: 'hidden',
-                                overflowX: 'hidden',
-                                overflowY: 'hidden',
                                 maxWidth: '100%',
-                                width: '100%',
                                 minWidth: 0,
-                                boxSizing: 'border-box',
                                 whiteSpace: 'normal',
-                                display: 'block',
                               }}
                             >
                               {gear?.name || 'Ürün yükleniyor...'}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                             <span
                               className={`px-2 py-1 text-xs font-medium rounded-full ${statusInfo.bg} ${statusInfo.text}`}
                             >
@@ -592,18 +678,18 @@ export const AdminUserOrdersPage = () => {
                               </div>
                             )}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                          <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                             {formatPrice(order.price)}
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 dark:text-white">
+                          <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 hidden lg:table-cell">
+                            <div className="text-xs sm:text-sm text-gray-900 dark:text-white max-w-xs">
                               {order.publicNote && (
-                                <div className="mb-1">
+                                <div className="mb-1 truncate" title={order.publicNote}>
                                   <span className="text-xs text-gray-500">Kullanıcı:</span> {order.publicNote}
                                 </div>
                               )}
                               {order.privateNote && (
-                                <div>
+                                <div className="truncate" title={order.privateNote}>
                                   <span className="text-xs text-gray-500">Admin:</span> {order.privateNote}
                                 </div>
                               )}
@@ -612,20 +698,20 @@ export const AdminUserOrdersPage = () => {
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden xl:table-cell">
                             {formatDate(order.createdAt)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={() => handleEdit(order)}
-                                className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300"
+                                className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300 text-xs sm:text-sm"
                               >
                                 Düzenle
                               </button>
                               <button
                                 onClick={() => handleDelete(order.id)}
-                                className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                                className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-xs sm:text-sm"
                               >
                                 Sil
                               </button>
@@ -638,6 +724,7 @@ export const AdminUserOrdersPage = () => {
                 </table>
               </div>
             </div>
+            </>
           )}
         </div>
       </AdminLayout>

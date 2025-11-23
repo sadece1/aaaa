@@ -63,30 +63,30 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full bg-white dark:bg-gray-800 shadow-lg z-40 w-64 transition-transform duration-300 lg:relative lg:translate-x-0 lg:z-auto ${
+        className={`fixed left-0 top-0 h-full bg-white dark:bg-gray-800 shadow-lg z-40 w-64 sm:w-72 transition-transform duration-300 lg:relative lg:translate-x-0 lg:z-auto ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <div className="p-3 sm:p-4 md:p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <Link to={routes.admin} className="flex items-center space-x-2" onClick={() => setIsSidebarOpen(false)}>
-              <span className="text-2xl">🌲</span>
-              <span className="text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400">
+              <span className="text-xl sm:text-2xl">🌲</span>
+              <span className="text-base sm:text-lg md:text-xl font-bold text-primary-600 dark:text-primary-400">
                 Admin Panel
               </span>
             </Link>
             <button
               onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+              className="lg:hidden p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
               aria-label="Close sidebar"
             >
-              <span className="text-xl">✕</span>
+              <span className="text-lg sm:text-xl">✕</span>
             </button>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-1 sm:space-y-2">
+          <nav className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 space-y-1 sm:space-y-2">
             {menuItems.map((item) => (
               <Link
                 key={item.path}
@@ -97,18 +97,18 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                     setIsSidebarOpen(false);
                   }
                 }}
-                className={`flex items-center justify-between space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${
+                className={`flex items-center justify-between space-x-2 sm:space-x-3 px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 rounded-lg transition-colors text-xs sm:text-sm md:text-base ${
                   isActive(item.path)
                     ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
                 <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
-                  <span className="text-lg sm:text-xl flex-shrink-0">{item.icon}</span>
+                  <span className="text-base sm:text-lg md:text-xl flex-shrink-0">{item.icon}</span>
                   <span className="font-medium truncate">{item.label}</span>
                 </div>
                 {item.badge !== null && item.badge !== undefined && (
-                  <span className="flex-shrink-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="flex-shrink-0 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[10px] sm:text-xs">
                     !
                   </span>
                 )}
@@ -117,12 +117,12 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
           </nav>
 
           {/* Footer */}
-          <div className="p-2 sm:p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="p-2 sm:p-3 md:p-4 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition-colors text-sm sm:text-base"
+              className="w-full flex items-center justify-center space-x-2 sm:space-x-3 px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition-colors text-xs sm:text-sm md:text-base"
             >
-              <span className="text-lg sm:text-xl">🚪</span>
+              <span className="text-base sm:text-lg md:text-xl">🚪</span>
               <span className="font-medium">Çıkış Yap</span>
             </button>
           </div>
@@ -130,30 +130,31 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 transition-all duration-300">
+      <div className="flex-1 transition-all duration-300 min-w-0">
         {/* Header */}
         <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-30">
-          <div className="flex items-center justify-between px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 md:py-4">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 lg:hidden"
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 lg:hidden"
               aria-label="Toggle sidebar"
             >
-              <span className="text-2xl">☰</span>
+              <span className="text-xl sm:text-2xl">☰</span>
             </button>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Link
                 to={routes.home}
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
               >
-                Siteye Dön
+                <span className="hidden sm:inline">Siteye Dön</span>
+                <span className="sm:hidden">🏠</span>
               </Link>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="p-4 sm:p-6">{children}</main>
+        <main className="p-2 sm:p-3 md:p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );

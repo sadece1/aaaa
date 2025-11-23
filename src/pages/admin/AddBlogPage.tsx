@@ -95,12 +95,12 @@ export const AddBlogPage = () => {
     <>
       <SEO title="Yeni Blog Yazısı Ekle" description="Yeni blog yazısı ekleyin" />
       <AdminLayout>
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+        <div className="max-w-4xl mx-auto px-2 sm:px-4">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8">
             Yeni Blog Yazısı Ekle
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 md:p-6">
             <Input
               label="Başlık"
               {...register('title', { required: 'Başlık gereklidir' })}
@@ -117,7 +117,7 @@ export const AddBlogPage = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 İçerik (En az 100 karakter)
               </label>
               <textarea
@@ -125,10 +125,10 @@ export const AddBlogPage = () => {
                   required: 'İçerik gereklidir',
                   minLength: { value: 100, message: 'İçerik en az 100 karakter olmalıdır' }
                 })}
-                rows={10}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                rows={8}
+                className={`w-full px-3 sm:px-4 py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.content ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y`}
               />
               {errors.content && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.content.message}</p>
@@ -148,21 +148,21 @@ export const AddBlogPage = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Resim
               </label>
               
               {/* Dosya Yükleme */}
-              <div className="mb-4">
+              <div className="mb-3 sm:mb-4">
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageFileChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-500 file:text-white hover:file:bg-primary-600"
+                  className="w-full px-2 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-primary-500 file:text-white hover:file:bg-primary-600"
                 />
                 {imageFile && (
-                  <div className="mt-3 p-2 bg-gray-100 dark:bg-gray-700 rounded">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                  <div className="mt-2 sm:mt-3 p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                    <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 break-words">
                       Seçilen: {imageFile.name} ({(imageFile.size / 1024).toFixed(2)} KB)
                     </span>
                   </div>
@@ -170,8 +170,8 @@ export const AddBlogPage = () => {
               </div>
 
               {/* URL Ekleme (İsteğe Bağlı) */}
-              <details className="mb-4">
-                <summary className="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <details className="mb-3 sm:mb-4">
+                <summary className="cursor-pointer text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Veya URL ile ekle (İsteğe Bağlı)
                 </summary>
                 <div className="mt-2">
@@ -181,12 +181,13 @@ export const AddBlogPage = () => {
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     placeholder="https://example.com/image.jpg"
+                    className="text-sm sm:text-base"
                   />
                 </div>
               </details>
 
               {(!imageFile && !imageUrl) && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                <p className="mt-1 text-xs sm:text-sm text-red-600 dark:text-red-400">
                   Lütfen bir resim yükleyin veya URL ekleyin
                 </p>
               )}
@@ -214,22 +215,22 @@ export const AddBlogPage = () => {
               <input
                 type="checkbox"
                 {...register('featured')}
-                className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4 sm:w-5 sm:h-5"
               />
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                 Öne Çıkar
               </label>
             </div>
 
             {/* Recommended Posts */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Önerilen Blog Yazıları (En fazla 4 blog seçebilirsiniz)
               </label>
-              <div className="max-h-60 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-700">
+              <div className="max-h-48 sm:max-h-60 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg p-2 sm:p-3 bg-white dark:bg-gray-700">
                 {allBlogs.length > 0 ? (
                   allBlogs.map((blog) => (
-                    <div key={blog.id} className="flex items-center space-x-2 py-2">
+                    <div key={blog.id} className="flex items-center space-x-2 py-1.5 sm:py-2">
                       <input
                         type="checkbox"
                         checked={selectedRecommendedPosts.includes(blog.id)}
@@ -244,16 +245,16 @@ export const AddBlogPage = () => {
                             setSelectedRecommendedPosts(selectedRecommendedPosts.filter(id => id !== blog.id));
                           }
                         }}
-                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                         disabled={!selectedRecommendedPosts.includes(blog.id) && selectedRecommendedPosts.length >= 4}
                       />
-                      <label className="text-sm text-gray-700 dark:text-gray-300 flex-1">
+                      <label className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 flex-1 break-words">
                         {blog.title}
                       </label>
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Henüz başka blog yazısı bulunmuyor</p>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Henüz başka blog yazısı bulunmuyor</p>
                 )}
               </div>
               <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -261,14 +262,15 @@ export const AddBlogPage = () => {
               </p>
             </div>
 
-            <div className="flex space-x-4">
-              <Button type="submit" variant="primary" isLoading={isLoading || uploadingImage}>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <Button type="submit" variant="primary" isLoading={isLoading || uploadingImage} className="w-full sm:w-auto text-sm sm:text-base">
                 {uploadingImage ? 'Resim Yükleniyor...' : 'Kaydet'}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => navigate(routes.adminBlogs)}
+                className="w-full sm:w-auto text-sm sm:text-base"
               >
                 İptal
               </Button>

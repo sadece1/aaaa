@@ -53,25 +53,25 @@ export const AdminChangePasswordPage = () => {
     <>
       <SEO title="Şifre Değiştir" description="Admin şifresini değiştirin" />
       <AdminLayout>
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8">
             Şifre Değiştir
           </h1>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
             {success && (
-              <div className="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg">
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg text-sm sm:text-base">
                 Şifreniz başarıyla değiştirildi!
               </div>
             )}
 
             {error && (
-              <div className="mb-6 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg text-sm sm:text-base">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
               <div>
                 <label
                   htmlFor="currentPassword"
@@ -156,11 +156,11 @@ export const AdminChangePasswordPage = () => {
                 )}
               </div>
 
-              <div className="flex justify-end space-x-4">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 pt-2">
                 <button
                   type="button"
                   onClick={() => reset()}
-                  className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   disabled={isLoading}
                 >
                   İptal
@@ -168,7 +168,7 @@ export const AdminChangePasswordPage = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm sm:text-base bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? 'Değiştiriliyor...' : 'Şifreyi Değiştir'}
                 </button>
@@ -176,11 +176,11 @@ export const AdminChangePasswordPage = () => {
             </form>
           </div>
 
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
-            <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
+          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
+            <h3 className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
               📝 Not:
             </h3>
-            <p className="text-sm text-blue-800 dark:text-blue-200">
+            <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
               Şifrenizi değiştirdikten sonra tekrar giriş yapmanız gerekebilir. Güvenliğiniz için
               şifrenizi düzenli olarak değiştirmenizi öneririz.
             </p>

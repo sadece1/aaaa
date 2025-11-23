@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useCampsiteStore } from '@/store/campsiteStore';
 import { SEO } from '@/components/SEO';
+import { AdminLayout } from '@/components/AdminLayout';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
@@ -84,14 +85,13 @@ export const EditCampsitePage = () => {
   return (
     <>
       <SEO title="Kamp Alanı Düzenle" description="Kamp alanını düzenleyin" />
-
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+      <AdminLayout>
+        <div className="max-w-3xl mx-auto px-2 sm:px-4">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8">
             Kamp Alanı Düzenle
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
             <Input
               label="Kamp Alanı Adı"
               {...register('name', { required: 'Ad gereklidir' })}
@@ -99,18 +99,23 @@ export const EditCampsitePage = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Açıklama
               </label>
               <textarea
                 {...register('description', { required: 'Açıklama gereklidir' })}
                 rows={5}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.description
                     ? 'border-red-500 focus:ring-red-500'
                     : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y`}
               />
+              {errors.description && (
+                <p className="mt-1 text-xs sm:text-sm text-red-600 dark:text-red-400">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
 
             <Input
@@ -124,7 +129,7 @@ export const EditCampsitePage = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Yeni Resimler Ekle (isteğe bağlı)
               </label>
               <input
@@ -132,25 +137,26 @@ export const EditCampsitePage = () => {
                 multiple
                 accept="image/*"
                 onChange={handleImageChange}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-2 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-primary-500 file:text-white hover:file:bg-primary-600"
               />
             </div>
 
-            <div className="flex gap-4">
-              <Button type="submit" variant="primary" isLoading={isSubmitting}>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <Button type="submit" variant="primary" isLoading={isSubmitting} className="w-full sm:w-auto text-sm sm:text-base">
                 Güncelle
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => navigate(routes.adminCampsites)}
+                className="w-full sm:w-auto text-sm sm:text-base"
               >
                 İptal
               </Button>
             </div>
           </form>
         </div>
-      </div>
+      </AdminLayout>
     </>
   );
 };

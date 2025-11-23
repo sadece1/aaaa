@@ -94,12 +94,12 @@ export const AdminColorsPage = () => {
     <>
       <SEO title="Renk Yönetimi" description="Renkleri yönetin" />
       <AdminLayout>
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
             Renk Yönetimi
           </h1>
           {!isAdding && (
-            <Button variant="primary" onClick={() => setIsAdding(true)}>
+            <Button variant="primary" onClick={() => setIsAdding(true)} className="w-full sm:w-auto">
               + Yeni Renk Ekle
             </Button>
           )}
@@ -107,11 +107,11 @@ export const AdminColorsPage = () => {
 
         {/* Add Form */}
         {isAdding && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
               Yeni Renk Ekle
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
               <div className="md:col-span-2">
                 <Input
                   label="Renk Adı"
@@ -126,7 +126,7 @@ export const AdminColorsPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Renk Kodu (HEX) - İsteğe Bağlı
                 </label>
                 <div className="flex gap-2">
@@ -134,7 +134,7 @@ export const AdminColorsPage = () => {
                     type="color"
                     value={newColorHex || '#000000'}
                     onChange={(e) => setNewColorHex(e.target.value)}
-                    className="w-16 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                    className="w-12 h-10 sm:w-16 sm:h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer flex-shrink-0"
                   />
                   <Input
                     value={newColorHex}
@@ -144,15 +144,15 @@ export const AdminColorsPage = () => {
                   />
                 </div>
               </div>
-              <div className="md:col-span-3 flex items-end gap-2">
-                <Button variant="primary" onClick={handleAdd}>
+              <div className="md:col-span-3 flex flex-col sm:flex-row items-stretch sm:items-end gap-2 pt-2">
+                <Button variant="primary" onClick={handleAdd} className="w-full sm:w-auto">
                   Kaydet
                 </Button>
                 <Button variant="outline" onClick={() => {
                   setIsAdding(false);
                   setNewColorName('');
                   setNewColorHex('');
-                }}>
+                }} className="w-full sm:w-auto">
                   İptal
                 </Button>
               </div>
@@ -167,10 +167,10 @@ export const AdminColorsPage = () => {
               {colors.map((color) => (
                 <div
                   key={color.id}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="p-3 sm:p-4 md:p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   {editingId === color.id ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                       <div className="md:col-span-2">
                         <Input
                           value={editingName}
@@ -191,7 +191,7 @@ export const AdminColorsPage = () => {
                             type="color"
                             value={editingHex || '#000000'}
                             onChange={(e) => setEditingHex(e.target.value)}
-                            className="w-16 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                            className="w-12 h-10 sm:w-16 sm:h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer flex-shrink-0"
                           />
                           <Input
                             value={editingHex}
@@ -201,31 +201,31 @@ export const AdminColorsPage = () => {
                           />
                         </div>
                       </div>
-                      <div className="md:col-span-3 flex gap-2">
-                        <Button variant="primary" size="sm" onClick={handleSaveEdit}>
+                      <div className="md:col-span-3 flex flex-col sm:flex-row gap-2 pt-2">
+                        <Button variant="primary" size="sm" onClick={handleSaveEdit} className="w-full sm:w-auto">
                           Kaydet
                         </Button>
-                        <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                        <Button variant="outline" size="sm" onClick={handleCancelEdit} className="w-full sm:w-auto">
                           İptal
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                         {color.hexCode && (
                           <div
-                            className="w-12 h-12 rounded-lg border-2 border-gray-300 dark:border-gray-600"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border-2 border-gray-300 dark:border-gray-600 flex-shrink-0"
                             style={{ backgroundColor: color.hexCode }}
                             title={color.hexCode}
                           />
                         )}
-                        <div>
-                          <div className="font-semibold text-lg text-gray-900 dark:text-white">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white truncate">
                             {color.name}
                           </div>
                           {color.hexCode && (
-                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
                               {color.hexCode}
                             </div>
                           )}
@@ -234,11 +234,12 @@ export const AdminColorsPage = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleEdit(color)}
+                          className="flex-1 sm:flex-initial"
                         >
                           Düzenle
                         </Button>
@@ -246,6 +247,7 @@ export const AdminColorsPage = () => {
                           variant="danger"
                           size="sm"
                           onClick={() => handleDelete(color.id)}
+                          className="flex-1 sm:flex-initial"
                         >
                           Sil
                         </Button>
@@ -256,7 +258,7 @@ export const AdminColorsPage = () => {
               ))}
             </div>
           ) : (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+            <div className="p-6 sm:p-8 text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base">
               Henüz renk eklenmemiş
             </div>
           )}
