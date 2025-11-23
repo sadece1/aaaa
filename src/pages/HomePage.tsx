@@ -6,7 +6,7 @@ import { Button } from '@/components/Button';
 import { routes, config } from '@/config';
 import { useBlogStore } from '@/store/blogStore';
 import { useGearStore } from '@/store/gearStore';
-import { formatDate } from '@/utils/validation';
+import { formatDate, formatPrice } from '@/utils/validation';
 
 export const HomePage = () => {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
@@ -433,7 +433,7 @@ export const HomePage = () => {
                       <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                         <div className="flex items-center">
                           <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                            ₺{item.pricePerDay}
+                            {formatPrice(item.pricePerDay ?? item.price ?? 0)}
                           </span>
                           <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">
                             /gün

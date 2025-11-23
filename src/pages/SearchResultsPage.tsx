@@ -8,7 +8,7 @@ import { GearCard } from '@/components/GearCard';
 import { searchService } from '@/services/searchService';
 import { routes } from '@/config';
 import { Gear } from '@/types';
-import { formatDate } from '@/utils/validation';
+import { formatDate, formatPrice } from '@/utils/validation';
 
 interface BlogPost {
   id: string;
@@ -306,7 +306,7 @@ export const SearchResultsPage = () => {
                           </p>
                           <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
                             <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                              {item.pricePerDay} ₺
+                              {formatPrice(item.pricePerDay ?? item.price ?? 0)}
                             </span>
                           </div>
                         </div>

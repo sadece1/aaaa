@@ -551,11 +551,37 @@ export const GearDetailsPage = () => {
                       <div
                         key={key}
                         className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded border border-gray-200 dark:border-gray-600"
+                        style={{
+                          wordBreak: 'break-word',
+                          overflowWrap: 'break-word',
+                          overflowX: 'hidden',
+                          maxWidth: '100%',
+                          boxSizing: 'border-box',
+                        }}
                       >
-                        <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">
+                        <dt 
+                          className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5"
+                          style={{
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word',
+                            overflowX: 'hidden',
+                            maxWidth: '100%',
+                          }}
+                        >
                           {key}
                         </dt>
-                        <dd className="text-base font-medium text-gray-900 dark:text-white">{value as string}</dd>
+                        <dd 
+                          className="text-base font-medium text-gray-900 dark:text-white"
+                          style={{
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word',
+                            overflowX: 'hidden',
+                            maxWidth: '100%',
+                            whiteSpace: 'pre-wrap',
+                          }}
+                        >
+                          {value as string}
+                        </dd>
                       </div>
                     ))}
                   </dl>
