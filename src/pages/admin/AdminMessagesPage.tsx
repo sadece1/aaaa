@@ -13,6 +13,16 @@ export const AdminMessagesPage = () => {
   useEffect(() => {
     fetchMessages(1);
   }, [fetchMessages]);
+  
+  // Update selectedMessage when messages list updates
+  useEffect(() => {
+    if (selectedMessage) {
+      const updatedMessage = messages.find(m => m.id === selectedMessage.id);
+      if (updatedMessage) {
+        setSelectedMessage(updatedMessage);
+      }
+    }
+  }, [messages, selectedMessage?.id]);
 
   const handleMarkAsRead = async (id: string) => {
     try {
