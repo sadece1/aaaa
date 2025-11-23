@@ -7,9 +7,22 @@ const SALT_ROUNDS = 10;
 
 const seedData = async () => {
   try {
+    // CRITICAL: Prevent running in production unless explicitly allowed
+    const isProduction = process.env.NODE_ENV === 'production';
+    const allowProductionSeed = process.env.ALLOW_PRODUCTION_SEED === 'true';
+    
+    if (isProduction && !allowProductionSeed) {
+      logger.error('❌ SEED SCRIPT BLOCKED: Cannot run seed in production without ALLOW_PRODUCTION_SEED=true');
+      logger.error('⚠️  This script will DELETE ALL DATA! Set ALLOW_PRODUCTION_SEED=true if you really want to proceed.');
+      throw new Error('Seed script blocked in production for safety');
+    }
+
     logger.info('🌱 Starting database seeding...');
 
     // Clear existing data (optional - be careful in production!)
+    if (isProduction) {
+      logger.warn('⚠️  WARNING: Running seed in PRODUCTION mode! This will DELETE ALL DATA!');
+    }
     logger.info('Clearing existing data...');
     await pool.execute('SET FOREIGN_KEY_CHECKS = 0');
     
