@@ -305,16 +305,8 @@ export const GearDetailsPage = () => {
         image={gear.images && gear.images.length > 0 ? gear.images[0] : undefined}
       />
 
-      <div className="min-h-screen bg-white dark:bg-gray-900 py-6" style={{ overflowX: 'hidden', width: '100%' }}>
-        <div 
-          className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
-          style={{
-            width: '100%',
-            maxWidth: '100%',
-            overflowX: 'hidden',
-            boxSizing: 'border-box',
-          }}
-        >
+      <div className="min-h-screen bg-white dark:bg-gray-900 py-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <nav className="mb-4 flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
             <Link to="/" className="hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -425,16 +417,7 @@ export const GearDetailsPage = () => {
               />
 
               {/* Product Title & Category */}
-              <div 
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 border border-gray-200 dark:border-gray-700 mb-4"
-                style={{
-                  width: '100%',
-                  maxWidth: '100%',
-                  overflowX: 'hidden',
-                  overflowY: 'visible',
-                  boxSizing: 'border-box',
-                }}
-              >
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 border border-gray-200 dark:border-gray-700 mb-4">
                 <div className="flex flex-wrap items-center gap-2 mb-3">
                   <span className="inline-flex items-center px-2.5 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded text-sm font-medium">
                     {categoryLabels[gear.category] || gear.category}
@@ -462,13 +445,7 @@ export const GearDetailsPage = () => {
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
                     overflowX: 'hidden',
-                    overflowY: 'visible',
                     maxWidth: '100%',
-                    width: '100%',
-                    minWidth: 0,
-                    boxSizing: 'border-box',
-                    whiteSpace: 'normal',
-                    display: 'block',
                   }}
                 >
                   {gear.name}
