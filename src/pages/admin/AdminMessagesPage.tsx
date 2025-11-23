@@ -14,11 +14,12 @@ export const AdminMessagesPage = () => {
     fetchMessages(1);
   }, [fetchMessages]);
 
-  // Mark all unread messages as read when page loads (only once)
+  // Mark all unread messages as read when page first loads
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   
   useEffect(() => {
     const markAllUnreadAsRead = async () => {
+      // Only run once when messages are first loaded and not loading
       if (hasMarkedAsRead || isLoading || messages.length === 0) return;
       
       const unreadMessages = messages.filter(m => !m.read);
@@ -26,20 +27,28 @@ export const AdminMessagesPage = () => {
         console.log(`Marking ${unreadMessages.length} unread messages as read...`);
         setHasMarkedAsRead(true);
         
-        // Mark all unread messages as read
-        const promises = unreadMessages.map(message => markAsRead(message.id));
-        try {
-          await Promise.all(promises);
-          // Refresh messages after marking all as read
-          await fetchMessages(1);
-        } catch (error) {
-          console.error('Failed to mark all messages as read:', error);
+        // Mark all unread messages as read sequentially to avoid overwhelming the API
+        for (const message of unreadMessages) {
+          try {
+            await markAsRead(message.id);
+          } catch (error) {
+            console.error(`Failed to mark message ${message.id} as read:`, error);
+          }
         }
+        
+        // Refresh messages after a short delay
+        setTimeout(() => {
+          fetchMessages(1);
+        }, 1000);
+      } else {
+        // No unread messages, mark as done
+        setHasMarkedAsRead(true);
       }
     };
 
     markAllUnreadAsRead();
-  }, [messages, isLoading, hasMarkedAsRead, markAsRead, fetchMessages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]); // Only depend on isLoading to run when data finishes loading
   
   // Update selectedMessage when messages list updates
   useEffect(() => {
