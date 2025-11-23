@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { routes } from '@/config';
 import { useAuthStore } from '@/store/authStore';
+import { useAdminNotifications } from '@/hooks/useAdminNotifications';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -12,6 +13,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuthStore();
+  const notifications = useAdminNotifications();
+  
   // Desktop'ta açık, mobile'da kapalı
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -26,19 +29,19 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   const menuItems = [
-    { path: routes.admin, label: 'Dashboard', icon: '📊' },
-    { path: routes.adminGear, label: 'Ürünler', icon: '🎒' },
-    { path: routes.adminBlogs, label: 'Bloglar', icon: '📝' },
-    { path: routes.adminCategories, label: 'Kategoriler', icon: '🏷️' },
-    { path: routes.adminBrands, label: 'Markalar', icon: '🏭' },
-    { path: routes.adminReferences, label: 'Referanslar', icon: '📸' },
-    { path: routes.adminColors, label: 'Renkler', icon: '🎨' },
-    { path: routes.adminUsers, label: 'Kullanıcılar', icon: '👥' },
-    { path: routes.adminUserOrders, label: 'Sipariş Yönetimi', icon: '📦' },
-    { path: routes.adminMessages, label: 'Mesajlar', icon: '💬' },
-    { path: routes.adminNewsletters, label: 'Bülten Abonelikleri', icon: '📧' },
-    { path: routes.adminAppointments, label: 'Randevular', icon: '📅' },
-    { path: routes.adminChangePassword, label: 'Şifre Değiştir', icon: '🔒' },
+    { path: routes.admin, label: 'Dashboard', icon: '📊', badge: null },
+    { path: routes.adminGear, label: 'Ürünler', icon: '🎒', badge: null },
+    { path: routes.adminBlogs, label: 'Bloglar', icon: '📝', badge: null },
+    { path: routes.adminCategories, label: 'Kategoriler', icon: '🏷️', badge: null },
+    { path: routes.adminBrands, label: 'Markalar', icon: '🏭', badge: null },
+    { path: routes.adminReferences, label: 'Referanslar', icon: '📸', badge: null },
+    { path: routes.adminColors, label: 'Renkler', icon: '🎨', badge: null },
+    { path: routes.adminUsers, label: 'Kullanıcılar', icon: '👥', badge: notifications.users > 0 ? notifications.users : null },
+    { path: routes.adminUserOrders, label: 'Sipariş Yönetimi', icon: '📦', badge: notifications.orders > 0 ? notifications.orders : null },
+    { path: routes.adminMessages, label: 'Mesajlar', icon: '💬', badge: notifications.messages > 0 ? notifications.messages : null },
+    { path: routes.adminNewsletters, label: 'Bülten Abonelikleri', icon: '📧', badge: notifications.newsletters > 0 ? notifications.newsletters : null },
+    { path: routes.adminAppointments, label: 'Randevular', icon: '📅', badge: notifications.appointments > 0 ? notifications.appointments : null },
+    { path: routes.adminChangePassword, label: 'Şifre Değiştir', icon: '🔒', badge: null },
   ];
 
   const isActive = (path: string) => {
@@ -94,14 +97,21 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                     setIsSidebarOpen(false);
                   }
                 }}
-                className={`flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${
+                className={`flex items-center justify-between space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${
                   isActive(item.path)
                     ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
-                <span className="text-lg sm:text-xl">{item.icon}</span>
-                <span className="font-medium truncate">{item.label}</span>
+                <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+                  <span className="text-lg sm:text-xl flex-shrink-0">{item.icon}</span>
+                  <span className="font-medium truncate">{item.label}</span>
+                </div>
+                {item.badge !== null && item.badge !== undefined && (
+                  <span className="flex-shrink-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    !
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
