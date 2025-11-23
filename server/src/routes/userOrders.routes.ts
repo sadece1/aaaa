@@ -17,8 +17,8 @@ router.get('/', authenticate, getAllUserOrders);
 // Get single user order
 router.get('/:id', authenticate, getSingleUserOrder);
 
-// Create user order (admin only)
-router.post('/', authenticate, authorizeAdmin, validate(createUserOrderSchema), create);
+// Create user order (authenticated users can create their own orders)
+router.post('/', authenticate, validate(createUserOrderSchema), create);
 
 // Update user order (admin only)
 router.put('/:id', authenticate, authorizeAdmin, validate(updateUserOrderSchema), update);

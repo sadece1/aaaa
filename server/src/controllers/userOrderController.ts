@@ -10,8 +10,18 @@ import {
 import { asyncHandler } from '../middleware/errorHandler';
 import { parseDate } from '../utils/helpers';
 
-export const getAllUserOrders = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.query.userId as string | undefined;
+export const getAllUserOrders = asyncHandler(async (req: AuthRequest, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ success: false, message: 'Authentication required' });
+    return;
+  }
+
+  const requestedUserId = req.query.userId as string | undefined;
+  const isAdmin = req.user.role === 'admin';
+  
+  // Non-admin users can only see their own orders
+  const userId = isAdmin ? requestedUserId : req.user.id;
+  
   const orders = await getUserOrders(userId);
   
   res.status(200).json({
@@ -60,8 +70,22 @@ export const getSingleUserOrder = asyncHandler(async (req: Request, res: Respons
 });
 
 export const create = asyncHandler(async (req: AuthRequest, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ success: false, message: 'Authentication required' });
+    return;
+  }
+
+  // Users can only create orders for themselves (unless admin)
+  const requestedUserId = req.body.userId;
+  const isAdmin = req.user.role === 'admin';
+  
+  if (requestedUserId && requestedUserId !== req.user.id && !isAdmin) {
+    res.status(403).json({ success: false, message: 'You can only create orders for yourself' });
+    return;
+  }
+
   const order = await createUserOrder({
-    user_id: req.body.userId || req.user?.id || '',
+    user_id: requestedUserId || req.user.id, // Use authenticated user's ID if not specified
     gear_id: req.body.gearId,
     status: req.body.status,
     price: req.body.price,
