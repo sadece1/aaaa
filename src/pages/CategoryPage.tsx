@@ -207,46 +207,6 @@ export const CategoryPage = () => {
             }
           });
           
-          const addCategoryToMatching = (cat: Category) => {
-            if (cat.slug) {
-              matchingSlugs.add(cat.slug.toLowerCase().trim());
-            }
-            if (cat.name) {
-              matchingNames.add(cat.name.toLowerCase().trim());
-              // Also add partial name matches for better matching
-              // e.g., "Kamp Ocakları" -> "ocakları", "ocak", "kamp"
-              const nameWords = cat.name.toLowerCase().trim().split(/\s+/);
-              nameWords.forEach(word => {
-                if (word.length > 2) {
-                  matchingNames.add(word);
-                }
-              });
-            }
-          };
-          
-          addCategoryToMatching(category);
-          if (categorySlug) {
-            matchingSlugs.add(categorySlug.toLowerCase().trim());
-          }
-          
-          // Add parent category slugs and names
-          let currentCategory: Category | null = category;
-          while (currentCategory?.parentId) {
-            const parent = allCategories.find(c => c.id === currentCategory!.parentId);
-            if (parent) {
-              addCategoryToMatching(parent);
-              currentCategory = parent;
-            } else {
-              break;
-            }
-          }
-          
-          // Add child category slugs and names
-          const childCategories = allCategories.filter(c => c.parentId === category.id);
-          childCategories.forEach(child => {
-            addCategoryToMatching(child);
-          });
-          
           // Build a mapping from backend category names to frontend categories
           // e.g., "Pişirme Ekipmanları" -> "Kamp Mutfağı" or "Kamp Ocakları"
           const backendToFrontendNameMap = new Map<string, string[]>();
