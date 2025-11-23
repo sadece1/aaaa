@@ -14,30 +14,32 @@ export const AdminMessagesPage = () => {
     fetchMessages(1);
   }, [fetchMessages]);
 
-  // Mark all unread messages as read when page loads
+  // Mark all unread messages as read when page loads (only once)
+  const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
+  
   useEffect(() => {
     const markAllUnreadAsRead = async () => {
+      if (hasMarkedAsRead || isLoading || messages.length === 0) return;
+      
       const unreadMessages = messages.filter(m => !m.read);
       if (unreadMessages.length > 0) {
         console.log(`Marking ${unreadMessages.length} unread messages as read...`);
-        for (const message of unreadMessages) {
-          try {
-            await markAsRead(message.id);
-          } catch (error) {
-            console.error(`Failed to mark message ${message.id} as read:`, error);
-          }
+        setHasMarkedAsRead(true);
+        
+        // Mark all unread messages as read
+        const promises = unreadMessages.map(message => markAsRead(message.id));
+        try {
+          await Promise.all(promises);
+          // Refresh messages after marking all as read
+          await fetchMessages(1);
+        } catch (error) {
+          console.error('Failed to mark all messages as read:', error);
         }
-        // Refresh messages after marking all as read
-        setTimeout(() => {
-          fetchMessages(1);
-        }, 500);
       }
     };
 
-    if (messages.length > 0) {
-      markAllUnreadAsRead();
-    }
-  }, [messages.length]); // Only run when messages are first loaded
+    markAllUnreadAsRead();
+  }, [messages, isLoading, hasMarkedAsRead, markAsRead, fetchMessages]);
   
   // Update selectedMessage when messages list updates
   useEffect(() => {
