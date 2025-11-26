@@ -31,7 +31,9 @@
     
     <!-- LCP Optimization: Preload critical resources -->
     <!-- Hero image preload for LCP (Largest Contentful Paint) optimization -->
-    <link rel="preload" as="image" href="/tent-4534210_1280.jpg" fetchpriority="high" />
+    <!-- Preload WebP version for modern browsers -->
+    <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=1280&fm=webp&q=80" fetchpriority="high" type="image/webp" />
+    <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=1280&q=80" fetchpriority="high" />
     
     <!-- DNS prefetch and preconnect for external resources -->
     <link rel="dns-prefetch" href="https://images.unsplash.com" />

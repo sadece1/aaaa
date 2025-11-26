@@ -17,21 +17,31 @@ export default defineConfig({
     cssCodeSplit: true,
     // Optimize chunk size
     chunkSizeWarningLimit: 1000,
+    // Tree shaking and dead code elimination
     rollupOptions: {
       output: {
         // Disable manual chunks to let Vite handle chunk splitting automatically
         // This prevents initialization errors from circular dependencies
         // Vite's automatic chunk splitting is more reliable
-        // manualChunks: undefined, // Let Vite decide
         
         // Optimize chunk file names
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
+      // Aggressive tree shaking for unused code elimination
+      treeshake: {
+        moduleSideEffects: false, // Assume no side effects for better tree shaking
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false,
+      },
     },
-    // Minification - use esbuild for better compatibility
+    // Minification - use esbuild for better compatibility and tree shaking
     minify: 'esbuild',
+    // Source maps disabled for production (reduces bundle size)
+    sourcemap: false,
+    // Report compressed size
+    reportCompressedSize: true,
   },
   server: {
     port: 5173,

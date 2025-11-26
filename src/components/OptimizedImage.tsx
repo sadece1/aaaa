@@ -40,18 +40,43 @@ export const OptimizedImage = ({
       return optimizeUnsplashUrl(src, width);
     }
     
-    // For local images, return as-is
+    // For local images, add optimization parameters (assumes backend can serve WebP/AVIF)
+    // This enables responsive images and format optimization
+    if (src.startsWith('/') && !src.includes('?')) {
+      // Add width parameter for responsive images
+      const params = new URLSearchParams();
+      if (width) params.set('w', width.toString());
+      params.set('q', '80'); // Quality
+      return `${src}?${params.toString()}`;
+    }
+    
     return src;
   }, [src, width, placeholder]);
 
   // Generate srcset for responsive images
   const srcSet = useMemo(() => {
-    if (!src || !src.includes('unsplash.com')) {
-      return undefined;
+    if (!src) return undefined;
+    
+    // Unsplash images
+    if (src.includes('unsplash.com')) {
+      return generateSrcSet(src);
     }
     
-    // Use imageOptimizer utility to generate srcset
-    return generateSrcSet(src);
+    // Local images - generate responsive srcset
+    if (src.startsWith('/') && !src.includes('unsplash.com')) {
+      const sizes = [400, 800, 1200, 1600];
+      return sizes
+        .map((size) => {
+          const params = new URLSearchParams();
+          params.set('w', size.toString());
+          params.set('q', '80');
+          const baseUrl = src.split('?')[0]; // Remove existing params if any
+          return `${baseUrl}?${params.toString()} ${size}w`;
+        })
+        .join(', ');
+    }
+    
+    return undefined;
   }, [src]);
 
   const handleError = () => {
@@ -79,7 +104,7 @@ export const OptimizedImage = ({
         {/* AVIF format (best compression) */}
         {srcSet && (
           <source
-            srcSet={srcSet.replace(/fm=webp/g, 'fm=avif')}
+            srcSet={srcSet.replace(/[?&]fm=\w+/g, '').replace(/(\?|&)(w=\d+)/g, '$1$2&fm=avif&q=80')}
             type="image/avif"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
@@ -87,7 +112,7 @@ export const OptimizedImage = ({
         {/* WebP format (good compression, wider support) */}
         {srcSet && (
           <source
-            srcSet={srcSet}
+            srcSet={srcSet.replace(/[?&]fm=\w+/g, '').replace(/(\?|&)(w=\d+)/g, '$1$2&fm=webp&q=80')}
             type="image/webp"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />

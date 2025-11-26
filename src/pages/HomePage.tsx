@@ -120,18 +120,33 @@ export const HomePage = () => {
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600" />
         
-        {/* LCP Image - Using <img> tag instead of CSS background for better LCP measurement */}
-        <img
-          src="/tent-4534210_1280.jpg"
-          alt="Kamp alanı ve doğa manzarası"
-          className="absolute inset-0 w-full h-full object-cover opacity-20"
-          style={{ transform: 'scale(1.1)' }}
-          fetchPriority="high"
-          loading="eager"
-          decoding="async"
-          width="1280"
-          height="853"
-        />
+        {/* LCP Image - Optimized with WebP/AVIF and responsive sizes */}
+        <picture>
+          {/* AVIF format (best compression) */}
+          <source
+            srcSet="/tent-4534210_1280.jpg?fm=avif&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=avif&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=avif&w=1280&q=80 1280w"
+            type="image/avif"
+            sizes="100vw"
+          />
+          {/* WebP format (good compression, wider support) */}
+          <source
+            srcSet="/tent-4534210_1280.jpg?fm=webp&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=webp&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=webp&w=1280&q=80 1280w"
+            type="image/webp"
+            sizes="100vw"
+          />
+          {/* Fallback to optimized JPEG */}
+          <img
+            src="/tent-4534210_1280.jpg?w=1280&q=80"
+            alt="Kamp alanı ve doğa manzarası"
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
+            style={{ transform: 'scale(1.1)' }}
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            width="1280"
+            height="853"
+          />
+        </picture>
         
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
