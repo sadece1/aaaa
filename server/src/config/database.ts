@@ -15,9 +15,6 @@ interface DatabaseConfig {
   queueLimit: number;
   enableKeepAlive: boolean;
   keepAliveInitialDelay: number;
-  acquireTimeout: number;
-  timeout: number;
-  reconnect: boolean;
 }
 
 const dbConfig: DatabaseConfig = {
@@ -31,9 +28,8 @@ const dbConfig: DatabaseConfig = {
   queueLimit: parseInt(process.env.DB_QUEUE_LIMIT || '0', 10),
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
-  acquireTimeout: 60000, // 60 seconds
-  timeout: 60000, // 60 seconds
-  reconnect: true,
+  // Note: acquireTimeout, timeout, and reconnect are not valid options for mysql2/promise pool
+  // These options are handled internally by the pool
 };
 
 // Create connection pool
