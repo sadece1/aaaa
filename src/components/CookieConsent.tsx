@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 /**
  * Cookie Consent Component
@@ -94,15 +95,30 @@ export const CookieConsent = () => {
 
   const loadThirdPartyScripts = (prefs: CookiePreferences) => {
     // Only load scripts if user has consented
+    // All scripts are loaded with defer/async to prevent blocking main thread (INP optimization)
+    
     if (prefs.analytics) {
-      // Load Google Analytics, etc.
-      // Example: window.gtag = ...
+      // Load Google Analytics with async to prevent blocking
+      // Example implementation (uncomment when GA is configured):
+      /*
+      const gaScript = document.createElement('script');
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID';
+      gaScript.async = true;
+      gaScript.defer = true;
+      document.head.appendChild(gaScript);
+      */
     }
+    
     if (prefs.marketing) {
-      // Load marketing scripts
+      // Load marketing/ads scripts with async
+      // Example: Facebook Pixel, Google Ads, etc.
+      // All should use async/defer to prevent INP issues
     }
+    
     if (prefs.functional) {
-      // Load functional scripts
+      // Load functional scripts (chat widgets, etc.) with async
+      // Example: Intercom, Zendesk, etc.
+      // All should use async/defer to prevent INP issues
     }
   };
 
@@ -121,12 +137,12 @@ export const CookieConsent = () => {
             <p className="text-sm text-gray-600 dark:text-gray-300">
               Bu web sitesi, deneyiminizi iyileştirmek ve site kullanımını analiz etmek için çerezler kullanmaktadır.
               {' '}
-              <a
-                href="/privacy-policy"
+              <Link
+                to="/privacy-policy"
                 className="text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Gizlilik Politikası
-              </a>
+              </Link>
               {' '}ve{' '}
               <a
                 href="/cookie-policy"

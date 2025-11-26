@@ -26,6 +26,8 @@ export const routes = {
   references: '/references',
   contact: '/contact',
   faq: '/faq',
+  privacyPolicy: '/privacy-policy',
+  termsOfService: '/terms-of-service',
   favorites: '/favorites',
   login: '/login',
   register: '/register',

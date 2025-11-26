@@ -31,6 +31,7 @@ import brandsRoutes from './routes/brands.routes';
 import userOrdersRoutes from './routes/userOrders.routes';
 import { getAll as getAllMessages } from './controllers/contactController';
 import { authenticate, authorizeAdmin } from './middleware/auth';
+import { staticCacheHeaders, cacheMiddleware, noCache } from './middleware/cache';
 
 dotenv.config();
 
@@ -140,6 +141,9 @@ app.use(express.urlencoded({
   limit: process.env.MAX_URLENCODED_SIZE || '1mb',
   parameterLimit: 100, // Limit number of parameters
 }));
+
+// Cache middleware for static assets
+app.use(staticCacheHeaders);
 
 // Serve uploaded files
 // Serve from both /uploads and /api/uploads for compatibility
@@ -302,7 +306,25 @@ app.use(goneHandler);
 app.use(redirectMiddleware);
 
 // API routes
-app.use('/api/auth', authRoutes);
+// Apply cache middleware to frequently accessed read-only endpoints
+// Cache GET requests for 5 minutes to reduce TTFB
+app.use('/api/campsites', cacheMiddleware({ 
+  condition: (req) => req.method === 'GET' && !req.path.includes('/admin')
+}));
+app.use('/api/gear', cacheMiddleware({ 
+  condition: (req) => req.method === 'GET' && !req.path.includes('/admin')
+}));
+app.use('/api/blog', cacheMiddleware({ 
+  condition: (req) => req.method === 'GET' && !req.path.includes('/admin')
+}));
+app.use('/api/blogs', cacheMiddleware({ 
+  condition: (req) => req.method === 'GET' && !req.path.includes('/admin')
+}));
+app.use('/api/categories', cacheMiddleware({ 
+  condition: (req) => req.method === 'GET'
+}));
+
+app.use('/api/auth', noCache, authRoutes); // No cache for auth endpoints
 app.use('/api/campsites', campsiteRoutes);
 app.use('/api/gear', gearRoutes);
 app.use('/api/blog', blogRoutes);

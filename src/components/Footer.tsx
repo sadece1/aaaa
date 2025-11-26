@@ -72,14 +72,14 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link to={routes.privacyPolicy} className="hover:text-white transition-colors">
                   Gizlilik Politikası
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link to={routes.termsOfService} className="hover:text-white transition-colors">
                   Kullanım Şartları
-                </a>
+                </Link>
               </li>
               <li>
                 <Link 

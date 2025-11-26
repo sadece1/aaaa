@@ -25,6 +25,8 @@ const AboutPage = lazy(() => import('@/pages/AboutPage').then(m => ({ default: m
 const ReferencesPage = lazy(() => import('@/pages/ReferencesPage').then(m => ({ default: m.ReferencesPage })));
 const ContactPage = lazy(() => import('@/pages/ContactPage').then(m => ({ default: m.ContactPage })));
 const FAQPage = lazy(() => import('@/pages/FAQPage').then(m => ({ default: m.FAQPage })));
+const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
+const TermsOfServicePage = lazy(() => import('@/pages/TermsOfServicePage').then(m => ({ default: m.TermsOfServicePage })));
 const FavoritesPage = lazy(() => import('@/pages/FavoritesPage').then(m => ({ default: m.FavoritesPage })));
 const LoginPage = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m.LoginPage })));
 const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ default: m.RegisterPage })));
@@ -112,6 +114,8 @@ function AppContent() {
                 <Route path={routes.references} element={<ReferencesPage />} />
                 <Route path={routes.contact} element={<ContactPage />} />
                 <Route path={routes.faq} element={<FAQPage />} />
+                <Route path={routes.privacyPolicy} element={<PrivacyPolicyPage />} />
+                <Route path={routes.termsOfService} element={<TermsOfServicePage />} />
                 <Route path={routes.favorites} element={<FavoritesPage />} />
                 <Route path={routes.login} element={<LoginPage />} />
                 <Route path={routes.register} element={<RegisterPage />} />
