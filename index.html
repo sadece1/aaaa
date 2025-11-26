@@ -21,7 +21,8 @@
     </style>
     
     <!-- Preload critical resources for LCP optimization -->
-    <link rel="preload" as="image" href="/tent-4534210_1280.jpg" fetchpriority="high" />
+    <!-- Note: tent-4534210_1280.jpg is used as CSS background-image, not as <img> tag -->
+    <!-- Preload removed to avoid "preload but not used" warning -->
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />

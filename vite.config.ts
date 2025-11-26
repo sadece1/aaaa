@@ -9,6 +9,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+    // Prevent multiple React instances (fixes "Cannot set properties of undefined" error)
+    dedupe: ['react', 'react-dom'],
   },
   build: {
     // Enable CSS code splitting
@@ -19,8 +21,17 @@ export default defineConfig({
       output: {
         // Manual chunks for better caching
         manualChunks: (id) => {
-          // React vendor chunk
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) {
+          // React and React DOM must be in the same chunk to avoid "Cannot set properties of undefined" error
+          // Also include react/jsx-runtime to prevent duplicate React instances
+          if (
+            id.includes('node_modules/react/') || 
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react/jsx-runtime')
+          ) {
+            return 'react-vendor';
+          }
+          // React Router can be separate
+          if (id.includes('node_modules/react-router')) {
             return 'react-vendor';
           }
           // UI library chunk
