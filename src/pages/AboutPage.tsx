@@ -202,7 +202,7 @@ export const AboutPage = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-20"
             style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=1920&h=1080&fit=crop')`
+              backgroundImage: `url('https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=1920&h=1080&fit=crop&fm=webp&q=80&auto=format')`
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />

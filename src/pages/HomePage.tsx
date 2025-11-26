@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SEO } from '@/components/SEO';
 import { Button } from '@/components/Button';
+import { OptimizedImage } from '@/components/OptimizedImage';
 import { routes, config } from '@/config';
 import { useBlogStore } from '@/store/blogStore';
 import { useGearStore } from '@/store/gearStore';
@@ -285,7 +286,7 @@ export const HomePage = () => {
                 >
                   <Link to={`/blog/${post.id}`}>
                     <div className="relative h-56 overflow-hidden">
-                      <img
+                      <OptimizedImage
                         src={post.image}
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

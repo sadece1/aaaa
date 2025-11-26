@@ -10,6 +10,43 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    // Enable CSS code splitting
+    cssCodeSplit: true,
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        // Manual chunks for better caching
+        manualChunks: (id) => {
+          // React vendor chunk
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) {
+            return 'react-vendor';
+          }
+          // UI library chunk
+          if (id.includes('node_modules/framer-motion')) {
+            return 'ui-vendor';
+          }
+          // Large libraries
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+        // Optimize chunk file names
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+      },
+    },
+    // Minification
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.log in production
+        drop_debugger: true,
+      },
+    },
+  },
   server: {
     port: 5173,
     open: true,
