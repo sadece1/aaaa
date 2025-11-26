@@ -173,30 +173,80 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/upload', uploadLimiter);
 
-// Enhanced health check endpoint
+// Enhanced health check endpoint with detailed diagnostics
 const healthCheck = async (req: express.Request, res: express.Response) => {
+  const startTime = Date.now();
+  const healthData: any = {
+    success: true,
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: process.env.npm_package_version || '1.0.0',
+    checks: {} as any,
+  };
+
+  let overallHealthy = true;
+
+  // Database health check
   try {
-    const { testConnection } = await import('./config/database');
-    await testConnection();
+    const { testConnection, getConnectionHealth } = await import('./config/database');
+    await testConnection(1); // Single attempt for health check
     
-    res.status(200).json({
-      success: true,
-      message: 'Server is running',
+    const dbHealth = getConnectionHealth();
+    healthData.checks.database = {
       status: 'healthy',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development',
-      version: process.env.npm_package_version || '1.0.0',
-    });
+      ...dbHealth,
+    };
   } catch (error: any) {
-    res.status(503).json({
-      success: false,
-      message: 'Server health check failed',
+    overallHealthy = false;
+    const { getConnectionHealth } = await import('./config/database');
+    const dbHealth = getConnectionHealth();
+    
+    healthData.checks.database = {
       status: 'unhealthy',
       error: error.message,
-      timestamp: new Date().toISOString(),
-    });
+      ...dbHealth,
+    };
   }
+
+  // Memory usage check
+  const memoryUsage = process.memoryUsage();
+  const memoryThreshold = 0.9; // 90% threshold
+  const memoryUsagePercent = memoryUsage.heapUsed / memoryUsage.heapTotal;
+  
+  healthData.checks.memory = {
+    status: memoryUsagePercent < memoryThreshold ? 'healthy' : 'warning',
+    heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024), // MB
+    heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024), // MB
+    rss: Math.round(memoryUsage.rss / 1024 / 1024), // MB
+    usagePercent: Math.round(memoryUsagePercent * 100),
+  };
+
+  if (memoryUsagePercent >= memoryThreshold) {
+    overallHealthy = false;
+  }
+
+  // Response time
+  const responseTime = Date.now() - startTime;
+  healthData.responseTime = responseTime;
+  healthData.checks.responseTime = {
+    status: responseTime < 1000 ? 'healthy' : responseTime < 3000 ? 'warning' : 'slow',
+    ms: responseTime,
+  };
+
+  // Overall status
+  healthData.success = overallHealthy;
+  healthData.status = overallHealthy ? 'healthy' : 'unhealthy';
+
+  const statusCode = overallHealthy ? 200 : 503;
+  
+  // Add Retry-After header for 503 (SEO best practice)
+  if (statusCode === 503) {
+    res.setHeader('Retry-After', '30'); // Retry after 30 seconds
+  }
+
+  res.status(statusCode).json(healthData);
 };
 
 app.get('/health', healthCheck);

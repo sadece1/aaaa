@@ -110,9 +110,6 @@ export const CategoryPage = () => {
         // This ensures gear with categoryId matching the backend UUID will be found
         
         // Filter gear by category slug or categoryId
-        console.log('Filtering gear for category:', categorySlug, 'Category ID:', category.id);
-        console.log('Matching category IDs:', Array.from(matchingCategoryIds));
-        console.log('Total gear items:', gear.length);
         
         // Fetch backend categories to map UUID category_ids to frontend categories
         // Backend returns UUID category_ids, but we need to match them with frontend slug-based categories
@@ -123,11 +120,9 @@ export const CategoryPage = () => {
             const backendCategoriesResponse = await response.json();
             if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
               backendCategories = backendCategoriesResponse.data;
-              console.log('Backend categories fetched:', backendCategories.length);
-              console.log('Backend categories:', backendCategories.map(c => ({ id: c.id, slug: c.slug, name: c.name })));
             }
           } catch (error) {
-            console.warn('Failed to fetch backend categories, using frontend categories only:', error);
+            // Failed to fetch backend categories, using frontend categories only
           }
           
           // Build a map of backend UUID category IDs to their slugs
@@ -147,9 +142,6 @@ export const CategoryPage = () => {
               if (catName) {
                 backendCategoryNameMap.set(catId, String(catName).toLowerCase().trim());
               }
-              console.log('Backend category:', catId, '-> slug:', normalizedSlug, 'name:', catName);
-            } else {
-              console.warn('Backend category missing id or slug:', backendCat);
             }
           });
           
@@ -203,7 +195,6 @@ export const CategoryPage = () => {
             const catSlug = backendCat.slug?.toLowerCase().trim();
             if (catId && catSlug && matchingSlugs.has(catSlug)) {
               matchingCategoryIds.add(catId);
-              console.log('Added backend category ID to matching set:', catId, 'slug:', catSlug);
             }
           });
           
@@ -232,12 +223,6 @@ export const CategoryPage = () => {
             }
           });
           
-          console.log('Matching slugs:', Array.from(matchingSlugs));
-          console.log('Matching names:', Array.from(matchingNames));
-          console.log('Backend category slug map size:', backendCategorySlugMap.size);
-          console.log('Backend to frontend name map size:', backendToFrontendNameMap.size);
-          console.log('Gear items to filter:', gear.length);
-          
           // Filter gear with backend category mapping
           const filtered = gear.filter((item) => {
             // Get categoryId from item (could be categoryId or category_id from backend)
@@ -249,7 +234,6 @@ export const CategoryPage = () => {
               if (backendCategorySlugMap.has(itemCategoryId)) {
                 const backendCategorySlug = backendCategorySlugMap.get(itemCategoryId);
                 if (backendCategorySlug && matchingSlugs.has(backendCategorySlug)) {
-                  console.log('✓ Matched by backend UUID -> slug:', item.name, 'UUID:', itemCategoryId, 'slug:', backendCategorySlug);
                   return true;
                 }
               }
@@ -259,7 +243,6 @@ export const CategoryPage = () => {
               if (backendCategoryName) {
                 // Exact name match
                 if (matchingNames.has(backendCategoryName)) {
-                  console.log('✓ Matched by backend UUID -> exact name:', item.name, 'UUID:', itemCategoryId, 'name:', backendCategoryName);
                   return true;
                 }
                 
@@ -267,7 +250,6 @@ export const CategoryPage = () => {
                 const backendNameWords = backendCategoryName.split(/\s+/);
                 for (const word of backendNameWords) {
                   if (word.length > 2 && matchingNames.has(word)) {
-                    console.log('✓ Matched by backend UUID -> partial name:', item.name, 'UUID:', itemCategoryId, 'word:', word);
                     return true;
                   }
                 }
@@ -278,7 +260,6 @@ export const CategoryPage = () => {
                 const matchingFrontendIds = backendToFrontendNameMap.get(itemCategoryId) || [];
                 for (const frontendId of matchingFrontendIds) {
                   if (matchingCategoryIds.has(frontendId)) {
-                    console.log('✓ Matched by backend-to-frontend name mapping:', item.name, 'UUID:', itemCategoryId, 'frontend ID:', frontendId);
                     return true;
                   }
                 }
@@ -287,7 +268,6 @@ export const CategoryPage = () => {
             
             // Check categoryId first (most reliable) - exact match with category or its parents/children
             if (itemCategoryId && matchingCategoryIds.has(itemCategoryId)) {
-              console.log('✓ Matched by categoryId:', item.name, 'categoryId:', itemCategoryId);
               return true;
             }
             
@@ -296,7 +276,6 @@ export const CategoryPage = () => {
             if (itemCategoryId) {
               const matchingCategory = allCategories.find(cat => cat.id === itemCategoryId);
               if (matchingCategory && matchingCategoryIds.has(matchingCategory.id)) {
-                console.log('✓ Matched by backend UUID to frontend category:', item.name, 'UUID:', itemCategoryId);
                 return true;
               }
             }
@@ -306,20 +285,17 @@ export const CategoryPage = () => {
             if (itemCategory) {
               const normalizedItemCategory = String(itemCategory).toLowerCase().trim();
               if (matchingSlugs.has(normalizedItemCategory)) {
-                console.log('✓ Matched by category slug:', item.name, 'slug:', normalizedItemCategory);
                 return true;
               }
             }
             
             // Check if categoryId matches slug pattern (cat-{slug})
             if (itemCategoryId && itemCategoryId === `cat-${categorySlug}`) {
-              console.log('✓ Matched by categoryId pattern:', item.name);
               return true;
             }
             
             // Check if categoryId ends with slug (for dynamic IDs)
             if (itemCategoryId && category.slug && itemCategoryId.endsWith(category.slug)) {
-              console.log('✓ Matched by categoryId suffix:', item.name);
               return true;
             }
             
@@ -328,7 +304,6 @@ export const CategoryPage = () => {
               const normalizedItemCategory = itemCategory.toLowerCase().trim();
               for (const matchingSlug of matchingSlugs) {
                 if (normalizedItemCategory.includes(matchingSlug) || matchingSlug.includes(normalizedItemCategory)) {
-                  console.log('✓ Matched by category string:', item.name, 'item:', normalizedItemCategory, 'match:', matchingSlug);
                   return true;
                 }
               }
@@ -336,9 +311,6 @@ export const CategoryPage = () => {
             
             return false;
           });
-          
-          console.log('Filtered gear count:', filtered.length);
-          console.log('Filtered items:', filtered.map(g => g.name));
           
           setCategoryGear(filtered);
           setIsLoading(false);
@@ -348,7 +320,6 @@ export const CategoryPage = () => {
             await filterGearWithBackendCategories();
           } else if (!gearLoading) {
             // If gear is empty and not loading, try fetching again
-            console.log('Gear is empty, fetching...');
             fetchGear({}, 1, 500);
           }
         } catch (error) {
@@ -415,7 +386,6 @@ export const CategoryPage = () => {
           : false;
         return nameMatch || descMatch || specMatch;
       });
-      console.log('CategoryPage - Brand filter applied:', brandLower, 'Result count:', result.length);
     }
     if (filters?.color && filters.color.trim() !== '') {
       const colorLower = filters.color.toLowerCase().trim();
@@ -434,7 +404,6 @@ export const CategoryPage = () => {
           : false;
         return nameMatch || descMatch || specMatch;
       });
-      console.log('CategoryPage - Color filter applied:', colorLower, 'Result count:', result.length);
     }
     if (filters?.minRating !== undefined) {
       result = result.filter(g => (g.rating || 0) >= filters.minRating!);

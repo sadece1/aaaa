@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import app from './app';
-import { testConnection } from './config/database';
+import { testConnection, startConnectionMonitoring } from './config/database';
 import { validateEnv } from './utils/envValidator';
 import logger from './utils/logger';
 
@@ -21,17 +21,25 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Test database connection and start server
 const startServer = async () => {
   try {
-    // Test database connection
+    // Test database connection with retry logic
+    logger.info('Testing database connection...');
     await testConnection();
+
+    // Start connection monitoring (every 30 seconds)
+    if (process.env.NODE_ENV === 'production') {
+      startConnectionMonitoring(30000);
+    }
 
     // Start server
     app.listen(PORT, () => {
       logger.info(`🚀 Server is running on port ${PORT} in ${NODE_ENV} mode`);
       logger.info(`📡 API endpoint: http://localhost:${PORT}/api`);
       logger.info(`🏥 Health check: http://localhost:${PORT}/health`);
+      logger.info(`📊 Detailed health: http://localhost:${PORT}/api/health`);
     });
   } catch (error) {
     logger.error('Failed to start server:', error);
+    logger.error('Server will exit. Please check database configuration and connectivity.');
     process.exit(1);
   }
 };
@@ -51,11 +59,15 @@ process.on('uncaughtException', (err: Error) => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received. Shutting down gracefully...');
+  const { stopConnectionMonitoring } = require('./config/database');
+  stopConnectionMonitoring();
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
   logger.info('SIGINT received. Shutting down gracefully...');
+  const { stopConnectionMonitoring } = require('./config/database');
+  stopConnectionMonitoring();
   process.exit(0);
 });
 

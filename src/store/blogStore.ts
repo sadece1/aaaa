@@ -37,9 +37,7 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     try {
       const activeFilters = filters || get().filters;
       const response = await blogService.getBlogs(activeFilters, page);
-      console.log('BlogService response:', response);
       const blogsData = response?.data || [];
-      console.log('Setting blogs in store:', blogsData.length);
       set({
         blogs: blogsData,
         total: response?.total || blogsData.length,

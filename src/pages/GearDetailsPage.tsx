@@ -180,7 +180,7 @@ export const GearDetailsPage = () => {
               products.push(product);
             }
           } catch (error) {
-            console.warn(`Failed to load recommended product ${productId}:`, error);
+            // Failed to load recommended product
           }
         }
         

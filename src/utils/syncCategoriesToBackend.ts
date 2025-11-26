@@ -32,12 +32,10 @@ export async function syncCategoriesToBackend(): Promise<{
   try {
     // Get all frontend categories
     const frontendCategories = await categoryManagementService.getAllCategories();
-    console.log(`📦 Found ${frontendCategories.length} frontend categories`);
 
     // Get all backend categories
     const backendResponse = await api.get<{ success: boolean; data: BackendCategory[] }>('/categories');
     const backendCategories = backendResponse.data.success ? backendResponse.data.data : [];
-    console.log(`📦 Found ${backendCategories.length} backend categories`);
 
     // Create a map of backend categories by slug for quick lookup
     const backendCategoryMap = new Map<string, BackendCategory>();
@@ -50,19 +48,16 @@ export async function syncCategoriesToBackend(): Promise<{
 
     // First pass: Create root categories (no parent)
     const rootCategories = frontendCategories.filter((cat) => !cat.parentId);
-    console.log(`\n🌳 Processing ${rootCategories.length} root categories...`);
 
     for (const frontendCat of rootCategories) {
       const backendSlug = frontendCat.slug.toLowerCase();
       const existingBackend = backendCategoryMap.get(backendSlug);
 
       if (existingBackend) {
-        console.log(`⏭️  Skipping "${frontendCat.name}" - already exists in backend`);
         frontendToBackendMap.set(frontendCat.id, existingBackend.id);
         result.skipped++;
       } else {
         try {
-          console.log(`➕ Creating root category: "${frontendCat.name}" (${frontendCat.slug})`);
           const response = await api.post<{ success: boolean; data: BackendCategory }>('/categories', {
             name: frontendCat.name,
             slug: frontendCat.slug,
@@ -76,7 +71,6 @@ export async function syncCategoriesToBackend(): Promise<{
             const createdCategory = response.data.data;
             frontendToBackendMap.set(frontendCat.id, createdCategory.id);
             backendCategoryMap.set(backendSlug, createdCategory);
-            console.log(`✅ Created: "${frontendCat.name}" -> ${createdCategory.id}`);
             result.created++;
           } else {
             throw new Error('Invalid response from backend');
@@ -113,13 +107,11 @@ export async function syncCategoriesToBackend(): Promise<{
         const existingBackend = backendCategoryMap.get(backendSlug);
 
         if (existingBackend) {
-          console.log(`⏭️  Skipping "${frontendCat.name}" - already exists in backend`);
           frontendToBackendMap.set(frontendCat.id, existingBackend.id);
           result.skipped++;
           processedInThisIteration.push(frontendCat.id);
         } else {
           try {
-            console.log(`➕ Creating category: "${frontendCat.name}" (${frontendCat.slug}) with parent ${parentBackendId}`);
             const response = await api.post<{ success: boolean; data: BackendCategory }>('/categories', {
               name: frontendCat.name,
               slug: frontendCat.slug,
@@ -133,7 +125,6 @@ export async function syncCategoriesToBackend(): Promise<{
               const createdCategory = response.data.data;
               frontendToBackendMap.set(frontendCat.id, createdCategory.id);
               backendCategoryMap.set(backendSlug, createdCategory);
-              console.log(`✅ Created: "${frontendCat.name}" -> ${createdCategory.id}`);
               result.created++;
               processedInThisIteration.push(frontendCat.id);
             } else {
@@ -165,11 +156,6 @@ export async function syncCategoriesToBackend(): Promise<{
         break;
       }
     }
-
-    console.log(`\n📊 Sync Summary:`);
-    console.log(`   ✅ Created: ${result.created}`);
-    console.log(`   ⏭️  Skipped: ${result.skipped}`);
-    console.log(`   ❌ Errors: ${result.errors.length}`);
 
     // Only mark as unsuccessful if no categories were created and there were errors
     if (result.created === 0 && result.errors.length > 0) {

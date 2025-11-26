@@ -272,15 +272,6 @@ export const updateGear = async (
       : (typeof data.rating === 'number' ? data.rating : parseFloat(String(data.rating)));
     const finalRatingValue = isNaN(ratingValue) ? null : ratingValue;
     updateValues.push(finalRatingValue);
-    console.log('🔧 [updateGear] Rating update:', {
-      original: data.rating,
-      type: typeof data.rating,
-      parsed: ratingValue,
-      final: finalRatingValue,
-      isNaN: isNaN(ratingValue)
-    });
-  } else {
-    console.log('⚠️ [updateGear] Rating is undefined, not updating');
   }
   if (data.recommended_products) {
     updateFields.push('recommended_products = ?');

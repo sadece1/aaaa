@@ -69,15 +69,6 @@ router.post(
 
 router.post(
   '/images',
-  (req, res, next) => {
-    // Log request for debugging
-    console.log('Upload request received:', {
-      hasAuth: !!req.headers.authorization,
-      contentType: req.headers['content-type'],
-      contentLength: req.headers['content-length'],
-    });
-    next();
-  },
   authenticate,
   checkUploadRateLimit,
   checkDiskSpaceBeforeUpload,
@@ -109,7 +100,6 @@ router.post(
           message: 'File upload failed: ' + (err as Error).message,
         });
       }
-      console.log('Files uploaded:', req.files ? (Array.isArray(req.files) ? req.files.length : 1) : 0);
       next();
     });
   },

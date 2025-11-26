@@ -37,7 +37,6 @@ export const FilterSidebar = ({
       // Trim string values
       newFilters[key] = typeof value === 'string' ? value.trim() : value;
     }
-    console.log('FilterSidebar - Filter changed:', key, '=', value, 'New filters:', newFilters);
     setLocalFilters(newFilters);
     onFilterChange(newFilters);
   };

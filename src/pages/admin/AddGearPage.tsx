@@ -69,7 +69,6 @@ export const AddGearPage = () => {
       try {
         const allBrands = await brandService.getAllBrands();
         const brandNames = Array.isArray(allBrands) ? allBrands.map(b => b.name).filter(Boolean) : [];
-        console.log('✅ Loaded brands:', brandNames.length, brandNames);
         setBrands(brandNames);
       } catch (error) {
         console.error('❌ Failed to load brands:', error);
@@ -103,7 +102,6 @@ export const AddGearPage = () => {
       try {
         const updatedBrands = await brandService.getAllBrands();
         const brandNames = Array.isArray(updatedBrands) ? updatedBrands.map(b => b.name).filter(Boolean) : [];
-        console.log('✅ Updated brands:', brandNames.length, brandNames);
         setBrands(brandNames);
       } catch (error) {
         console.error('❌ Failed to update brands:', error);
@@ -173,7 +171,6 @@ export const AddGearPage = () => {
           setValue('categoryId', category.id);
           setValue('category', category.slug);
           setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
-          console.log('✅ Final category selected:', { id: category.id, slug: category.slug, name: category.name });
         }
       } else if (selectedSubCategory) {
         const category = await categoryManagementService.getCategoryById(selectedSubCategory);
@@ -181,7 +178,6 @@ export const AddGearPage = () => {
           setValue('categoryId', category.id);
           setValue('category', category.slug);
           setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
-          console.log('✅ Sub category selected:', { id: category.id, slug: category.slug, name: category.name });
         }
       } else if (selectedParentCategory) {
         const category = await categoryManagementService.getCategoryById(selectedParentCategory);
@@ -189,7 +185,6 @@ export const AddGearPage = () => {
           setValue('categoryId', category.id);
           setValue('category', category.slug);
           setSelectedCategoryName(`${category.icon || ''} ${category.name}`);
-          console.log('✅ Parent category selected:', { id: category.id, slug: category.slug, name: category.name });
         }
       } else {
         setSelectedCategoryName('');
@@ -226,13 +221,6 @@ export const AddGearPage = () => {
         rating: ratingInput?.value || allFormValues.rating || watchedValues.rating || ratingValue || data.rating || null,
         status: statusInput?.value || allFormValues.status || watchedValues.status || data.status || 'for-sale',
       };
-      
-      console.log('=== FORM SUBMIT DEBUG (ADD) ===');
-      console.log('handleSubmit data:', data);
-      console.log('getValues() all values:', allFormValues);
-      console.log('watch() all:', watchedValues);
-      console.log('ratingValue:', ratingValue);
-      console.log('MANUAL DATA COLLECTED:', manualData);
       
       // Use manual data
       const formData = manualData;
@@ -287,8 +275,6 @@ export const AddGearPage = () => {
           specificationsObj[spec.key.trim()] = spec.value.trim();
         }
       });
-      console.log('✅ Specifications from STATE:', specificationsState);
-      console.log('✅ Specifications object:', specificationsObj);
 
       // Extract and validate form values
       const pricePerDay = typeof formData.pricePerDay === 'number' && !isNaN(formData.pricePerDay) ? formData.pricePerDay : (formData.pricePerDay ? Number(formData.pricePerDay) : 0);
@@ -298,20 +284,12 @@ export const AddGearPage = () => {
       const finalRatingValue = ratingState !== null && ratingState !== undefined 
         ? ratingState 
         : null;
-      console.log('✅ Rating from STATE:', ratingState);
-      console.log('✅ Final rating value:', finalRatingValue);
       
       const finalSpecifications = Object.keys(specificationsObj).length > 0 
         ? specificationsObj 
         : {};
       
       const finalCategoryIdValue = finalCategoryId || '';
-      
-      console.log('🎯 FINAL VALUES TO SEND (ADD):', {
-        rating: finalRatingValue,
-        specifications: finalSpecifications,
-        categoryId: finalCategoryIdValue
-      });
       
       // Ensure all values are explicitly set, NEVER undefined - use formData
       const gearData: Omit<Gear, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -330,36 +308,21 @@ export const AddGearPage = () => {
         rating: finalRatingValue, // ALWAYS set, never undefined (null is valid)
         recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : [],
       };
-      
-      console.log('Final gearData object:', gearData);
-      console.log('gearData.rating:', gearData.rating, typeof gearData.rating);
-      console.log('gearData.specifications:', gearData.specifications);
-      console.log('gearData.categoryId:', gearData.categoryId);
-      console.log('gearData keys:', Object.keys(gearData));
-      console.log('gearData values:', Object.values(gearData));
 
       // DOUBLE CHECK: Ensure rating is included
       if (gearData.rating === undefined) {
-        console.warn('⚠️ Rating is undefined in gearData! Adding manually...');
         gearData.rating = finalRating !== undefined ? finalRating : (ratingValue !== undefined ? ratingValue : null);
-        console.log('Added rating manually:', gearData.rating);
       }
       
       // DOUBLE CHECK: Ensure specifications is included
       if (gearData.specifications === undefined) {
-        console.warn('⚠️ Specifications is undefined in gearData! Adding manually...');
         gearData.specifications = Object.keys(specificationsObj).length > 0 ? specificationsObj : {};
-        console.log('Added specifications manually:', gearData.specifications);
       }
       
       // DOUBLE CHECK: Ensure categoryId is included
       if (!gearData.categoryId) {
-        console.warn('⚠️ CategoryId is missing in gearData! Adding manually...');
         gearData.categoryId = finalCategoryId || '';
-        console.log('Added categoryId manually:', gearData.categoryId);
       }
-
-      console.log('FINAL GEARDATA BEFORE SEND:', gearData);
 
       // Use store method which handles the service call
       await addGear(gearData);
@@ -402,7 +365,6 @@ export const AddGearPage = () => {
     const newSpecs = [...specificationsState, { key: '', value: '' }];
     setSpecificationsState(newSpecs);
     setSpecifications(newSpecs); // Eski state'i de güncelle (backward compatibility)
-    console.log('➕ Added specification, total:', newSpecs.length);
   };
 
   const removeSpecification = (index: number) => {
@@ -412,7 +374,6 @@ export const AddGearPage = () => {
     }
     setSpecificationsState(newSpecs);
     setSpecifications(newSpecs); // Eski state'i de güncelle
-    console.log('➖ Removed specification, total:', newSpecs.length);
   };
 
   const updateSpecification = (index: number, field: 'key' | 'value', value: string) => {
@@ -420,7 +381,6 @@ export const AddGearPage = () => {
     newSpecs[index] = { ...newSpecs[index], [field]: value };
     setSpecificationsState(newSpecs);
     setSpecifications(newSpecs); // Eski state'i de güncelle
-    console.log(`✏️ Updated specification[${index}].${field}:`, value);
   };
 
   return (
@@ -681,7 +641,6 @@ export const AddGearPage = () => {
                       key={star}
                       type="button"
                       onClick={() => {
-                        console.log('⭐ Setting rating STATE to:', star);
                         setRatingState(star);
                         // Form'a da set et (backup)
                         setValue('rating', star, { shouldValidate: false, shouldDirty: false });
@@ -700,7 +659,6 @@ export const AddGearPage = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      console.log('🗑️ Clearing rating STATE');
                       setRatingState(null);
                       setValue('rating', null, { shouldValidate: false, shouldDirty: false });
                     }}

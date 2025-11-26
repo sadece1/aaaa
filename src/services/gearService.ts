@@ -94,16 +94,6 @@ export const gearService = {
         gearData = response.data;
       }
       
-      // CRITICAL DEBUG: Log raw rating from backend
-      console.log('🔍 [getGearById] Raw rating from backend:', {
-        rating: gearData.rating,
-        type: typeof gearData.rating,
-        isNull: gearData.rating === null,
-        isUndefined: gearData.rating === undefined,
-        stringValue: String(gearData.rating),
-        fullGearData: gearData
-      });
-      
       // Transform snake_case to camelCase and ensure proper types
       let parsedRating: number | null = null;
       
@@ -125,8 +115,6 @@ export const gearService = {
         parsedRating = null;
       }
       
-      console.log('🔍 [getGearById] Parsed rating:', parsedRating, typeof parsedRating);
-      
       const transformed: Gear = {
         ...gearData,
         pricePerDay: typeof gearData.price_per_day === 'string' 
@@ -141,8 +129,6 @@ export const gearService = {
         updatedAt: gearData.updated_at ?? gearData.updatedAt, // Transform updated_at to updatedAt
         createdAt: gearData.created_at ?? gearData.createdAt, // Transform created_at to createdAt
       };
-      
-      console.log('🔍 [getGearById] Final transformed rating:', transformed.rating, typeof transformed.rating);
       
       return transformed as Gear;
     } catch (error: any) {
@@ -183,7 +169,6 @@ export const gearService = {
         if (transformedData.pricePerDay !== undefined) {
           transformedData.price_per_day = transformedData.pricePerDay;
           delete transformedData.pricePerDay;
-          console.log('Transformed pricePerDay to price_per_day:', transformedData.price_per_day);
         }
         
         // Convert recommendedProducts to recommended_products
@@ -215,10 +200,8 @@ export const gearService = {
             // Allow 0 as valid rating value
             transformedData.rating = isNaN(parsed) ? null : parsed;
           }
-          console.log('Transformed rating value:', transformedData.rating);
         } else {
           // If rating key is missing, set it to null explicitly
-          console.warn('⚠️ Rating key missing in data! Setting to null explicitly.');
           transformedData.rating = null;
         }
         
@@ -227,10 +210,8 @@ export const gearService = {
           if (!transformedData.specifications || typeof transformedData.specifications !== 'object') {
             transformedData.specifications = {};
           }
-          console.log('Transformed specifications:', transformedData.specifications);
         } else {
           // If specifications key is missing, set it to empty object explicitly
-          console.warn('⚠️ Specifications key missing in data! Setting to empty object explicitly.');
           transformedData.specifications = {};
         }
         
@@ -239,16 +220,11 @@ export const gearService = {
           transformedData.category_id = transformedData.categoryId;
           delete transformedData.categoryId;
         }
-        if ('category_id' in transformedData) {
-          console.log('Transformed category_id:', transformedData.category_id);
-        } else {
+        if (!('category_id' in transformedData)) {
           // If category_id key is missing, try to get it from categoryId
           if ('categoryId' in transformedData) {
             transformedData.category_id = transformedData.categoryId;
             delete transformedData.categoryId;
-            console.log('Converted categoryId to category_id:', transformedData.category_id);
-          } else {
-            console.warn('⚠️ Category_id key missing in data!');
           }
         }
       }
@@ -256,19 +232,8 @@ export const gearService = {
       const headers = data instanceof FormData
         ? { 'Content-Type': 'multipart/form-data' }
         : { 'Content-Type': 'application/json' };
-
-      console.log('=== SENDING TO BACKEND ===');
-      console.log('URL:', `/gear/${id}`);
-      console.log('Data being sent:', transformedData);
-      console.log('Data.rating:', transformedData.rating, typeof transformedData.rating);
-      console.log('Data.specifications:', transformedData.specifications);
-      console.log('Data.category_id:', transformedData.category_id);
-      console.log('Headers:', headers);
       
       const response = await api.put<{ success: boolean; data: Gear } | Gear>(`/gear/${id}`, transformedData, { headers });
-      
-      console.log('=== BACKEND RESPONSE ===');
-      console.log('Response:', response.data);
       
       // Backend returns { success: true, data: gear }
       if ((response.data as any).success && (response.data as any).data) {

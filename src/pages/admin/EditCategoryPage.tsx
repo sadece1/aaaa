@@ -59,10 +59,7 @@ export const EditCategoryPage = () => {
 
   useEffect(() => {
     const loadCategories = async () => {
-      console.log('🔄 Loading categories...');
       const allCategories = await categoryManagementService.getAllCategories();
-      console.log('📦 Loaded categories:', allCategories.length);
-      console.log('🏠 Root categories:', allCategories.filter(c => !c.parentId || c.parentId === null || c.parentId === '').map(c => ({ id: c.id, name: c.name, parentId: c.parentId })));
       
       // Force state update by creating a new array reference
       setCategories([...allCategories]);
@@ -82,13 +79,10 @@ export const EditCategoryPage = () => {
     loadCategories();
 
     // Listen for category updates
-    const handleCategoryUpdate = (e?: Event) => {
-      console.log('📢 Category update event received!', e?.type || 'custom');
+    const handleCategoryUpdate = () => {
       // Small delay to ensure localStorage is updated
       setTimeout(async () => {
-        console.log('🔄 Reloading categories after update...');
         const allCategories = await categoryManagementService.getAllCategories();
-        console.log('📦 Reloaded categories:', allCategories.length);
         // Force state update by creating a new array reference
         setCategories([...allCategories]);
       }, 100);
@@ -152,7 +146,6 @@ export const EditCategoryPage = () => {
   useEffect(() => {
     const handleVisibilityChange = async () => {
       if (!document.hidden) {
-        console.log('👁️ Page became visible, reloading categories...');
         const allCategories = await categoryManagementService.getAllCategories();
         // Force state update by creating a new array reference
         setCategories([...allCategories]);
@@ -371,13 +364,6 @@ export const EditCategoryPage = () => {
     const sorted = filtered.sort((a, b) => (a.order || 0) - (b.order || 0));
     
     // Debug: Log root categories
-    console.log('📋 Root Categories calculation:');
-    console.log('  - All categories:', categories.length);
-    console.log('  - All root categories:', allRootCategories.map(c => c.name));
-    console.log('  - Filtered root categories:', sorted.map(c => ({ id: c.id, name: c.name, parentId: c.parentId })));
-    console.log('  - Current editing ID:', id);
-    console.log('  - Descendant IDs:', descendantIds);
-    
     return sorted;
   }, [categories, id, descendantIds]);
 

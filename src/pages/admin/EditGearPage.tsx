@@ -69,7 +69,6 @@ export const EditGearPage = () => {
       try {
         const allBrands = await brandService.getAllBrands();
         const brandNames = Array.isArray(allBrands) ? allBrands.map(b => b.name).filter(Boolean) : [];
-        console.log('✅ Loaded brands:', brandNames.length, brandNames);
         setBrands(brandNames);
       } catch (error) {
         console.error('❌ Failed to load brands:', error);
@@ -103,7 +102,6 @@ export const EditGearPage = () => {
       try {
         const updatedBrands = await brandService.getAllBrands();
         const brandNames = Array.isArray(updatedBrands) ? updatedBrands.map(b => b.name).filter(Boolean) : [];
-        console.log('✅ Updated brands:', brandNames.length, brandNames);
         setBrands(brandNames);
       } catch (error) {
         console.error('❌ Failed to update brands:', error);
@@ -138,15 +136,6 @@ export const EditGearPage = () => {
 
   useEffect(() => {
     if (currentGear) {
-      console.log('🔍 [EditGearPage] Loading gear data:', currentGear); // Debug log
-      console.log('🔍 [EditGearPage] Rating in currentGear:', {
-        rating: currentGear.rating,
-        type: typeof currentGear.rating,
-        isNull: currentGear.rating === null,
-        isUndefined: currentGear.rating === undefined,
-        stringValue: String(currentGear.rating)
-      }); // Debug log
-      
       // Status'u belirle (available'dan veya mevcut status'tan)
       const status = currentGear.status || (currentGear.available ? 'for-sale' : 'sold');
       
@@ -197,9 +186,6 @@ export const EditGearPage = () => {
         actualRating = null;
       }
       
-      console.log('Loading gear data:', currentGear); // Debug log
-      console.log('Extracted values:', { actualPricePerDay, actualDeposit, actualRating, pricePerDay: gearData.pricePerDay, price_per_day: gearData.price_per_day }); // Debug log
-      
       // Reset form with all gear data - use actual values, not defaults
       const formData = {
         name: currentGear.name || '',
@@ -211,8 +197,6 @@ export const EditGearPage = () => {
         rating: actualRating,
         status: status as GearStatus,
       };
-      
-      console.log('Form data to set:', formData); // Debug log
       
       // Reset form immediately with defaultValues
       reset(formData, { keepDefaultValues: false });
@@ -234,14 +218,8 @@ export const EditGearPage = () => {
       
       // Then set again after delays to ensure they stick
       const timer1 = setTimeout(setValues, 50);
-      const timer2 = setTimeout(() => {
-        setValues();
-        console.log('Values set after 200ms, current form values:', watch()); // Debug log
-      }, 200);
-      const timer3 = setTimeout(() => {
-        setValues();
-        console.log('Values set after 500ms, current form values:', watch()); // Debug log
-      }, 500);
+      const timer2 = setTimeout(setValues, 200);
+      const timer3 = setTimeout(setValues, 500);
       
       return () => {
         clearTimeout(timer1);
@@ -295,8 +273,6 @@ export const EditGearPage = () => {
       }
       
       setRatingState(finalRating);
-      console.log('⭐ [EditGearPage] Setting rating STATE to:', finalRating, 'from gear:', gearRating);
-      console.log('⭐ [EditGearPage] Rating state after set:', finalRating, typeof finalRating);
       
       // Category ve specifications yükleme artık ayrı useEffect'lerde yapılıyor
     }
@@ -328,12 +304,6 @@ export const EditGearPage = () => {
       
       // Only update if different to avoid infinite loops
       if (ratingState !== finalRating) {
-        console.log('🔄 [EditGearPage] Rating state sync:', {
-          currentState: ratingState,
-          newState: finalRating,
-          gearRating: gearRating,
-          gearRatingType: typeof gearRating
-        });
         setRatingState(finalRating);
       }
     }
@@ -356,19 +326,11 @@ export const EditGearPage = () => {
             key,
             value: String(value),
           }));
-          console.log('🔄 [EditGearPage] Specifications state sync:', {
-            currentState: specificationsState,
-            newState: specsArray,
-            gearSpecs: currentGear.specifications,
-            gearSpecsStr,
-            currentSpecsStr
-          });
           setSpecificationsState(specsArray);
           setSpecifications(specsArray);
         } else {
           // Empty specifications - set to empty array with one empty field
           if (specificationsState.length !== 1 || specificationsState[0].key !== '' || specificationsState[0].value !== '') {
-            console.log('🔄 [EditGearPage] Specifications cleared');
             setSpecificationsState([{ key: '', value: '' }]);
             setSpecifications([{ key: '', value: '' }]);
           }
@@ -442,12 +404,6 @@ export const EditGearPage = () => {
               setValue('categoryId', finalCategory.id, { shouldValidate: false, shouldDirty: false });
               setValue('category', finalCategory.slug, { shouldValidate: false, shouldDirty: false });
               setSelectedCategoryName(`${finalCategory.icon || ''} ${finalCategory.name}`);
-              
-              console.log('🔄 [EditGearPage] Category hierarchy synced:', {
-                parent: path[0]?.name,
-                sub: path[1]?.name,
-                final: path[2]?.name || path[path.length - 1]?.name,
-              });
             }
           }
         } catch (error) {
@@ -582,13 +538,6 @@ export const EditGearPage = () => {
         status: statusInput?.value || allFormValues.status || watchedValues.status || data.status || 'for-sale',
       };
       
-      console.log('=== FORM SUBMIT DEBUG ===');
-      console.log('handleSubmit data:', data);
-      console.log('getValues() all values:', allFormValues);
-      console.log('watch() all:', watchedValues);
-      console.log('ratingValue:', ratingValue);
-      console.log('MANUAL DATA COLLECTED:', manualData);
-      
       // Use manual data
       const formData = manualData;
       // Son seçilen kategoriyi belirle - mevcut kategoriyi de kontrol et
@@ -634,14 +583,6 @@ export const EditGearPage = () => {
         : (currentGear.images && currentGear.images.length > 0 ? currentGear.images : []);
       const validImages = [...existingImages, ...uploadedImageUrls].filter(url => url.trim() !== '');
       
-      console.log('🖼️ Images check:', {
-        imageUrlsLength: imageUrls.length,
-        currentGearImagesLength: currentGear.images?.length || 0,
-        existingImagesLength: existingImages.length,
-        uploadedImageUrlsLength: uploadedImageUrls.length,
-        validImagesLength: validImages.length
-      });
-      
       // YENİ MEKANİZMA 1: Teknik Özellikler - State'den direkt al, yoksa mevcut değerleri koru
       const specificationsObj: Record<string, string> = {};
       // ÖNEMLİ: specificationsState kullan (specifications değil!)
@@ -650,8 +591,6 @@ export const EditGearPage = () => {
           specificationsObj[spec.key.trim()] = spec.value.trim();
         }
       });
-      console.log('✅ Specifications from STATE:', specificationsState);
-      console.log('✅ Specifications object:', specificationsObj);
       
       // Extract and validate form values
       const pricePerDay = typeof formData.pricePerDay === 'number' && !isNaN(formData.pricePerDay) ? formData.pricePerDay : (formData.pricePerDay ? Number(formData.pricePerDay) : 0);
@@ -684,9 +623,6 @@ export const EditGearPage = () => {
           finalRatingValue = null;
         }
       }
-      console.log('✅ Rating from STATE:', ratingState);
-      console.log('✅ Current gear rating:', currentGear.rating);
-      console.log('✅ Final rating value:', finalRatingValue);
       
       // Specifications: Eğer state'de değer yoksa veya sadece boş alanlar varsa, mevcut değerleri koru
       const hasValidSpecs = specificationsState.some(spec => spec.key.trim() && spec.value.trim());
@@ -695,27 +631,10 @@ export const EditGearPage = () => {
         : (currentGear.specifications && Object.keys(currentGear.specifications).length > 0 
           ? currentGear.specifications 
           : {});
-      console.log('✅ Specifications check:', {
-        hasValidSpecs,
-        specificationsStateLength: specificationsState.length,
-        specificationsObjKeys: Object.keys(specificationsObj).length,
-        currentGearSpecsKeys: currentGear.specifications ? Object.keys(currentGear.specifications).length : 0,
-        finalSpecs: finalSpecifications
-      });
-      
       // Category: Eğer seçim yapılmamışsa, mevcut kategoriyi koru
       const finalCategoryIdValue = (selectedFinalCategory || selectedSubCategory || selectedParentCategory) 
         || currentGear.categoryId 
         || '';
-      
-      console.log('🎯 FINAL VALUES TO SEND:', {
-        rating: finalRatingValue,
-        specifications: finalSpecifications,
-        categoryId: finalCategoryIdValue,
-        ratingState,
-        selectedCategories: { selectedFinalCategory, selectedSubCategory, selectedParentCategory },
-        currentGearCategoryId: currentGear.categoryId
-      });
       
       // Ensure all values are explicitly set, NEVER undefined - use formData
       const updates: Partial<Gear> = {
@@ -734,36 +653,21 @@ export const EditGearPage = () => {
         rating: finalRatingValue, // ALWAYS set, never undefined (null is valid)
         recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : (currentGear.recommendedProducts || []),
       };
-      
-      console.log('Final updates object:', updates);
-      console.log('Updates.rating:', updates.rating, typeof updates.rating);
-      console.log('Updates.specifications:', updates.specifications);
-      console.log('Updates.categoryId:', updates.categoryId);
-      console.log('Updates keys:', Object.keys(updates));
-      console.log('Updates values:', Object.values(updates));
 
       // DOUBLE CHECK: Ensure rating is included
       if (updates.rating === undefined) {
-        console.warn('⚠️ Rating is undefined in updates! Adding manually...');
         updates.rating = finalRatingValue !== undefined ? finalRatingValue : (ratingValue !== undefined ? ratingValue : null);
-        console.log('Added rating manually:', updates.rating);
       }
       
       // DOUBLE CHECK: Ensure specifications is included
       if (updates.specifications === undefined) {
-        console.warn('⚠️ Specifications is undefined in updates! Adding manually...');
         updates.specifications = Object.keys(specificationsObj).length > 0 ? specificationsObj : (currentGear.specifications || {});
-        console.log('Added specifications manually:', updates.specifications);
       }
       
       // DOUBLE CHECK: Ensure categoryId is included
       if (!updates.categoryId) {
-        console.warn('⚠️ CategoryId is missing in updates! Adding manually...');
         updates.categoryId = finalCategoryId || currentGear.categoryId;
-        console.log('Added categoryId manually:', updates.categoryId);
       }
-
-      console.log('FINAL UPDATES BEFORE SEND:', updates);
 
       await updateGearInStore(id, updates);
       navigate(routes.adminGear);
@@ -805,7 +709,6 @@ export const EditGearPage = () => {
     const newSpecs = [...specificationsState, { key: '', value: '' }];
     setSpecificationsState(newSpecs);
     setSpecifications(newSpecs); // Eski state'i de güncelle (backward compatibility)
-    console.log('➕ Added specification, total:', newSpecs.length);
   };
 
   const removeSpecification = (index: number) => {
@@ -815,7 +718,6 @@ export const EditGearPage = () => {
     }
     setSpecificationsState(newSpecs);
     setSpecifications(newSpecs); // Eski state'i de güncelle
-    console.log('➖ Removed specification, total:', newSpecs.length);
   };
 
   const updateSpecification = (index: number, field: 'key' | 'value', value: string) => {
@@ -823,7 +725,6 @@ export const EditGearPage = () => {
     newSpecs[index] = { ...newSpecs[index], [field]: value };
     setSpecificationsState(newSpecs);
     setSpecifications(newSpecs); // Eski state'i de güncelle
-    console.log(`✏️ Updated specification[${index}].${field}:`, value);
   };
 
   if (isLoading || !currentGear) {
@@ -1105,7 +1006,6 @@ export const EditGearPage = () => {
                       key={star}
                       type="button"
                       onClick={() => {
-                        console.log('⭐ Setting rating STATE to:', star);
                         setRatingState(star);
                         // Form'a da set et (backup)
                         setValue('rating', star, { shouldValidate: false, shouldDirty: false });
@@ -1124,7 +1024,6 @@ export const EditGearPage = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      console.log('🗑️ Clearing rating STATE');
                       setRatingState(null);
                       setValue('rating', null, { shouldValidate: false, shouldDirty: false });
                     }}

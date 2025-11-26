@@ -56,7 +56,6 @@ export const BlogPage = () => {
   }, [search]); // Removed setSearchParams and searchParams from dependencies
 
   useEffect(() => {
-    console.log('Blogs updated, total:', blogs.length);
     let filtered = blogs || [];
     
     if (search) {
@@ -71,7 +70,6 @@ export const BlogPage = () => {
       filtered = filtered.filter(post => post.category === selectedCategory);
     }
     
-    console.log('Filtered posts:', filtered.length);
     setFilteredPosts(filtered);
   }, [search, selectedCategory, blogs]);
 

@@ -86,7 +86,7 @@ export const AdminGearPage = () => {
           setBackendCategoryMap(map);
         }
       } catch (error) {
-        console.warn('Failed to fetch backend categories for mapping:', error);
+        // Failed to fetch backend categories for mapping
       }
     };
     

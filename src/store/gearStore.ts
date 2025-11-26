@@ -124,19 +124,8 @@ export const useGearStore = create<GearState>((set, get) => ({
               
               if (matchingBackendCategory) {
                 backendCategoryId = matchingBackendCategory.id;
-                console.log('✅ Category matched:', {
-                  frontend: { id: frontendCategory.id, slug: frontendCategory.slug, name: frontendCategory.name },
-                  backend: { id: matchingBackendCategory.id, slug: matchingBackendCategory.slug, name: matchingBackendCategory.name }
-                });
               } else {
-                // Log detailed information for debugging
-                console.warn('⚠️ Category not matched:', {
-                  frontend: { id: frontendCategory.id, slug: frontendCategory.slug, name: frontendCategory.name },
-                  availableBackendCategories: backendCategories.map((bc: any) => ({ id: bc.id, slug: bc.slug, name: bc.name }))
-                });
-                
                 // Try to create the category in backend automatically
-                console.log('🔄 Attempting to create category in backend:', frontendCategory.name);
                 try {
                   const { categoryManagementService } = await import('@/services/categoryManagementService');
                   
@@ -181,11 +170,6 @@ export const useGearStore = create<GearState>((set, get) => ({
                       );
                       if (createdCategory) {
                         backendCategoryId = createdCategory.id;
-                        console.log('✅ Category created in backend:', {
-                          id: backendCategoryId,
-                          name: createdCategory.name,
-                          slug: createdCategory.slug
-                        });
                       }
                     }
                   }
@@ -221,11 +205,7 @@ export const useGearStore = create<GearState>((set, get) => ({
                   return;
                 }
               }
-            } else {
-              console.warn('⚠️ Frontend category not found for ID:', gearData.categoryId);
             }
-          } else {
-            console.warn('⚠️ Backend categories response is invalid:', backendCategoriesResponse);
           }
         } catch (error) {
           console.error('❌ Failed to fetch backend categories:', error);
@@ -233,8 +213,6 @@ export const useGearStore = create<GearState>((set, get) => ({
           set({ isLoading: false });
           return;
         }
-      } else {
-        console.warn('⚠️ No categoryId provided in gearData:', gearData);
       }
 
       if (!backendCategoryId) {
@@ -287,21 +265,12 @@ export const useGearStore = create<GearState>((set, get) => ({
       // Always append rating, even if null (to explicitly set it)
       if (gearData.rating !== undefined) {
         formData.append('rating', gearData.rating !== null ? String(gearData.rating) : '');
-        console.log('Appending rating to FormData:', gearData.rating);
-      } else {
-        console.log('Rating is undefined, not appending to FormData');
       }
       if (gearData.specifications && Object.keys(gearData.specifications).length > 0) {
         formData.append('specifications', JSON.stringify(gearData.specifications));
       }
       if (gearData.recommendedProducts && gearData.recommendedProducts.length > 0) {
         formData.append('recommendedProducts', JSON.stringify(gearData.recommendedProducts));
-      }
-
-      console.log('=== SENDING TO GEAR SERVICE (CREATE) ===');
-      console.log('FormData entries:');
-      for (const [key, value] of formData.entries()) {
-        console.log(`  ${key}:`, value);
       }
       
       await gearService.createGear(formData);
