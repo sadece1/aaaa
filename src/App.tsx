@@ -54,6 +54,7 @@ const AdminColorsPage = lazy(() => import('@/pages/admin/AdminColorsPage').then(
 const AdminChangePasswordPage = lazy(() => import('@/pages/admin/AdminChangePasswordPage').then(m => ({ default: m.AdminChangePasswordPage })));
 const AdminUserOrdersPage = lazy(() => import('@/pages/admin/AdminUserOrdersPage').then(m => ({ default: m.AdminUserOrdersPage })));
 const AdminUsersPage = lazy(() => import('@/pages/admin/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -302,8 +303,8 @@ function AppContent() {
                   }
                 />
 
-                {/* 404 */}
-                <Route path="*" element={<Navigate to={routes.home} replace />} />
+                {/* 404 - Custom Not Found Page */}
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

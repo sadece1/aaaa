@@ -102,12 +102,87 @@ export const errorHandler = (
 
 /**
  * 404 Not Found Handler
+ * Returns SEO-friendly HTML for browser requests, JSON for API requests
  */
 export const notFoundHandler = (req: Request, res: Response): void => {
-  res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`,
-  });
+  // Check if it's an API request
+  if (req.path.startsWith('/api/')) {
+    res.status(404).json({
+      success: false,
+      message: `Route ${req.originalUrl} not found`,
+    });
+    return;
+  }
+
+  // For non-API requests, return SEO-friendly HTML
+  // This allows search engines to understand the 404 status
+  // while providing a better user experience
+  res.status(404).send(`
+    <!DOCTYPE html>
+    <html lang="tr">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>404 - Sayfa Bulunamadı</title>
+      <meta name="robots" content="noindex, nofollow">
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          color: #333;
+        }
+        .container {
+          background: white;
+          border-radius: 20px;
+          padding: 60px 40px;
+          max-width: 600px;
+          width: 100%;
+          text-align: center;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { font-size: 120px; color: #667eea; margin-bottom: 20px; font-weight: 700; }
+        h2 { font-size: 32px; margin-bottom: 15px; color: #333; }
+        p { font-size: 18px; color: #666; margin-bottom: 30px; line-height: 1.6; }
+        .links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        a {
+          display: inline-block;
+          padding: 12px 30px;
+          background: #667eea;
+          color: white;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: 600;
+          transition: background 0.3s;
+        }
+        a:hover { background: #5568d3; }
+        a.secondary {
+          background: #e0e0e0;
+          color: #333;
+        }
+        a.secondary:hover { background: #d0d0d0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>404</h1>
+        <h2>Sayfa Bulunamadı</h2>
+        <p>Aradığınız sayfa taşınmış, kaldırılmış veya hiç var olmamış olabilir.</p>
+        <div class="links">
+          <a href="/">Ana Sayfa</a>
+          <a href="/blog" class="secondary">Blog</a>
+          <a href="/gear" class="secondary">Ekipmanlar</a>
+          <a href="/about" class="secondary">Hakkımızda</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
 };
 
 /**

@@ -18,6 +18,7 @@ import {
 } from '../middleware/bruteForce';
 import { blacklistToken } from '../utils/tokenManager';
 import { getClientIp, getUserAgent } from '../utils/securityLogger';
+import { getAuthCookieOptions, getRefreshTokenCookieOptions } from '../utils/cookieConfig';
 
 /**
  * Register new user
@@ -28,14 +29,8 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
   const result = await registerUser(name, email, password, req);
 
   // Set HttpOnly cookie for token (more secure than localStorage)
-  const isProduction = process.env.NODE_ENV === 'production';
-  res.cookie('token', result.token, {
-    httpOnly: true, // Prevents XSS attacks - JavaScript cannot access this cookie
-    secure: isProduction, // Only send over HTTPS in production
-    sameSite: 'strict', // CSRF protection
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days (matches JWT expiration)
-    path: '/', // Available for all routes
-  });
+  // Using secure cookie configuration (always requires HTTPS)
+  res.cookie('token', result.token, getAuthCookieOptions());
 
   res.status(201).json({
     success: true,
@@ -67,24 +62,12 @@ export const login = [
       clearLoginAttempts(req);
 
       // Set HttpOnly cookie for token (more secure than localStorage)
-      const isProduction = process.env.NODE_ENV === 'production';
-      res.cookie('token', result.token, {
-        httpOnly: true, // Prevents XSS attacks - JavaScript cannot access this cookie
-        secure: isProduction, // Only send over HTTPS in production
-        sameSite: 'strict', // CSRF protection
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days (matches JWT expiration)
-        path: '/', // Available for all routes
-      });
+      // Using secure cookie configuration (always requires HTTPS)
+      res.cookie('token', result.token, getAuthCookieOptions());
 
-      // Set refresh token in cookie as well (optional, can also be HttpOnly)
+      // Set refresh token in cookie as well
       if (result.refreshToken) {
-        res.cookie('refreshToken', result.refreshToken, {
-          httpOnly: true,
-          secure: isProduction,
-          sameSite: 'strict',
-          maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-          path: '/',
-        });
+        res.cookie('refreshToken', result.refreshToken, getRefreshTokenCookieOptions());
       }
 
       res.status(200).json({
@@ -192,23 +175,11 @@ export const refreshToken = asyncHandler(async (req: Request, res: Response) => 
   const result = await refreshAccessToken(refreshToken);
 
   // Set new tokens in HttpOnly cookies
-  const isProduction = process.env.NODE_ENV === 'production';
-  res.cookie('token', result.token, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: '/',
-  });
+  // Using secure cookie configuration (always requires HTTPS)
+  res.cookie('token', result.token, getAuthCookieOptions());
 
   if (result.refreshToken) {
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      path: '/',
-    });
+    res.cookie('refreshToken', result.refreshToken, getRefreshTokenCookieOptions());
   }
 
   res.status(200).json({

@@ -8,6 +8,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { enforceHttps } from './middleware/httpsEnforcement';
+import { redirectMiddleware } from './middleware/redirects';
+import { goneHandler } from './middleware/goneHandler';
 import logger from './utils/logger';
 import authRoutes from './routes/auth.routes';
 import campsiteRoutes from './routes/campsites.routes';
@@ -44,32 +46,53 @@ app.set('trust proxy', 1);
 // }
 
 // Security middleware with enhanced CSP and security headers
+// Implements OWASP best practices and security hardening requirements
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:", "http:"],
-      connectSrc: ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173'],
+      // Removed 'unsafe-inline' for styleSrc - use nonces or hashes instead
+      styleSrc: ["'self'"], // Strict CSP - no inline styles
+      scriptSrc: ["'self'"], // Strict CSP - no inline scripts
+      imgSrc: ["'self'", "data:", "https:"], // Removed http: - HTTPS only
+      connectSrc: ["'self'", process.env.FRONTEND_URL || 'https://localhost:5173'],
       fontSrc: ["'self'", "data:"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
       frameSrc: ["'none'"],
-      upgradeInsecureRequests: null, // Disabled - Nginx handles HTTPS redirect
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      frameAncestors: ["'none'"], // X-Frame-Options: DENY equivalent
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
     },
   },
   crossOriginEmbedderPolicy: false, // Allow images from external sources
   hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true,
+    maxAge: 31536000, // 1 year (OWASP recommendation)
+    includeSubDomains: true, // Apply to all subdomains
+    preload: true, // Enable HSTS preload
   },
   // Additional security headers
-  xFrameOptions: { action: 'deny' },
-  xContentTypeOptions: true,
+  xFrameOptions: { action: 'deny' }, // Clickjacking protection
+  xContentTypeOptions: true, // MIME type sniffing protection
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   permittedCrossDomainPolicies: false,
+  // Permissions-Policy header (formerly Feature-Policy)
+  permissionsPolicy: {
+    camera: [],
+    microphone: [],
+    geolocation: [],
+    payment: [],
+    usb: [],
+    magnetometer: [],
+    gyroscope: [],
+    accelerometer: [],
+    ambientLightSensor: [],
+    autoplay: [],
+    encryptedMedia: [],
+    fullscreen: ["'self'"],
+    pictureInPicture: [],
+  },
 }));
 
 // CORS configuration with enhanced security
@@ -251,6 +274,13 @@ const healthCheck = async (req: express.Request, res: express.Response) => {
 
 app.get('/health', healthCheck);
 app.get('/api/health', healthCheck);
+
+// SEO and URL Management Middleware
+// 1. 410 Gone handler (permanently removed content) - must come before redirects
+app.use(goneHandler);
+
+// 2. 301 Redirects (old URLs to new URLs) - preserves PageRank
+app.use(redirectMiddleware);
 
 // API routes
 app.use('/api/auth', authRoutes);
