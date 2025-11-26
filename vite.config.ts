@@ -43,7 +43,7 @@ export default defineConfig({
         secure: false,
         ws: true, // Enable websocket proxy
         configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, res) => {
+          proxy.on('error', (err, _req, _res) => {
             console.error('⚠️  Backend proxy error:', err.message);
             console.log('💡 Backend sunucusu çalışmıyor! Backend\'i başlatmak için:');
             console.log('   1. Yeni bir terminal açın');
