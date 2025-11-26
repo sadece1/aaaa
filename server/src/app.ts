@@ -77,23 +77,17 @@ app.use(helmet({
   xContentTypeOptions: true, // MIME type sniffing protection
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   permittedCrossDomainPolicies: false,
-  // Permissions-Policy header (formerly Feature-Policy)
-  permissionsPolicy: {
-    camera: [],
-    microphone: [],
-    geolocation: [],
-    payment: [],
-    usb: [],
-    magnetometer: [],
-    gyroscope: [],
-    accelerometer: [],
-    ambientLightSensor: [],
-    autoplay: [],
-    encryptedMedia: [],
-    fullscreen: ["'self'"],
-    pictureInPicture: [],
-  },
 }));
+
+// Permissions-Policy header (manually added - not supported in Helmet 7.1.0)
+// Restricts browser features to prevent abuse
+app.use((req, res, next) => {
+  res.setHeader(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=(), autoplay=(), encrypted-media=(), fullscreen=(self), picture-in-picture=()'
+  );
+  next();
+});
 
 // CORS configuration with enhanced security
 const corsOptions = {
