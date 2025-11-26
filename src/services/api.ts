@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { config } from '@/config';
+import { logger } from '@/utils/logger';
 
 // Always use relative /api path (works in both dev and production)
 // In dev: Vite proxy handles /api -> localhost:3000
@@ -59,22 +60,22 @@ api.interceptors.response.use(
     if (error.response?.status === 400) {
       const errorData = error.response.data as { message?: string; errors?: Array<{ field: string; message: string }> };
       
-      // Log full error response for debugging
-      console.error('=== VALIDATION ERROR ===');
-      console.error('Full error response:', error.response.data);
-      console.error('Status:', error.response.status);
-      console.error('Headers:', error.response.headers);
+      // Log full error response for debugging (only in development)
+      logger.error('=== VALIDATION ERROR ===');
+      logger.error('Full error response:', error.response.data);
+      logger.error('Status:', error.response.status);
+      logger.error('Headers:', error.response.headers);
       
       if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
         // Build detailed validation error message
         const validationMessages = errorData.errors.map(err => `${err.field}: ${err.message}`).join('\n');
-        console.error('Validation errors array:', errorData.errors);
-        console.error('Validation error details:', validationMessages);
+        logger.error('Validation errors array:', errorData.errors);
+        logger.error('Validation error details:', validationMessages);
         alert(`VALIDATION HATALARI:\n\n${validationMessages}\n\nConsole'da detayları görebilirsiniz.`);
         return Promise.reject(new Error(`Validation error:\n${validationMessages}`));
       } else {
-        console.error('No errors array found in response');
-        console.error('Error data:', errorData);
+        logger.error('No errors array found in response');
+        logger.error('Error data:', errorData);
       }
     }
     

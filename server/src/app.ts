@@ -269,6 +269,31 @@ const healthCheck = async (req: express.Request, res: express.Response) => {
 app.get('/health', healthCheck);
 app.get('/api/health', healthCheck);
 
+// robots.txt handler
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`# robots.txt for ${req.get('host') || 'sadece1deneme.com'}
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /blog
+Allow: /gear
+Allow: /category/
+Allow: /about
+Allow: /contact
+Allow: /references
+
+# Sitemap location
+Sitemap: https://${req.get('host') || 'sadece1deneme.com'}/sitemap.xml
+`);
+});
+
 // SEO and URL Management Middleware
 // 1. 410 Gone handler (permanently removed content) - must come before redirects
 app.use(goneHandler);

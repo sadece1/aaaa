@@ -1,0 +1,20 @@
+# robots.txt for sadece1deneme.com
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /blog
+Allow: /gear
+Allow: /category/
+Allow: /about
+Allow: /contact
+Allow: /references
+
+# Sitemap location
+Sitemap: https://sadece1deneme.com/sitemap.xml
+
