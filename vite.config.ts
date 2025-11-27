@@ -10,7 +10,22 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
     // Prevent multiple React instances (fixes "Cannot set properties of undefined" error)
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', 'react/jsx-runtime'],
+  },
+  // Optimize dependencies to prevent multiple React instances
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      'react-router-dom',
+      'react-helmet-async',
+      'react-hook-form',
+    ],
+    esbuildOptions: {
+      // Force ESM format to prevent CommonJS issues
+      format: 'esm',
+    },
   },
   build: {
     // Enable CSS code splitting
@@ -22,9 +37,17 @@ export default defineConfig({
       output: {
         // Manual chunk splitting to prevent React multiple instances error
         manualChunks: (id) => {
-          // Group React and React DOM together to prevent multiple instances
+          // Group ALL React-related packages together to prevent multiple instances
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react/jsx-runtime')) {
+            // React core packages
+            if (
+              id.includes('/react/') ||
+              id.includes('/react-dom/') ||
+              id.includes('/react/jsx-runtime') ||
+              id.includes('/react-router') ||
+              id.includes('/react-helmet') ||
+              id.includes('/react-hook-form')
+            ) {
               return 'vendor-react';
             }
             // All other node_modules go to vendor chunk
