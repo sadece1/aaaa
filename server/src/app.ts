@@ -117,8 +117,19 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Compression middleware
-app.use(compression());
+// Compression middleware with optimized settings for faster TTFB
+app.use(compression({
+  level: 6, // Balance between compression and CPU usage (1-9, default 6)
+  threshold: 1024, // Only compress responses > 1KB
+  filter: (req, res) => {
+    // Don't compress if client doesn't support it
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    // Use compression for text-based content
+    return compression.filter(req, res);
+  },
+}));
 
 // Cookie parser middleware (for HttpOnly cookies)
 app.use(cookieParser());
