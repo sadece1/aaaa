@@ -66,6 +66,11 @@ export const categoryManagementService = {
       
       throw new Error('Failed to create category');
     } catch (error: any) {
+      // 409 Conflict = Kategori zaten var (duplicate slug/name)
+      if (error.response?.status === 409) {
+        const message = error.response?.data?.message || 'Bu kategori zaten mevcut (aynı slug veya isim)';
+        throw new Error(message);
+      }
       const message = error.response?.data?.message || error.message || 'Kategori oluşturulamadı';
       throw new Error(message);
     }
