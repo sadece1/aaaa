@@ -33,16 +33,15 @@
     
     <!-- LCP Optimization: Preload critical resources -->
     <!-- Hero image preload for LCP (Largest Contentful Paint) optimization -->
-    <!-- Preload only the fallback JPEG that will actually be used by React component -->
-    <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=1280&q=80" fetchpriority="high" />
+    <!-- Preload WebP image that will be used by React component -->
+    <link rel="preload" as="image" href="/mutlaka-bunu-kullan.webp" fetchpriority="high" />
     
     <!-- LCP Image inline in HTML for instant discovery (critical for LCP score) -->
     <!-- Hidden but discoverable by Lighthouse - matches React component exactly -->
     <div style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none">
       <picture>
-        <source srcset="/tent-4534210_1280.jpg?fm=avif&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=avif&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=avif&w=1280&q=80 1280w" type="image/avif" sizes="100vw" />
-        <source srcset="/tent-4534210_1280.jpg?fm=webp&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=webp&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=webp&w=1280&q=80 1280w" type="image/webp" sizes="100vw" />
-        <img src="/tent-4534210_1280.jpg?w=1280&q=80" alt="Kamp alanı ve doğa manzarası" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async" srcset="/tent-4534210_1280.jpg?w=400&q=80&fm=webp 400w, /tent-4534210_1280.jpg?w=800&q=80&fm=webp 800w, /tent-4534210_1280.jpg?w=1280&q=80&fm=webp 1280w" sizes="100vw" />
+        <source srcset="/mutlaka-bunu-kullan.webp" type="image/webp" sizes="100vw" />
+        <img src="/mutlaka-bunu-kullan.webp" alt="Kamp alanı ve doğa manzarası" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async" sizes="100vw" />
       </picture>
     </div>
     

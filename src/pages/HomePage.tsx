@@ -77,7 +77,7 @@ export const HomePage = () => {
         },
         "primaryImageOfPage": {
           "@type": "ImageObject",
-          "url": `${baseUrl}/tent-4534210_1280.jpg`
+          "url": `${baseUrl}/mutlaka-bunu-kullan.webp`
         },
         "datePublished": "2024-01-01T00:00:00+03:00",
         "dateModified": new Date().toISOString(),
@@ -92,7 +92,7 @@ export const HomePage = () => {
         title="WeCamp - Kamp Alanı Pazar Yeri | Doğada Unutulmaz Deneyimler"
         description="Doğada unutulmaz kamp deneyimleri için kamp alanları ve kamp malzemeleri. Türkiye'nin en kapsamlı kamp pazaryeri. 200+ kamp alanı, 500+ kamp malzemesi ile doğada unutulmaz anılar biriktirin."
         keywords="kamp, kamp alanı, kamp malzemeleri, doğa, outdoor, kamp çadırı, kamp ekipmanları, kamp rehberi, Türkiye kamp alanları, kiralık kamp malzemeleri, kamp pazarı, doğa aktiviteleri, kamp deneyimi, kamp tüyoları, WeCamp"
-        image="/tent-4534210_1280.jpg"
+        image="/mutlaka-bunu-kullan.webp"
         url={baseUrl}
         canonicalUrl={baseUrl}
         structuredData={structuredData}
@@ -105,23 +105,17 @@ export const HomePage = () => {
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600" />
         
-        {/* LCP Image - Optimized with WebP/AVIF and responsive sizes */}
+        {/* LCP Image - Optimized with WebP format */}
         <picture>
-          {/* AVIF format (best compression) */}
+          {/* WebP format (already optimized) */}
           <source
-            srcSet="/tent-4534210_1280.jpg?fm=avif&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=avif&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=avif&w=1280&q=80 1280w"
-            type="image/avif"
-            sizes="100vw"
-          />
-          {/* WebP format (good compression, wider support) */}
-          <source
-            srcSet="/tent-4534210_1280.jpg?fm=webp&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=webp&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=webp&w=1280&q=80 1280w"
+            srcSet="/mutlaka-bunu-kullan.webp"
             type="image/webp"
             sizes="100vw"
           />
-          {/* Fallback to optimized JPEG - LCP image with exact preload URL match */}
+          {/* Fallback to WebP - LCP image */}
           <img
-            src="/tent-4534210_1280.jpg?w=1280&q=80"
+            src="/mutlaka-bunu-kullan.webp"
             alt="Kamp alanı ve doğa manzarası"
             className="absolute inset-0 w-full h-full object-cover opacity-20"
             style={{ transform: 'scale(1.1)' }}
@@ -130,7 +124,6 @@ export const HomePage = () => {
             decoding="async"
             width="1280"
             height="853"
-            srcSet="/tent-4534210_1280.jpg?w=400&q=80&fm=webp 400w, /tent-4534210_1280.jpg?w=800&q=80&fm=webp 800w, /tent-4534210_1280.jpg?w=1280&q=80&fm=webp 1280w"
             sizes="100vw"
           />
         </picture>
