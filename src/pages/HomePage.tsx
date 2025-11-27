@@ -121,9 +121,8 @@ export const HomePage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600" />
         
         {/* LCP Image - Optimized with WebP/AVIF and responsive sizes */}
-        {/* Using full width (1280px) for LCP optimization as recommended by Lighthouse */}
         <picture>
-          {/* AVIF format (best compression) - Full size for LCP */}
+          {/* AVIF format (best compression) */}
           <source
             srcSet="/tent-4534210_1280.jpg?fm=avif&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=avif&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=avif&w=1280&q=80 1280w"
             type="image/avif"
@@ -135,7 +134,7 @@ export const HomePage = () => {
             type="image/webp"
             sizes="100vw"
           />
-          {/* Fallback to optimized JPEG - Full size (1280px) for LCP */}
+          {/* Fallback to optimized JPEG - matches preload URL */}
           <img
             src="/tent-4534210_1280.jpg?w=1280&q=80"
             alt="Kamp alanı ve doğa manzarası"
@@ -146,6 +145,8 @@ export const HomePage = () => {
             decoding="async"
             width="1280"
             height="853"
+            srcSet="/tent-4534210_1280.jpg?w=400&q=80 400w, /tent-4534210_1280.jpg?w=800&q=80 800w, /tent-4534210_1280.jpg?w=1280&q=80 1280w"
+            sizes="100vw"
           />
         </picture>
         

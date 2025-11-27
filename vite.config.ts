@@ -1,11 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { cssAsync } from './vite-plugin-css-async'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), cssAsync()],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -21,20 +20,14 @@ export default defineConfig({
     // Tree shaking and dead code elimination
     rollupOptions: {
       output: {
-        // Manual chunk splitting for better tree shaking and code splitting
-        // Separate large libraries into their own chunks for better caching
+        // Manual chunk splitting to prevent React multiple instances error
         manualChunks: (id) => {
-          // Separate node_modules into vendor chunks
+          // Group React and React DOM together to prevent multiple instances
           if (id.includes('node_modules')) {
-            // Framer Motion - large animation library, separate chunk
-            if (id.includes('framer-motion')) {
-              return 'vendor-framer-motion';
-            }
-            // React and React DOM - core dependencies
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react/jsx-runtime')) {
               return 'vendor-react';
             }
-            // Other vendor libraries
+            // All other node_modules go to vendor chunk
             return 'vendor';
           }
         },
@@ -56,8 +49,6 @@ export default defineConfig({
     sourcemap: false,
     // Report compressed size
     reportCompressedSize: true,
-    // Target modern browsers for smaller bundle (ES2020+)
-    target: 'es2020',
   },
   server: {
     port: 5173,
