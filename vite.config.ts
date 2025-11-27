@@ -27,6 +27,8 @@ export default defineConfig({
       'axios',
       'zustand',
     ],
+    // Force all React-related deps to be pre-bundled together
+    force: true,
     esbuildOptions: {
       // Force ESM format to prevent CommonJS issues
       format: 'esm',
@@ -42,21 +44,9 @@ export default defineConfig({
     // Tree shaking and dead code elimination
     rollupOptions: {
       output: {
-        // CRITICAL: Group ALL vendor packages into single chunk to prevent React multiple instances
-        // This ensures React is loaded only once, preventing "Cannot set properties of undefined" error
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            // Split vendor chunks for better caching and parallel loading
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'vendor-react';
-            }
-            if (id.includes('framer-motion')) {
-              return 'vendor-motion';
-            }
-            // Put ALL other node_modules in a single vendor chunk
-            return 'vendor';
-          }
-        },
+        // CRITICAL: NO manual chunks - let Vite handle chunking automatically
+        // Manual chunking causes multiple React instances and "Cannot set properties of undefined" error
+        // Vite's automatic chunking is safer and prevents React duplication
         // Optimize chunk file names
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
@@ -69,6 +59,8 @@ export default defineConfig({
         tryCatchDeoptimization: false,
         preset: 'smallest', // Most aggressive tree shaking
       },
+      // Force external dependencies to be bundled together
+      external: [],
     },
     // Minification - use esbuild for better compatibility and tree shaking
     minify: 'esbuild',
