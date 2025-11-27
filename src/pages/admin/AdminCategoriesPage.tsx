@@ -116,7 +116,12 @@ export const AdminCategoriesPage = () => {
 
   const handleDelete = async (id: string) => {
     const category = categories.find(c => c.id === id);
-    if (!category) return;
+    // Kategori listede yoksa zaten silinmiş demektir
+    if (!category) {
+      // Liste güncellemesi yap (kategori zaten silinmiş olabilir)
+      loadCategories();
+      return;
+    }
     
     const children = getChildCategories(id);
     const isRootCategory = !category.parentId || category.parentId === null || category.parentId === '';

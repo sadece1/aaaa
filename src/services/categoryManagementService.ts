@@ -91,6 +91,11 @@ export const categoryManagementService = {
     try {
       await api.delete(`/categories/${id}`);
     } catch (error: any) {
+      // 404 hatası = kategori zaten silinmiş, bu normal bir durum
+      if (error.response?.status === 404) {
+        // Kategori zaten silinmiş, sessizce başarılı say
+        return;
+      }
       const message = error.response?.data?.message || error.message || 'Kategori silinemedi';
       throw new Error(message);
     }
