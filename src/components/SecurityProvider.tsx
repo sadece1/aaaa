@@ -1,4 +1,5 @@
 import { ReactNode, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 
 interface SecurityProviderProps {
   children: ReactNode;
@@ -10,7 +11,7 @@ export const SecurityProvider = ({ children }: SecurityProviderProps) => {
     if (import.meta.env.DEV) {
       const originalEval = window.eval;
       window.eval = function() {
-        console.warn('eval() is disabled for security reasons');
+        logger.warn('eval() is disabled for security reasons');
         return undefined;
       } as typeof originalEval;
     }

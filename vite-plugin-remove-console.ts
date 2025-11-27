@@ -22,9 +22,14 @@ export function removeConsole(): Plugin {
       
       // Remove console.log, console.warn, console.info, console.debug
       // Keep console.error for error tracking
+      // Use more precise regex to avoid breaking code
       const transformedCode = code
-        .replace(/console\.(log|warn|info|debug)\([^)]*\);?/g, '')
-        .replace(/console\.(log|warn|info|debug)\([^)]*\)/g, '');
+        // Match complete console statements with semicolon
+        .replace(/console\.(log|warn|info|debug)\([^)]*\)\s*;/g, '')
+        // Match console statements at end of line (without semicolon)
+        .replace(/console\.(log|warn|info|debug)\([^)]*\)\s*$/gm, '')
+        // Match console statements followed by newline or closing brace
+        .replace(/console\.(log|warn|info|debug)\([^)]*\)\s*(\n|\})/g, '$2');
       
       if (transformedCode !== code) {
         return {
