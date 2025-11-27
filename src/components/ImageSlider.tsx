@@ -99,14 +99,14 @@ export const ImageSlider = ({
     // Batch all DOM writes together (write phase) using requestAnimationFrame
     if (shouldChange) {
       requestAnimationFrame(() => {
-        // Determine direction based on offset (more reliable than velocity for small movements)
-        if (offset > 0) {
-          // Dragged right - go to previous
-          goToPrevious();
-        } else if (offset < 0) {
-          // Dragged left - go to next
-          goToNext();
-        }
+      // Determine direction based on offset (more reliable than velocity for small movements)
+      if (offset > 0) {
+        // Dragged right - go to previous
+        goToPrevious();
+      } else if (offset < 0) {
+        // Dragged left - go to next
+        goToNext();
+      }
       });
     }
     // If not enough drag, it will snap back via animate prop

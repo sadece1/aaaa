@@ -33,9 +33,7 @@
     
     <!-- LCP Optimization: Preload critical resources -->
     <!-- Hero image preload for LCP (Largest Contentful Paint) optimization -->
-    <!-- Preload all formats (AVIF, WebP, JPEG) for maximum browser compatibility -->
-    <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=1280&q=80&fm=avif" fetchpriority="high" type="image/avif" />
-    <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=1280&q=80&fm=webp" fetchpriority="high" type="image/webp" />
+    <!-- Preload only the fallback JPEG that will actually be used by React component -->
     <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=1280&q=80" fetchpriority="high" />
     
     <!-- LCP Image inline in HTML for instant discovery (critical for LCP score) -->
