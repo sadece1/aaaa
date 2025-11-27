@@ -70,8 +70,8 @@ export default defineConfig({
     reportCompressedSize: true,
     // Target modern browsers for smaller bundles
     target: 'es2015',
-    // CSS minification
-    cssMinify: true,
+    // CSS minification - handled by cssnano in PostCSS for better optimization
+    cssMinify: false,
   },
   server: {
     port: 5173,
