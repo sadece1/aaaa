@@ -23,14 +23,6 @@
       .hero-bg{position:absolute;inset:0;background:linear-gradient(to bottom right,#18412d,#216042,#27784f)}
       .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,.2),transparent)}
       .hero-content{position:relative;z-index:10;max-width:80rem;margin:0 auto;padding:5rem 1rem}
-      /* LCP image container - prevent layout shift */
-      picture{display:block;position:absolute;inset:0;width:100%;height:100%}
-      picture img{width:100%;height:100%;object-fit:cover}
-      /* Above-the-fold content - prevent layout shift */
-      h1,h2,h3{font-weight:700;line-height:1.2;margin:0}
-      button,a{display:inline-block;text-decoration:none}
-      /* Loading state - prevent flash */
-      #root:empty{min-height:100vh;background:#f9fafb}
       /* Font display optimization - prevents FOIT (Flash of Invisible Text) */
       @font-face{font-display:swap}
       /* System font stack for instant text rendering */
@@ -38,19 +30,15 @@
     </style>
     
     <!-- LCP Optimization: Preload critical resources -->
-    <!-- Hero image preload for LCP - preload smallest responsive size (400w) for fastest load -->
-    <!-- Quality 75 for faster load - matches img src -->
-    <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=400&q=75" fetchpriority="high" />
-    <link rel="preload" as="image" href="/tent-4534210_1280.jpg?w=400&fm=webp&q=75" fetchpriority="high" type="image/webp" />
+    <!-- Hero image preload for LCP (Largest Contentful Paint) optimization -->
+    <!-- Note: Preload removed - <picture> element with srcset handles format selection automatically -->
+    <!-- Browser will automatically select and preload the best format from srcset -->
     
     <!-- DNS prefetch and preconnect for external resources -->
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     
     <!-- Preconnect to API domain for faster API requests -->
-    <link rel="preconnect" href="https://sadece1deneme.com" crossorigin />
-    
-    <!-- Preconnect to same origin for image loading -->
     <link rel="preconnect" href="https://sadece1deneme.com" />
     
     <!-- Open Graph / Facebook - Will be set dynamically by SEO component -->
