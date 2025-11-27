@@ -14,10 +14,25 @@ export const HomePage = () => {
   const { blogs, fetchBlogs, isLoading: blogsLoading } = useBlogStore();
   const { gear, fetchGear, isLoading: gearLoading } = useGearStore();
 
-  // Fetch featured content on mount
+  // Fetch featured content after initial render (defer for FCP optimization)
+  // Use requestIdleCallback to defer non-critical API calls
   useEffect(() => {
-    fetchBlogs({}, 1);
-    fetchGear({ available: true }, 1, 6); // Get 6 featured gear items
+    const loadData = () => {
+      // Defer API calls to not block initial render
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          fetchBlogs({}, 1);
+          fetchGear({ available: true }, 1, 6);
+        }, { timeout: 2000 });
+      } else {
+        // Fallback for browsers without requestIdleCallback
+        setTimeout(() => {
+          fetchBlogs({}, 1);
+          fetchGear({ available: true }, 1, 6);
+        }, 100);
+      }
+    };
+    loadData();
   }, [fetchBlogs, fetchGear]);
 
   // Get featured blogs
@@ -121,31 +136,32 @@ export const HomePage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600" />
         
         {/* LCP Image - Optimized with WebP/AVIF and responsive sizes */}
+        {/* Critical: Preload smallest size (400w) for fastest LCP on mobile */}
         <picture>
-          {/* AVIF format (best compression) */}
+          {/* AVIF format (best compression) - mobile-first sizes */}
           <source
-            srcSet="/tent-4534210_1280.jpg?fm=avif&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=avif&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=avif&w=1280&q=80 1280w"
+            srcSet="/tent-4534210_1280.jpg?fm=avif&w=400&q=75 400w, /tent-4534210_1280.jpg?fm=avif&w=800&q=75 800w, /tent-4534210_1280.jpg?fm=avif&w=1280&q=75 1280w"
             type="image/avif"
             sizes="100vw"
           />
-          {/* WebP format (good compression, wider support) */}
+          {/* WebP format (good compression, wider support) - mobile-first sizes */}
           <source
-            srcSet="/tent-4534210_1280.jpg?fm=webp&w=400&q=80 400w, /tent-4534210_1280.jpg?fm=webp&w=800&q=80 800w, /tent-4534210_1280.jpg?fm=webp&w=1280&q=80 1280w"
+            srcSet="/tent-4534210_1280.jpg?fm=webp&w=400&q=75 400w, /tent-4534210_1280.jpg?fm=webp&w=800&q=75 800w, /tent-4534210_1280.jpg?fm=webp&w=1280&q=75 1280w"
             type="image/webp"
             sizes="100vw"
           />
-          {/* Fallback to optimized JPEG */}
+          {/* Fallback to optimized JPEG - matches preload (400w for mobile-first) */}
           <img
-            src="/tent-4534210_1280.jpg?w=1280&q=80"
+            src="/tent-4534210_1280.jpg?w=400&q=75"
             alt="Kamp alanı ve doğa manzarası"
             className="absolute inset-0 w-full h-full object-cover opacity-20"
             style={{ transform: 'scale(1.1)' }}
             fetchPriority="high"
             loading="eager"
-            decoding="async"
+            decoding="sync"
             width="1280"
             height="853"
-            srcSet="/tent-4534210_1280.jpg?w=400&q=80 400w, /tent-4534210_1280.jpg?w=800&q=80 800w, /tent-4534210_1280.jpg?w=1280&q=80 1280w"
+            srcSet="/tent-4534210_1280.jpg?w=400&q=75 400w, /tent-4534210_1280.jpg?w=800&q=75 800w, /tent-4534210_1280.jpg?w=1280&q=75 1280w"
             sizes="100vw"
           />
         </picture>
