@@ -46,8 +46,14 @@ export default defineConfig({
         // This ensures React is loaded only once, preventing "Cannot set properties of undefined" error
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // Put ALL node_modules in a single vendor chunk
-            // This prevents any package from loading its own React instance
+            // Split vendor chunks for better caching and parallel loading
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'vendor-react';
+            }
+            if (id.includes('framer-motion')) {
+              return 'vendor-motion';
+            }
+            // Put ALL other node_modules in a single vendor chunk
             return 'vendor';
           }
         },
@@ -61,6 +67,7 @@ export default defineConfig({
         moduleSideEffects: false, // Assume no side effects for better tree shaking
         propertyReadSideEffects: false,
         tryCatchDeoptimization: false,
+        preset: 'smallest', // Most aggressive tree shaking
       },
     },
     // Minification - use esbuild for better compatibility and tree shaking
@@ -69,6 +76,10 @@ export default defineConfig({
     sourcemap: false,
     // Report compressed size
     reportCompressedSize: true,
+    // Target modern browsers for smaller bundles
+    target: 'es2015',
+    // CSS minification
+    cssMinify: true,
   },
   server: {
     port: 5173,

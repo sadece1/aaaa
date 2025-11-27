@@ -134,7 +134,7 @@ export const HomePage = () => {
             type="image/webp"
             sizes="100vw"
           />
-          {/* Fallback to optimized JPEG */}
+          {/* Fallback to optimized JPEG - LCP image with exact preload URL match */}
           <img
             src="/tent-4534210_1280.jpg?w=1280&q=80"
             alt="Kamp alanı ve doğa manzarası"
@@ -145,7 +145,7 @@ export const HomePage = () => {
             decoding="async"
             width="1280"
             height="853"
-            srcSet="/tent-4534210_1280.jpg?w=400&q=80 400w, /tent-4534210_1280.jpg?w=800&q=80 800w, /tent-4534210_1280.jpg?w=1280&q=80 1280w"
+            srcSet="/tent-4534210_1280.jpg?w=400&q=80&fm=webp 400w, /tent-4534210_1280.jpg?w=800&q=80&fm=webp 800w, /tent-4534210_1280.jpg?w=1280&q=80&fm=webp 1280w"
             sizes="100vw"
           />
         </picture>
