@@ -44,13 +44,46 @@ export default defineConfig({
     // Tree shaking and dead code elimination
     rollupOptions: {
       output: {
-        // CRITICAL: NO manual chunks - let Vite handle chunking automatically
-        // Manual chunking causes multiple React instances and "Cannot set properties of undefined" error
-        // Vite's automatic chunking is safer and prevents React duplication
         // Optimize chunk file names
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        // Manual chunking for better code splitting
+        // Separate large libraries to reduce initial bundle size
+        manualChunks: (id) => {
+          // React core - keep together to prevent multiple instances
+          if (id.includes('node_modules/react/') || 
+              id.includes('node_modules/react-dom/') ||
+              id.includes('node_modules/react/jsx-runtime') ||
+              id.includes('node_modules/react-router-dom/')) {
+            return 'react-vendor';
+          }
+          
+          // GSAP - large animation library, used only in specific pages
+          if (id.includes('node_modules/gsap/')) {
+            return 'gsap';
+          }
+          
+          // Framer Motion - large animation library
+          if (id.includes('node_modules/framer-motion/')) {
+            return 'framer-motion';
+          }
+          
+          // Swiper - carousel library
+          if (id.includes('node_modules/swiper/')) {
+            return 'swiper';
+          }
+          
+          // Form libraries
+          if (id.includes('node_modules/react-hook-form/')) {
+            return 'form-vendor';
+          }
+          
+          // Other vendor libraries
+          if (id.includes('node_modules/')) {
+            return 'vendor';
+          }
+        },
       },
       // Aggressive tree shaking for unused code elimination
       treeshake: {
