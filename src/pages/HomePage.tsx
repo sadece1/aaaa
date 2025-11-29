@@ -102,7 +102,7 @@ export const HomePage = () => {
 
       {/* Hero Section - LCP Optimized */}
       <section 
-        className="relative min-h-[85vh] flex items-center justify-center text-center text-white overflow-hidden" 
+        className="hero-section relative min-h-[85vh] flex items-center justify-center text-center text-white overflow-hidden" 
         style={{ 
           textAlign: 'center', 
           display: 'flex', 
@@ -159,13 +159,15 @@ export const HomePage = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="w-full flex flex-col items-center"
+            className="w-full flex flex-col items-center justify-center"
+            style={{ textAlign: 'center', width: '100%' }}
           >
             <h1 
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center w-full"
+              style={{ textAlign: 'center', width: '100%', margin: '0 auto' }}
             >
-              <span className="block text-center">Doğada Unutulmaz</span>
-              <span className="block text-primary-200 mt-2 text-center">
+              <span className="block text-center" style={{ textAlign: 'center', display: 'block', width: '100%' }}>Doğada Unutulmaz</span>
+              <span className="block text-primary-200 mt-2 text-center" style={{ textAlign: 'center', display: 'block', width: '100%' }}>
                 Deneyimler Yaşayın
               </span>
             </h1>
@@ -176,6 +178,13 @@ export const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed text-center max-w-3xl mx-auto px-4"
+            style={{ 
+              textAlign: 'center', 
+              marginLeft: 'auto', 
+              marginRight: 'auto', 
+              width: '100%',
+              maxWidth: '48rem'
+            }}
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
             Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.

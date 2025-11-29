@@ -63,17 +63,25 @@
   }
   
   /* Force center alignment for hero section - DO NOT OVERRIDE MOTION */
+  .hero-section,
   section[class*="hero"] {
     text-align: center !important;
   }
   
+  .hero-section > div[class*="z-10"],
   section[class*="hero"] > div[class*="z-10"] {
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   /* DO NOT override motion.div opacity - let animations work */
+  .hero-section h1,
+  .hero-section h1 span,
   section[class*="hero"] h1,
   section[class*="hero"] h1 span {
     text-align: center !important;
@@ -83,6 +91,7 @@
     display: block !important;
   }
   
+  .hero-section p,
   section[class*="hero"] p {
     text-align: center !important;
     margin-left: auto !important;
@@ -91,9 +100,28 @@
     display: block !important;
   }
   
+  .hero-section div[class*="flex"],
   section[class*="hero"] div[class*="flex"] {
     justify-content: center !important;
     align-items: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  /* Extra strong centering for hero text content */
+  .hero-section h1,
+  .hero-section h1 span,
+  .hero-section p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  /* Ensure all text in hero is centered */
+  .hero-section h1 > span {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
