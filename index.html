@@ -49,14 +49,14 @@
     <!-- LCP Optimization: Preload critical resources -->
     <!-- Hero image preload for LCP (Largest Contentful Paint) optimization -->
     <!-- Preload WebP image that will be used by React component -->
-    <link rel="preload" as="image" href="/mutlaka-bunu-kullan.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/1.webp" fetchpriority="high" />
     
     <!-- LCP Image inline in HTML for instant discovery (critical for LCP score) -->
     <!-- Hidden but discoverable by Lighthouse - matches React component exactly -->
     <div style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none">
       <picture>
-        <source srcset="/mutlaka-bunu-kullan.webp" type="image/webp" sizes="100vw" />
-        <img src="/mutlaka-bunu-kullan.webp" alt="Kamp alanı ve doğa manzarası" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async" sizes="100vw" />
+        <source srcset="/1.webp" type="image/webp" sizes="100vw" />
+        <img src="/1.webp" alt="Kamp alanı ve doğa manzarası" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async" sizes="100vw" />
       </picture>
     </div>
     
@@ -80,10 +80,6 @@
     <title>WeCamp - Kamp Alanı Pazar Yeri | Doğada Unutulmaz Deneyimler</title>
   </head>
   <body>
-    <!-- Skip link for accessibility -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:p-4 focus:bg-primary-600 focus:text-white">
-      Ana içeriğe atla
-    </a>
     <div id="root"></div>
     <!-- Error handler - MUST load before any other scripts to intercept DELETE 404 -->
     <script>

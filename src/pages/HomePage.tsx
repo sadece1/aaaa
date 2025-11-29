@@ -346,15 +346,6 @@ export const HomePage = () => {
 
   return (
     <>
-      {/* Skip to main content link for accessibility */}
-      <a 
-        href="#main-content" 
-        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-[100] focus:p-4 focus:bg-primary-600 focus:text-white focus:font-bold focus:rounded-br-md focus:shadow-lg"
-        aria-label="Ana içeriğe atla"
-      >
-        Ana içeriğe atla
-      </a>
-      
       <SEO
         title="WeCamp - Kamp Alanı Pazar Yeri | Doğada Unutulmaz Deneyimler"
         description="Doğada unutulmaz kamp deneyimleri için kamp alanları ve kamp malzemeleri. Türkiye'nin en kapsamlı kamp pazaryeri. 200+ kamp alanı, 500+ kamp malzemesi ile doğada unutulmaz anılar biriktirin."
@@ -367,9 +358,6 @@ export const HomePage = () => {
         locale="tr_TR"
       />
 
-      {/* Main Content Start */}
-      <div id="main-content" tabIndex={-1} style={{ scrollMarginTop: '80px' }} />
-      
       {/* Category Stories Section - Instagram Style */}
       {subCategories.length > 0 && (
         <section className="pt-0 pb-4 sm:pb-6 md:pb-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -426,6 +414,8 @@ export const HomePage = () => {
                             alt={category.name}
                             className="w-full h-full rounded-full object-cover"
                             loading="lazy"
+                            decoding="async"
+                            fetchPriority="low"
                           />
                         );
                       })()}
@@ -466,13 +456,13 @@ export const HomePage = () => {
                 ease: [0.4, 0.0, 0.2, 1] // Instagram-like smooth cubic bezier easing
               }}
             >
-              <picture>
-                <source
+        <picture>
+          <source
                   srcSet={image}
-                  type="image/webp"
-                  sizes="100vw"
-                />
-                <img
+            type="image/webp"
+            sizes="100vw"
+          />
+          <img
                   src={image}
                   alt={`Kamp alanı ${index + 1}`}
                   className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
@@ -483,24 +473,24 @@ export const HomePage = () => {
                   }}
                   fetchPriority={index === 0 ? "high" : "low"}
                   loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="1280"
-                  height="853"
-                />
-              </picture>
+            decoding="async"
+            width="1280"
+            height="853"
+          />
+        </picture>
             </motion.div>
           ))}
         </div>
         
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
-        
+
         {/* Navigation Buttons */}
         <button
           onClick={goToPrevSlide}
           className="absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
           aria-label="Previous slide"
-        >
+          >
           <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -509,12 +499,12 @@ export const HomePage = () => {
           onClick={goToNextSlide}
           className="absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
           aria-label="Next slide"
-        >
+          >
           <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-        
+
         {/* Slider Indicators */}
         <div className="absolute bottom-4 sm:bottom-8 md:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
           {sliderImages.map((_, index) => (
