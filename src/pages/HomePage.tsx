@@ -391,7 +391,7 @@ export const HomePage = () => {
                   key={category.id}
                   to={`/category/${category.slug}`}
                   className="flex-shrink-0 flex flex-col items-center group"
-                  style={{ minWidth: '96px' }}
+                  style={{ minWidth: '64px' }}
                   onClick={(e) => {
                     // Prevent navigation if user was dragging (more than 5px)
                     if (categoryDragDistance > 5) {
@@ -406,10 +406,10 @@ export const HomePage = () => {
                     transition={{ delay: index * 0.05, duration: 0.3 }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden cursor-pointer"
+                    className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-20 md:h-20 rounded-full overflow-hidden cursor-pointer"
                     style={{
                       background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
-                      padding: '3px',
+                      padding: '2px',
                     }}
                   >
                     <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
@@ -430,7 +430,7 @@ export const HomePage = () => {
                       })()}
                     </div>
                   </motion.div>
-                  <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center max-w-[70px] xs:max-w-[80px] sm:max-w-[100px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
+                  <span className="mt-1 sm:mt-1.5 text-[9px] xs:text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 text-center max-w-[60px] xs:max-w-[70px] sm:max-w-[80px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
                     {category.name}
                   </span>
                 </Link>
