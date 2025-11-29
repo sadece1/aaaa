@@ -7,12 +7,20 @@ import { logger } from '@/utils/logger';
 // In production: Nginx proxy handles /api -> localhost:3000
 const apiBaseUrl = '/api';
 
+// Note: Custom adapter removed - using interceptor instead
+// The interceptor handles DELETE 404 before it reaches console
+// XMLHttpRequest prototype override in errorHandler.ts also prevents console errors
+
 const api: AxiosInstance = axios.create({
   baseURL: apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
   withCredentials: true, // Send cookies (HttpOnly cookies) with requests
+  // DELETE 404 handling is done via:
+  // 1. Response interceptor (below)
+  // 2. XMLHttpRequest prototype override (errorHandler.ts)
+  // 3. console.error override (errorHandler.ts)
 });
 
 // Request interceptor for auth token

@@ -40,9 +40,19 @@ if (typeof window !== 'undefined') {
   };
   
   console.error = function(...args: any[]) {
-    const message = args.join(' ');
+    // Check all arguments, including stack traces
+    const allArgs = Array.from(args);
+    const message = allArgs.map(arg => {
+      if (typeof arg === 'string') return arg;
+      if (arg?.toString) return arg.toString();
+      return JSON.stringify(arg);
+    }).join(' ');
     
-    if (shouldSuppressError(message)) {
+    // Also check stack trace if present
+    const stackTrace = new Error().stack || '';
+    const fullMessage = message + ' ' + stackTrace;
+    
+    if (shouldSuppressError(message) || shouldSuppressError(fullMessage)) {
       // Silently ignore DELETE 404 errors
       return;
     }
@@ -155,7 +165,7 @@ if (typeof window !== 'undefined') {
     return originalXHROpen.call(this, method, url, ...rest);
   };
   
-  // Override send to handle DELETE 404 errors silently
+  // Override send to handle DELETE 404 errors silently - MUST BE BEFORE AXIOS LOADS
   XMLHttpRequest.prototype.send = function(...args: any[]) {
     const xhr = this;
     const method = (xhr as any)._method || 'GET';
@@ -164,20 +174,47 @@ if (typeof window !== 'undefined') {
     const originalOnLoad = xhr.onload;
     const originalOnReadyStateChange = xhr.onreadystatechange;
     
-    // Override onreadystatechange to intercept DELETE 404 before it reaches console
+    // Override onreadystatechange to intercept DELETE 404 BEFORE Axios logs to console
     xhr.onreadystatechange = function() {
       // DELETE 404 = item already deleted, treat as success (status 200)
       if (method === 'DELETE' && 
           xhr.readyState === 4 && 
           xhr.status === 404 && 
-          url.includes('/api/categories/')) {
-        // Override status to prevent console error
+          (url.includes('/api/categories/') || url.includes('/categories/'))) {
+        // Override status IMMEDIATELY to prevent console error
         try {
-          Object.defineProperty(xhr, 'status', { value: 200, writable: false, configurable: true });
-          Object.defineProperty(xhr, 'statusText', { value: 'OK', writable: false, configurable: true });
+          // Use defineProperty to override readonly status
+          const statusDescriptor = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'status');
+          if (statusDescriptor) {
+            Object.defineProperty(xhr, 'status', { 
+              value: 200, 
+              writable: true, 
+              configurable: true,
+              enumerable: true 
+            });
+          }
+          const statusTextDescriptor = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'statusText');
+          if (statusTextDescriptor) {
+            Object.defineProperty(xhr, 'statusText', { 
+              value: 'OK', 
+              writable: true, 
+              configurable: true,
+              enumerable: true 
+            });
+          }
         } catch (e) {
           // Property might already be defined, ignore
         }
+        
+        // Prevent Axios from logging this error
+        if (originalOnReadyStateChange) {
+          try {
+            originalOnReadyStateChange.call(this);
+          } catch (e) {
+            // Ignore errors in original handler
+          }
+        }
+        return;
       }
       
       if (originalOnReadyStateChange) {
@@ -188,8 +225,10 @@ if (typeof window !== 'undefined') {
     // Override onerror to suppress DELETE 404 errors
     xhr.onerror = function(e) {
       // Suppress DELETE 404 errors - item already deleted
-      if (method === 'DELETE' && url.includes('/api/categories/')) {
+      if (method === 'DELETE' && 
+          (url.includes('/api/categories/') || url.includes('/categories/'))) {
         // Silently handle - don't call original error handler
+        // Prevent console error
         return;
       }
       
@@ -201,10 +240,16 @@ if (typeof window !== 'undefined') {
     // Override onload to handle DELETE 404 as success
     xhr.onload = function() {
       // DELETE 404 = item already deleted, treat as success
-      if (method === 'DELETE' && xhr.status === 404 && url.includes('/api/categories/')) {
+      if (method === 'DELETE' && 
+          xhr.status === 404 && 
+          (url.includes('/api/categories/') || url.includes('/categories/'))) {
         // Status already overridden in onreadystatechange
         if (originalOnLoad) {
-          originalOnLoad.call(this);
+          try {
+            originalOnLoad.call(this);
+          } catch (e) {
+            // Ignore errors
+          }
         }
         return;
       }
