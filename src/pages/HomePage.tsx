@@ -372,7 +372,10 @@ export const HomePage = () => {
                 WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
                 scrollBehavior: 'auto', // Native scroll behavior
                 overscrollBehaviorX: 'contain',
-                touchAction: 'pan-x' // Sadece yatay scroll'a izin ver
+                touchAction: 'pan-x', // Sadece yatay scroll'a izin ver
+                // Force hide scrollbar on all browsers including mobile
+                overflowX: 'auto',
+                overflowY: 'hidden'
               }}
               onTouchStart={onCategoryTouchStart}
               onTouchMove={onCategoryTouchMove}
