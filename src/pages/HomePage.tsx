@@ -26,6 +26,8 @@ export const HomePage = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [heroTouchStart, setHeroTouchStart] = useState(0);
+  const [heroTouchEnd, setHeroTouchEnd] = useState(0);
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,9 +72,42 @@ export const HomePage = () => {
     }
   };
   
-  // Fetch subcategories
+  // Swipe handlers for hero slider
+  const onHeroTouchStart = (e: React.TouchEvent) => {
+    setHeroTouchEnd(0);
+    setHeroTouchStart(e.targetTouches[0].clientX);
+  };
+  
+  const onHeroTouchMove = (e: React.TouchEvent) => {
+    setHeroTouchEnd(e.targetTouches[0].clientX);
+  };
+  
+  const onHeroTouchEnd = () => {
+    if (!heroTouchStart || !heroTouchEnd) return;
+    
+    const distance = heroTouchStart - heroTouchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    } else if (isRightSwipe) {
+      setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+    }
+  };
+  
+  // Navigation buttons for hero
+  const goToNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+  };
+  
+  const goToPrevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+  };
+  
+  // Fetch sub-subcategories (alt alt kategoriler)
   useEffect(() => {
-    const loadSubCategories = async () => {
+    const loadSubSubCategories = async () => {
       try {
         // Get root categories first
         const rootCategories = await categoryManagementService.getRootCategories();
@@ -84,14 +119,26 @@ export const HomePage = () => {
           allSubCategories.push(...children);
         }
         
-        // Limit to first 10 subcategories for display
-        setSubCategories(allSubCategories.slice(0, 10));
+        // Get sub-subcategories (alt alt kategoriler)
+        const allSubSubCategories: Category[] = [];
+        for (const subCat of allSubCategories) {
+          const subChildren = await categoryManagementService.getChildCategories(subCat.id);
+          allSubSubCategories.push(...subChildren);
+        }
+        
+        // If no sub-subcategories, use subcategories instead
+        const categoriesToShow = allSubSubCategories.length > 0 
+          ? allSubSubCategories 
+          : allSubCategories;
+        
+        // Limit to first 15 categories for display
+        setSubCategories(categoriesToShow.slice(0, 15));
       } catch (error) {
         console.error('Failed to load subcategories:', error);
       }
     };
     
-    loadSubCategories();
+    loadSubSubCategories();
   }, []);
   
   // No API calls - static content only
@@ -186,67 +233,6 @@ export const HomePage = () => {
         locale="tr_TR"
       />
 
-      {/* Hero Section */}
-      <section className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600">
-        {/* Slider Background */}
-        <div className="absolute inset-0 w-full h-full">
-          {sliderImages.map((image, index) => (
-            <motion.div
-              key={index}
-              className="absolute inset-0 w-full h-full"
-              initial={{ opacity: 0 }}
-              animate={{ 
-                opacity: currentSlide === index ? 1 : 0,
-                scale: currentSlide === index ? 1.05 : 1
-              }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
-            >
-              <picture>
-                <source
-                  srcSet={image}
-                  type="image/webp"
-                  sizes="100vw"
-                />
-                <img
-                  src={image}
-                  alt={`Kamp alanı ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
-                  style={{ 
-                    objectPosition: 'center',
-                    minHeight: '100%',
-                    minWidth: '100%'
-                  }}
-                  fetchPriority={index === 0 ? "high" : "low"}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="1280"
-                  height="853"
-                />
-              </picture>
-            </motion.div>
-          ))}
-        </div>
-        
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
-        
-        {/* Slider Indicators */}
-        <div className="absolute bottom-4 sm:bottom-8 md:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
-          {sliderImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-                currentSlide === index 
-                  ? 'w-6 sm:w-8 bg-white' 
-                  : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/75'
-              }`}
-              aria-label={`Slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      </section>
-
       {/* Category Stories Section - Instagram Style */}
       {subCategories.length > 0 && (
         <section className="py-4 sm:py-6 md:py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -307,6 +293,92 @@ export const HomePage = () => {
           </div>
         </section>
       )}
+
+      {/* Hero Section */}
+      <section 
+        className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600"
+        onTouchStart={onHeroTouchStart}
+        onTouchMove={onHeroTouchMove}
+        onTouchEnd={onHeroTouchEnd}
+      >
+        {/* Slider Background */}
+        <div className="absolute inset-0 w-full h-full">
+          {sliderImages.map((image, index) => (
+            <motion.div
+              key={index}
+              className="absolute inset-0 w-full h-full"
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: currentSlide === index ? 1 : 0,
+                scale: currentSlide === index ? 1.05 : 1
+              }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+            >
+              <picture>
+                <source
+                  srcSet={image}
+                  type="image/webp"
+                  sizes="100vw"
+                />
+                <img
+                  src={image}
+                  alt={`Kamp alanı ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
+                  style={{ 
+                    objectPosition: 'center',
+                    minHeight: '100%',
+                    minWidth: '100%'
+                  }}
+                  fetchPriority={index === 0 ? "high" : "low"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  width="1280"
+                  height="853"
+                />
+              </picture>
+            </motion.div>
+          ))}
+        </div>
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
+        
+        {/* Navigation Buttons */}
+        <button
+          onClick={goToPrevSlide}
+          className="absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
+          aria-label="Previous slide"
+        >
+          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={goToNextSlide}
+          className="absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
+          aria-label="Next slide"
+        >
+          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        
+        {/* Slider Indicators */}
+        <div className="absolute bottom-4 sm:bottom-8 md:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
+          {sliderImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                currentSlide === index 
+                  ? 'w-6 sm:w-8 bg-white' 
+                  : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      </section>
 
       {/* Stats Section */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
