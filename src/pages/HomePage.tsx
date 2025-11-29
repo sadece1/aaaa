@@ -346,6 +346,15 @@ export const HomePage = () => {
 
   return (
     <>
+      {/* Skip to main content link for accessibility */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-[100] focus:p-4 focus:bg-primary-600 focus:text-white focus:font-bold focus:rounded-br-md focus:shadow-lg"
+        aria-label="Ana içeriğe atla"
+      >
+        Ana içeriğe atla
+      </a>
+      
       <SEO
         title="WeCamp - Kamp Alanı Pazar Yeri | Doğada Unutulmaz Deneyimler"
         description="Doğada unutulmaz kamp deneyimleri için kamp alanları ve kamp malzemeleri. Türkiye'nin en kapsamlı kamp pazaryeri. 200+ kamp alanı, 500+ kamp malzemesi ile doğada unutulmaz anılar biriktirin."
@@ -358,6 +367,9 @@ export const HomePage = () => {
         locale="tr_TR"
       />
 
+      {/* Main Content Start */}
+      <div id="main-content" tabIndex={-1} style={{ scrollMarginTop: '80px' }} />
+      
       {/* Category Stories Section - Instagram Style */}
       {subCategories.length > 0 && (
         <section className="pt-0 pb-4 sm:pb-6 md:pb-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
