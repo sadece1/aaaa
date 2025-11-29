@@ -93,6 +93,19 @@ api.interceptors.response.use(
       }
     }
     
+    // Handle 409 Conflict errors silently (for POST operations where duplicate slug/name exists)
+    // The error is already handled in categoryManagementService.createCategory
+    // We just suppress console errors here
+    if (error.response?.status === 409) {
+      // Check if this is a POST request for categories
+      if (error.config?.method?.toLowerCase() === 'post' && 
+          (error.config?.url?.includes('/categories') || error.config?.url?.includes('categories'))) {
+        // Don't suppress the error - let it be handled by the service
+        // But don't log to console - the service will show user-friendly message
+        // Just pass through the error without console logging
+      }
+    }
+    
     // Suppress console errors for DELETE 404 - prevent browser from logging
     if (error.config?.method?.toLowerCase() === 'delete' && error.response?.status === 404) {
       // Already handled above, but ensure no console output

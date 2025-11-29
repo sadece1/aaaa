@@ -210,8 +210,8 @@ export const AdminCategoriesPage = () => {
             throw error;
           }
         }
-        // Reload from backend to ensure consistency
-        await loadCategories();
+        // Reload from backend to ensure consistency (don't await - update immediately)
+        loadCategories(); // Fire and forget - UI already updated optimistically
         alert('✅ Kategori ve tüm alt kategorileri başarıyla silindi.');
       } catch (error) {
         // Sadece 404 dışındaki hatalar için alert göster
@@ -231,10 +231,13 @@ export const AdminCategoriesPage = () => {
         // Optimistic update: Remove from UI immediately
         setCategories(prev => prev.filter(c => c.id !== id));
         
+        // Trigger navbar update immediately (before API call)
+        window.dispatchEvent(new Event('categoriesUpdated'));
+        
         await categoryManagementService.deleteCategory(id);
         
-        // Reload from backend to ensure consistency
-        await loadCategories();
+        // Reload from backend to ensure consistency (don't await - already updated)
+        loadCategories(); // Fire and forget
       } catch (error) {
         // 404 hatası = kategori zaten silinmiş, normal durum
         if (error instanceof Error && error.message.includes('404')) {
