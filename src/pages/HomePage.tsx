@@ -125,63 +125,59 @@ export const HomePage = () => {
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-        {/* Content Container */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="flex flex-col items-center justify-center text-center text-white"
+        {/* Title Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center text-center text-white">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl"
           >
-            {/* Title */}
-            <motion.h1
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl"
-            >
-              <span className="block">Doğada Unutulmaz</span>
-              <span className="block text-primary-200 mt-2">Deneyimler Yaşayın</span>
-            </motion.h1>
-            
-            {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed max-w-3xl"
-            >
-              Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
-              Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
-            </motion.p>
+            <span className="block">Doğada Unutulmaz</span>
+            <span className="block text-primary-200 mt-2">Deneyimler Yaşayın</span>
+          </motion.h1>
+        </div>
+        
+        {/* Description Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center text-center text-white">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed max-w-3xl"
+          >
+            Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
+            Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
+          </motion.p>
+        </div>
 
-            {/* Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4"
-            >
-              <Link to={routes.blog}>
-                <Button 
-                  variant="secondary" 
-                  size="lg"
-                  className="shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
-                  style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: 'white' }}
-                >
-                  📖 Blog Yazılarını Keşfet
-                </Button>
-              </Link>
-              <Link to={routes.gear}>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl"
-                >
-                  🎒 Malzemeleri İncele
-                </Button>
-              </Link>
-            </motion.div>
+        {/* Buttons Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            className="flex flex-col sm:flex-row gap-4"
+          >
+            <Link to={routes.blog}>
+              <Button 
+                variant="secondary" 
+                size="lg"
+                className="shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
+                style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: 'white' }}
+              >
+                📖 Blog Yazılarını Keşfet
+              </Button>
+            </Link>
+            <Link to={routes.gear}>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl"
+              >
+                🎒 Malzemeleri İncele
+              </Button>
+            </Link>
           </motion.div>
         </div>
 
