@@ -83,241 +83,85 @@ export const CategoryPage = () => {
           }
 
           if (gear.length > 0) {
-            // Get all categories to build a mapping of IDs (including parent categories)
+            // Get all categories to build a mapping
             const allCategories = await categoryManagementService.getAllCategories();
-        
-        // Build a set of all category IDs that match (including parent and child categories)
-        const matchingCategoryIds = new Set<string>();
-        matchingCategoryIds.add(category.id);
-        
-        // Add parent categories (if this is a child category)
-        let currentCategory: Category | null = category;
-        while (currentCategory?.parentId) {
-          const parent = allCategories.find(c => c.id === currentCategory!.parentId);
-          if (parent) {
-            matchingCategoryIds.add(parent.id);
-            currentCategory = parent;
-          } else {
-            break;
-          }
-        }
-        
-        // Add child categories (if this category has children)
-        const childCategories = allCategories.filter(c => c.parentId === category.id);
-        childCategories.forEach(child => matchingCategoryIds.add(child.id));
-        
-        // Also add the category ID itself to matchingCategoryIds (for direct UUID matching)
-        // This ensures gear with categoryId matching the backend UUID will be found
-        
-        // Filter gear by category slug or categoryId
-        
-        // Fetch backend categories to map UUID category_ids to frontend categories
-        // Backend returns UUID category_ids, but we need to match them with frontend slug-based categories
-        const filterGearWithBackendCategories = async () => {
-          let backendCategories: any[] = [];
-          try {
-            const response = await fetch('/api/categories');
-            const backendCategoriesResponse = await response.json();
-            if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
-              backendCategories = backendCategoriesResponse.data;
-            }
-          } catch (error) {
-            // Failed to fetch backend categories, using frontend categories only
-          }
-          
-          // Build a map of backend UUID category IDs to their slugs
-          const backendCategorySlugMap = new Map<string, string>();
-          const backendCategoryNameMap = new Map<string, string>();
-          const backendCategoryIdSet = new Set<string>(); // Track all backend category IDs
-          backendCategories.forEach(backendCat => {
-            // Handle both snake_case and camelCase field names
-            const catId = backendCat.id;
-            const catSlug = backendCat.slug;
-            const catName = backendCat.name;
             
-            if (catId && catSlug) {
-              const normalizedSlug = String(catSlug).toLowerCase().trim();
-              backendCategorySlugMap.set(catId, normalizedSlug);
-              backendCategoryIdSet.add(catId); // Add to set for direct matching
-              if (catName) {
-                backendCategoryNameMap.set(catId, String(catName).toLowerCase().trim());
+            // Fetch backend categories to map UUID category_ids
+            let backendCategories: any[] = [];
+            try {
+              const response = await fetch('/api/categories');
+              const backendCategoriesResponse = await response.json();
+              if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
+                backendCategories = backendCategoriesResponse.data;
               }
-            }
-          });
-          
-          // Build a set of matching slugs and names (including parent and child) - MUST BE BEFORE using matchingSlugs
-          const matchingSlugs = new Set<string>();
-          const matchingNames = new Set<string>();
-          
-          const addCategoryToMatching = (cat: Category) => {
-            if (cat.slug) {
-              matchingSlugs.add(cat.slug.toLowerCase().trim());
-            }
-            if (cat.name) {
-              matchingNames.add(cat.name.toLowerCase().trim());
-              // Also add partial name matches for better matching
-              // e.g., "Kamp Ocakları" -> "ocakları", "ocak", "kamp"
-              const nameWords = cat.name.toLowerCase().trim().split(/\s+/);
-              nameWords.forEach(word => {
-                if (word.length > 2) {
-                  matchingNames.add(word);
-                }
-              });
-            }
-          };
-          
-          addCategoryToMatching(category);
-          if (categorySlug) {
-            matchingSlugs.add(categorySlug.toLowerCase().trim());
-          }
-          
-          // Add parent category slugs and names
-          let currentCategory: Category | null = category;
-          while (currentCategory?.parentId) {
-            const parent = allCategories.find(c => c.id === currentCategory!.parentId);
-            if (parent) {
-              addCategoryToMatching(parent);
-              currentCategory = parent;
-            } else {
-              break;
-            }
-          }
-          
-          // Add child category slugs and names
-          const childCategories = allCategories.filter(c => c.parentId === category.id);
-          childCategories.forEach(child => {
-            addCategoryToMatching(child);
-          });
-          
-          // Add backend category IDs that match the current category slug to matchingCategoryIds
-          backendCategories.forEach(backendCat => {
-            const catId = backendCat.id;
-            const catSlug = backendCat.slug?.toLowerCase().trim();
-            if (catId && catSlug && matchingSlugs.has(catSlug)) {
-              matchingCategoryIds.add(catId);
-            }
-          });
-          
-          // Build a mapping from backend category names to frontend categories
-          // e.g., "Pişirme Ekipmanları" -> "Kamp Mutfağı" or "Kamp Ocakları"
-          const backendToFrontendNameMap = new Map<string, string[]>();
-          backendCategories.forEach(backendCat => {
-            if (backendCat.name) {
-              const backendName = String(backendCat.name).toLowerCase().trim();
-              const backendNameWords = backendName.split(/\s+/);
-              
-              // Find frontend categories that might match
-              const matchingFrontendCats = allCategories.filter(fc => {
-                const frontendName = fc.name.toLowerCase().trim();
-                const frontendNameWords = frontendName.split(/\s+/);
-                
-                // Check if any words match
-                return backendNameWords.some(bw => 
-                  frontendNameWords.some(fw => fw.includes(bw) || bw.includes(fw))
-                ) || frontendName.includes(backendName) || backendName.includes(frontendName);
-              });
-              
-              if (matchingFrontendCats.length > 0) {
-                backendToFrontendNameMap.set(backendCat.id, matchingFrontendCats.map(fc => fc.id));
-              }
-            }
-          });
-          
-          // Filter gear with backend category mapping
-          const filtered = gear.filter((item) => {
-            // Get categoryId from item (could be categoryId or category_id from backend)
-            const itemCategoryId = (item as any).categoryId || (item as any).category_id;
-            
-            // If gear has a backend UUID category_id, find the backend category and check its slug or name
-            if (itemCategoryId) {
-              // Try slug matching first
-              if (backendCategorySlugMap.has(itemCategoryId)) {
-                const backendCategorySlug = backendCategorySlugMap.get(itemCategoryId);
-                if (backendCategorySlug && matchingSlugs.has(backendCategorySlug)) {
-                  return true;
-                }
-              }
-              
-              // Try name matching (exact or partial)
-              const backendCategoryName = backendCategoryNameMap.get(itemCategoryId);
-              if (backendCategoryName) {
-                // Exact name match
-                if (matchingNames.has(backendCategoryName)) {
-                  return true;
-                }
-                
-                // Partial name match (check if any word matches)
-                const backendNameWords = backendCategoryName.split(/\s+/);
-                for (const word of backendNameWords) {
-                  if (word.length > 2 && matchingNames.has(word)) {
-                    return true;
-                  }
-                }
-              }
-              
-              // Try backend-to-frontend name mapping
-              if (backendToFrontendNameMap.has(itemCategoryId)) {
-                const matchingFrontendIds = backendToFrontendNameMap.get(itemCategoryId) || [];
-                for (const frontendId of matchingFrontendIds) {
-                  if (matchingCategoryIds.has(frontendId)) {
-                    return true;
-                  }
-                }
-              }
+            } catch (error) {
+              // Failed to fetch backend categories, using frontend categories only
             }
             
-            // Check categoryId first (most reliable) - exact match with category or its parents/children
-            if (itemCategoryId && matchingCategoryIds.has(itemCategoryId)) {
-              return true;
-            }
+            // Build a map of backend UUID category IDs to frontend category IDs
+            const backendToFrontendCategoryMap = new Map<string, string>();
+            backendCategories.forEach(backendCat => {
+              const catId = backendCat.id;
+              const catSlug = backendCat.slug?.toLowerCase().trim();
+              if (catId && catSlug) {
+                // Find matching frontend category by slug
+                const matchingFrontendCat = allCategories.find(fc => 
+                  fc.slug?.toLowerCase().trim() === catSlug
+                );
+                if (matchingFrontendCat) {
+                  backendToFrontendCategoryMap.set(catId, matchingFrontendCat.id);
+                }
+              }
+            });
             
-            // Check if backend UUID matches any frontend category UUID
-            // Backend returns UUID, frontend categories might have UUID too
-            if (itemCategoryId) {
-              const matchingCategory = allCategories.find(cat => cat.id === itemCategoryId);
-              if (matchingCategory && matchingCategoryIds.has(matchingCategory.id)) {
+            // Build a set of matching category IDs - ONLY the current category and its direct children
+            // NOT parent categories (we want exact category match, not parent's all products)
+            const matchingCategoryIds = new Set<string>();
+            matchingCategoryIds.add(category.id);
+            
+            // Add direct child categories (if user wants to see subcategory products too)
+            // But NOT parent categories
+            const childCategories = allCategories.filter(c => c.parentId === category.id);
+            childCategories.forEach(child => matchingCategoryIds.add(child.id));
+            
+            // Filter gear - ONLY show items that match the exact category or its direct children
+            const filtered = gear.filter((item) => {
+              // Get categoryId from item (could be categoryId or category_id from backend)
+              const itemCategoryId = (item as any).categoryId || (item as any).category_id;
+              
+              if (!itemCategoryId) {
+                return false;
+              }
+              
+              // Check if item's categoryId matches the current category ID (exact match)
+              if (matchingCategoryIds.has(itemCategoryId)) {
                 return true;
               }
-            }
-            
-            // Check category slug match - normalize for comparison
-            const itemCategory = item.category || (item as any).category_slug;
-            if (itemCategory) {
-              const normalizedItemCategory = String(itemCategory).toLowerCase().trim();
-              if (matchingSlugs.has(normalizedItemCategory)) {
-                return true;
-              }
-            }
-            
-            // Check if categoryId matches slug pattern (cat-{slug})
-            if (itemCategoryId && itemCategoryId === `cat-${categorySlug}`) {
-              return true;
-            }
-            
-            // Check if categoryId ends with slug (for dynamic IDs)
-            if (itemCategoryId && category.slug && itemCategoryId.endsWith(category.slug)) {
-              return true;
-            }
-            
-            // Check if category is string and includes slug
-            if (itemCategory && typeof itemCategory === 'string') {
-              const normalizedItemCategory = itemCategory.toLowerCase().trim();
-              for (const matchingSlug of matchingSlugs) {
-                if (normalizedItemCategory.includes(matchingSlug) || matchingSlug.includes(normalizedItemCategory)) {
+              
+              // If item has a backend UUID category_id, map it to frontend category ID
+              if (backendToFrontendCategoryMap.has(itemCategoryId)) {
+                const frontendCategoryId = backendToFrontendCategoryMap.get(itemCategoryId);
+                if (frontendCategoryId && matchingCategoryIds.has(frontendCategoryId)) {
                   return true;
                 }
               }
-            }
+              
+              // Check if item's category field (slug) matches the current category slug (exact match only)
+              const itemCategory = item.category || (item as any).category_slug;
+              if (itemCategory && typeof itemCategory === 'string') {
+                const normalizedItemCategory = itemCategory.toLowerCase().trim();
+                const normalizedCategorySlug = category.slug.toLowerCase().trim();
+                // Exact slug match only
+                if (normalizedItemCategory === normalizedCategorySlug) {
+                  return true;
+                }
+              }
+              
+              return false;
+            });
             
-            return false;
-          });
-          
-          setCategoryGear(filtered);
-          setIsLoading(false);
-        };
-        
-            // Call async function
-            await filterGearWithBackendCategories();
+            setCategoryGear(filtered);
+            setIsLoading(false);
           } else if (!gearLoading) {
             // If gear is empty and not loading, try fetching again
             fetchGear({}, 1, 500);
