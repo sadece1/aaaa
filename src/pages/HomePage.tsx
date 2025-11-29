@@ -53,37 +53,35 @@ export const HomePage = () => {
     };
   }, [sliderImages.length, isDragging]);
   
-  // Touch drag handlers for category stories (mobile) - free scrolling
+  // Touch handlers for category stories (mobile) - native scroll with link click prevention
   const onCategoryTouchStart = (e: React.TouchEvent) => {
-    setIsCategoryTouchDragging(true);
-    setCategoryDragDistance(0);
+    // Sadece başlangıç pozisyonunu kaydet, native scroll'a izin ver
     setCategoryTouchStart(e.targetTouches[0].clientX);
-    const scrollContainer = document.getElementById('category-stories-container');
-    if (scrollContainer) {
-      setCategoryTouchScrollLeft(scrollContainer.scrollLeft);
-    }
+    setCategoryTouchScrollLeft(0);
+    setIsCategoryTouchDragging(false);
+    setCategoryDragDistance(0);
   };
   
   const onCategoryTouchMove = (e: React.TouchEvent) => {
-    if (!isCategoryTouchDragging || !categoryTouchStart) return;
-    
-    const scrollContainer = document.getElementById('category-stories-container');
-    if (scrollContainer) {
+    // Native scroll çalışsın, sadece drag distance'ı takip et (link tıklamasını engellemek için)
+    if (categoryTouchStart) {
       const x = e.targetTouches[0].clientX;
-      const walk = (x - categoryTouchStart) * 1.2; // Daha yumuşak scroll
-      setCategoryDragDistance(Math.abs(walk));
-      // Direkt scrollLeft kullan - touch sırasında instant, iOS momentum scrolling otomatik
-      scrollContainer.scrollLeft = categoryTouchScrollLeft - walk;
+      const distance = Math.abs(x - categoryTouchStart);
+      setCategoryDragDistance(distance);
+      // 10px'den fazla hareket varsa dragging olarak işaretle
+      if (distance > 10) {
+        setIsCategoryTouchDragging(true);
+      }
     }
   };
   
   const onCategoryTouchEnd = () => {
-    setIsCategoryTouchDragging(false);
+    // Kısa bir süre sonra reset et (link tıklamasını engellemek için)
     setTimeout(() => {
       setCategoryDragDistance(0);
-    }, 100);
+      setIsCategoryTouchDragging(false);
+    }, 150);
     setCategoryTouchStart(0);
-    setCategoryTouchScrollLeft(0);
   };
   
   // Mouse drag handlers for category stories (desktop)
@@ -371,9 +369,10 @@ export const HomePage = () => {
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none',
-                WebkitOverflowScrolling: 'touch',
-                scrollBehavior: 'smooth',
-                overscrollBehaviorX: 'contain'
+                WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
+                scrollBehavior: 'auto', // Native scroll behavior
+                overscrollBehaviorX: 'contain',
+                touchAction: 'pan-x' // Sadece yatay scroll'a izin ver
               }}
               onTouchStart={onCategoryTouchStart}
               onTouchMove={onCategoryTouchMove}

@@ -270,18 +270,22 @@
     }
   }
 
-  /* Smooth scrolling for category stories */
+  /* Native smooth scrolling for category stories */
   #category-stories-container {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
     overscroll-behavior-x: contain;
+    scroll-behavior: auto; /* Native scroll behavior */
+    touch-action: pan-x; /* Sadece yatay scroll */
   }
 
-  /* Momentum scrolling for mobile */
+  /* Mobile optimizations */
   @media (max-width: 768px) {
     #category-stories-container {
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch; /* iOS momentum scrolling - kritik */
+      scroll-behavior: auto;
+      touch-action: pan-x;
+      /* Smooth momentum scrolling için */
+      will-change: scroll-position;
     }
   }
 }
