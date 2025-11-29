@@ -16,11 +16,13 @@ const commonIcons = ['🏕️', '⛺', '🔧', '🔸', '🔥', '💡', '🍳', '
 interface ColumnCategoryForm {
   columnName: string;
   columnIcon: string;
+  columnOrder: number;
 }
 
 interface SubCategoryForm {
   selectedColumnId: string;
   subCategoryName: string;
+  subCategoryOrder: number;
 }
 
 export const EditCategoryPage = () => {
@@ -37,11 +39,13 @@ export const EditCategoryPage = () => {
   const [showAddSubCategory, setShowAddSubCategory] = useState(false);
   const [columnCategoryForm, setColumnCategoryForm] = useState<ColumnCategoryForm>({
     columnName: '',
-    columnIcon: '🔸'
+    columnIcon: '🔸',
+    columnOrder: 0
   });
   const [subCategoryForm, setSubCategoryForm] = useState<SubCategoryForm>({
     selectedColumnId: '',
-    subCategoryName: ''
+    subCategoryName: '',
+    subCategoryOrder: 0
   });
   
   const {
@@ -120,8 +124,8 @@ export const EditCategoryPage = () => {
       setShowAddColumnCategory(false);
       setShowAddSubCategory(false);
       setSelectedColumnId('');
-      setColumnCategoryForm({ columnName: '', columnIcon: '🔸' });
-      setSubCategoryForm({ selectedColumnId: '', subCategoryName: '' });
+      setColumnCategoryForm({ columnName: '', columnIcon: '🔸', columnOrder: 0 });
+      setSubCategoryForm({ selectedColumnId: '', subCategoryName: '', subCategoryOrder: 0 });
     }
   }, [watchedParentId]);
 
@@ -385,9 +389,22 @@ export const EditCategoryPage = () => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
-      const maxOrder = allCategories
-        .filter(c => c.parentId === id)
-        .reduce((max, c) => Math.max(max, c.order || 0), 0);
+      // Order validation
+      let orderValue = 0;
+      if (columnCategoryForm.columnOrder !== undefined && columnCategoryForm.columnOrder !== null) {
+        if (typeof columnCategoryForm.columnOrder === 'number') {
+          orderValue = Math.max(0, Math.floor(columnCategoryForm.columnOrder));
+        } else {
+          const parsed = parseInt(String(columnCategoryForm.columnOrder), 10);
+          orderValue = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+        }
+      } else {
+        // Eğer order belirtilmemişse, mevcut max order + 1 kullan
+        const maxOrder = allCategories
+          .filter(c => c.parentId === id)
+          .reduce((max, c) => Math.max(max, c.order || 0), 0);
+        orderValue = maxOrder + 1;
+      }
 
       const newColumnCategory = {
         name: columnCategoryForm.columnName,
@@ -395,7 +412,7 @@ export const EditCategoryPage = () => {
         description: `Sütun kategorisi: ${columnCategoryForm.columnName}`,
         parentId: id, // Mevcut düzenlenen kategoriyi üst kategori olarak kullan
         icon: columnCategoryForm.columnIcon,
-        order: maxOrder + 1,
+        order: orderValue,
       };
 
       const created = await categoryManagementService.createCategory(newColumnCategory);
@@ -409,7 +426,7 @@ export const EditCategoryPage = () => {
       setSelectedColumnId(created.id);
       
       // Reset form
-      setColumnCategoryForm({ columnName: '', columnIcon: '🔸' });
+      setColumnCategoryForm({ columnName: '', columnIcon: '🔸', columnOrder: 0 });
       alert('✅ Sütun kategorisi başarıyla eklendi! Şimdi alt kategori ekleyebilirsiniz.');
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Sütun kategorisi eklenemedi');
@@ -448,9 +465,22 @@ export const EditCategoryPage = () => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
-      const maxOrder = categories
-        .filter(c => c.parentId === subCategoryForm.selectedColumnId)
-        .reduce((max, c) => Math.max(max, c.order || 0), 0);
+      // Order validation
+      let orderValue = 0;
+      if (subCategoryForm.subCategoryOrder !== undefined && subCategoryForm.subCategoryOrder !== null) {
+        if (typeof subCategoryForm.subCategoryOrder === 'number') {
+          orderValue = Math.max(0, Math.floor(subCategoryForm.subCategoryOrder));
+        } else {
+          const parsed = parseInt(String(subCategoryForm.subCategoryOrder), 10);
+          orderValue = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+        }
+      } else {
+        // Eğer order belirtilmemişse, mevcut max order + 1 kullan
+        const maxOrder = categories
+          .filter(c => c.parentId === subCategoryForm.selectedColumnId)
+          .reduce((max, c) => Math.max(max, c.order || 0), 0);
+        orderValue = maxOrder + 1;
+      }
 
       const newSubCategory = {
         name: subCategoryForm.subCategoryName,
@@ -458,7 +488,7 @@ export const EditCategoryPage = () => {
         description: '',
         parentId: subCategoryForm.selectedColumnId,
         icon: '🔸',
-        order: maxOrder + 1,
+        order: orderValue,
       };
 
       await categoryManagementService.createCategory(newSubCategory);
@@ -469,7 +499,7 @@ export const EditCategoryPage = () => {
       window.dispatchEvent(new Event('categoriesUpdated'));
       
       // Reset form
-      setSubCategoryForm(prev => ({ ...prev, subCategoryName: '' }));
+      setSubCategoryForm(prev => ({ ...prev, subCategoryName: '', subCategoryOrder: 0 }));
       alert('Alt kategori başarıyla eklendi!');
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Alt kategori eklenemedi');
@@ -821,7 +851,7 @@ export const EditCategoryPage = () => {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4">
                         <div className="md:col-span-2">
                           <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Sütun Adı * (Örn: Kamp Mutfağı)
@@ -847,6 +877,25 @@ export const EditCategoryPage = () => {
                             className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center text-lg sm:text-xl"
                           />
                         </div>
+                        <div>
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Sıra
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={columnCategoryForm.columnOrder}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+                              setColumnCategoryForm(prev => ({ ...prev, columnOrder: isNaN(value) ? 0 : Math.max(0, value) }));
+                            }}
+                            placeholder="0"
+                            className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                          />
+                          <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+                            Düşük sayılar önce gösterilir
+                          </p>
+                        </div>
                       </div>
 
                       <Button
@@ -870,27 +919,58 @@ export const EditCategoryPage = () => {
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                               {columnCategories.map((colCat) => (
-                                <button
+                                <div
                                   key={colCat.id}
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedColumnId(colCat.id);
-                                    setSubCategoryForm(prev => ({ ...prev, selectedColumnId: colCat.id }));
-                                  }}
-                                  className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all text-left ${
+                                  className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
                                     selectedColumnId === colCat.id
                                       ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                                      : 'border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 bg-white dark:bg-gray-700'
+                                      : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700'
                                   }`}
                                 >
-                                  <div className="flex items-center space-x-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedColumnId(colCat.id);
+                                      setSubCategoryForm(prev => ({ ...prev, selectedColumnId: colCat.id }));
+                                    }}
+                                    className="flex items-center space-x-2 flex-1 text-left"
+                                  >
                                     <span className="text-xl">{colCat.icon}</span>
-                                    <span className="text-sm font-medium text-gray-900 dark:text-white">{colCat.name}</span>
-                                  </div>
-                                  {selectedColumnId === colCat.id && (
-                                    <span className="text-primary-600 dark:text-primary-400">✓</span>
-                                  )}
-                                </button>
+                                    <div className="flex-1 min-w-0">
+                                      <span className="text-sm font-medium text-gray-900 dark:text-white block truncate">{colCat.name}</span>
+                                      <span className="text-xs text-gray-500 dark:text-gray-400">Sıra: {colCat.order || 0}</span>
+                                    </div>
+                                    {selectedColumnId === colCat.id && (
+                                      <span className="text-primary-600 dark:text-primary-400">✓</span>
+                                    )}
+                                  </button>
+                                  <Button
+                                    type="button"
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      if (window.confirm(`${colCat.name} adlı sütun kategorisini silmek istediğinizden emin misiniz?`)) {
+                                        try {
+                                          await categoryManagementService.deleteCategory(colCat.id);
+                                          const refreshedCategories = await categoryManagementService.getAllCategories();
+                                          setCategories([...refreshedCategories]);
+                                          window.dispatchEvent(new Event('categoriesUpdated'));
+                                          if (selectedColumnId === colCat.id) {
+                                            setSelectedColumnId('');
+                                            setSubCategoryForm(prev => ({ ...prev, selectedColumnId: '' }));
+                                          }
+                                          alert('✅ Sütun kategorisi başarıyla silindi.');
+                                        } catch (error) {
+                                          alert('❌ Sütun kategorisi silinemedi. Lütfen tekrar deneyin.');
+                                        }
+                                      }
+                                    }}
+                                    className="ml-2 flex-shrink-0"
+                                  >
+                                    ✕
+                                  </Button>
+                                </div>
                               ))}
                             </div>
                           </div>
@@ -925,34 +1005,53 @@ export const EditCategoryPage = () => {
                         </span>
                       </div>
 
-                      <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Alt Kategori Adı * (Örn: Kamp Ocakları)
-                        </label>
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Alt Kategori Adı * (Örn: Kamp Ocakları)
+                          </label>
                           <input
                             type="text"
                             value={subCategoryForm.subCategoryName}
                             onChange={(e) => setSubCategoryForm(prev => ({ ...prev, subCategoryName: e.target.value }))}
                             placeholder="Örn: Kamp Ocakları, Termos ve Mug"
-                            className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                            className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' && subCategoryForm.subCategoryName.trim()) {
                                 handleAddSubCategory();
                               }
                             }}
                           />
-                          <Button
-                            type="button"
-                            variant="primary"
-                            onClick={handleAddSubCategory}
-                            disabled={!subCategoryForm.subCategoryName.trim()}
-                            className="w-full sm:w-auto text-sm sm:text-base"
-                          >
-                            ➕ Ekle
-                          </Button>
                         </div>
-                        <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+                        <div>
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Sıra
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={subCategoryForm.subCategoryOrder}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+                              setSubCategoryForm(prev => ({ ...prev, subCategoryOrder: isNaN(value) ? 0 : Math.max(0, value) }));
+                            }}
+                            placeholder="0"
+                            className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                          />
+                          <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+                            Düşük sayılar önce gösterilir
+                          </p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="primary"
+                          onClick={handleAddSubCategory}
+                          disabled={!subCategoryForm.subCategoryName.trim()}
+                          className="w-full sm:w-auto text-sm sm:text-base"
+                        >
+                          ➕ Ekle
+                        </Button>
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                           Alt kategori adını yazıp Enter'a basabilir veya butona tıklayabilirsiniz
                         </p>
                       </div>
@@ -973,14 +1072,41 @@ export const EditCategoryPage = () => {
                                 >
                                   <div className="flex items-center space-x-2 flex-1 min-w-0">
                                     <span className="flex-shrink-0">{subCat.icon}</span>
-                                    <span className="text-xs sm:text-sm text-gray-900 dark:text-white truncate">{subCat.name}</span>
+                                    <div className="flex-1 min-w-0">
+                                      <span className="text-xs sm:text-sm text-gray-900 dark:text-white block truncate">{subCat.name}</span>
+                                      <span className="text-[10px] text-gray-500 dark:text-gray-400">Sıra: {subCat.order || 0}</span>
+                                    </div>
                                   </div>
-                                  <Link
-                                    to={`/admin/categories/edit/${subCat.id}`}
-                                    className="text-[10px] sm:text-xs text-primary-600 dark:text-primary-400 hover:underline flex-shrink-0 ml-2"
-                                  >
-                                    Düzenle
-                                  </Link>
+                                  <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                                    <Link
+                                      to={`/admin/categories/edit/${subCat.id}`}
+                                      className="text-[10px] sm:text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                                    >
+                                      Düzenle
+                                    </Link>
+                                    <Button
+                                      type="button"
+                                      variant="danger"
+                                      size="sm"
+                                      onClick={async (e) => {
+                                        e.stopPropagation();
+                                        if (window.confirm(`${subCat.name} adlı alt kategoriyi silmek istediğinizden emin misiniz?`)) {
+                                          try {
+                                            await categoryManagementService.deleteCategory(subCat.id);
+                                            const refreshedCategories = await categoryManagementService.getAllCategories();
+                                            setCategories([...refreshedCategories]);
+                                            window.dispatchEvent(new Event('categoriesUpdated'));
+                                            alert('✅ Alt kategori başarıyla silindi.');
+                                          } catch (error) {
+                                            alert('❌ Alt kategori silinemedi. Lütfen tekrar deneyin.');
+                                          }
+                                        }
+                                      }}
+                                      className="text-[10px] sm:text-xs px-2 py-1"
+                                    >
+                                      ✕
+                                    </Button>
+                                  </div>
                                 </div>
                               ))}
                             </div>

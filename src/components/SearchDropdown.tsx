@@ -44,8 +44,14 @@ export const SearchDropdown = ({ blogs, gear, searchQuery, isOpen, onClose, isMo
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className={`${isMobile ? 'absolute top-full left-0 right-0 mt-2 z-[60]' : 'absolute top-full right-0 mt-2 z-50'} bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 ${isMobile ? 'max-h-[calc(60vh-120px)]' : 'max-h-[600px]'} overflow-y-auto ${isMobile ? 'w-full' : 'w-max min-w-[192px] max-w-[calc(100vw-2rem)]'}`}
-            style={!isMobile ? { width: 'max-content', maxWidth: 'calc(100vw - 2rem)' } : {}}
+            className={`${isMobile ? 'absolute top-full left-0 right-0 mt-2 z-[60]' : 'absolute top-full right-0 mt-2 z-50'} bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 ${isMobile ? 'max-h-[calc(60vh-120px)]' : 'max-h-[600px]'} overflow-y-auto overflow-x-hidden ${isMobile ? 'w-full' : 'w-max min-w-[320px] max-w-[min(500px,calc(100vw-2rem))]'}`}
+            style={{
+              ...(!isMobile ? { 
+                maxWidth: 'min(500px, calc(100vw - 2rem))',
+                width: 'auto'
+              } : {}),
+              boxSizing: 'border-box'
+            }}
           >
             {!hasResults ? (
               <div className="p-8 text-center">
@@ -58,7 +64,7 @@ export const SearchDropdown = ({ blogs, gear, searchQuery, isOpen, onClose, isMo
                 </p>
               </div>
             ) : (
-              <div className="p-4">
+              <div className="p-4" style={{ maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
                 {/* Gear Results - ÜSTTE */}
                 {gear.length > 0 && (
                   <div className="mb-6">
@@ -75,6 +81,11 @@ export const SearchDropdown = ({ blogs, gear, searchQuery, isOpen, onClose, isMo
                           to={`${routes.gear}/${item.id}`}
                           onClick={onClose}
                           className="group relative flex items-center gap-4 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-xl p-3 hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 overflow-hidden"
+                          style={{
+                            maxWidth: '100%',
+                            overflowX: 'hidden',
+                            boxSizing: 'border-box'
+                          }}
                         >
                           <div className="relative h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
                             <OptimizedImage
@@ -84,16 +95,24 @@ export const SearchDropdown = ({ blogs, gear, searchQuery, isOpen, onClose, isMo
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
-                          <div className="flex-1 min-w-0 pr-2.5">
-                            <h4 className="font-bold text-sm text-gray-900 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                          <div className="flex-1 min-w-0 pr-2.5 overflow-hidden">
+                            <h4 
+                              className="font-bold text-sm text-gray-900 dark:text-white mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2"
+                              style={{
+                                wordBreak: 'break-word',
+                                overflowWrap: 'break-word',
+                                overflowX: 'hidden',
+                                maxWidth: '100%'
+                              }}
+                            >
                               {item.name}
                             </h4>
-                            <div className="flex items-center justify-between mt-2">
-                              <span className="text-xs font-bold text-primary-600 dark:text-primary-400">
+                            <div className="flex items-center justify-between mt-2 gap-2">
+                              <span className="text-xs font-bold text-primary-600 dark:text-primary-400 whitespace-nowrap flex-shrink-0">
                                 {item.pricePerDay} ₺
                               </span>
                               {!item.available && (
-                                <span className="text-[10px] text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-1.5 py-0.5 rounded">
+                                <span className="text-[10px] text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-1.5 py-0.5 rounded whitespace-nowrap flex-shrink-0">
                                   Yok
                                 </span>
                               )}
@@ -121,6 +140,11 @@ export const SearchDropdown = ({ blogs, gear, searchQuery, isOpen, onClose, isMo
                           to={`${routes.blog}/${blog.id}`}
                           onClick={onClose}
                           className="group relative flex items-center gap-4 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-xl p-3 hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 overflow-hidden"
+                          style={{
+                            maxWidth: '100%',
+                            overflowX: 'hidden',
+                            boxSizing: 'border-box'
+                          }}
                         >
                           <div className="relative h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
                             <OptimizedImage
@@ -135,12 +159,28 @@ export const SearchDropdown = ({ blogs, gear, searchQuery, isOpen, onClose, isMo
                               </span>
                             </div>
                           </div>
-                          <div className="flex-1 min-w-0 pr-2.5">
-                            <h4 className="font-bold text-sm text-gray-900 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                          <div className="flex-1 min-w-0 pr-2.5 overflow-hidden">
+                            <h4 
+                              className="font-bold text-sm text-gray-900 dark:text-white mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2"
+                              style={{
+                                wordBreak: 'break-word',
+                                overflowWrap: 'break-word',
+                                overflowX: 'hidden',
+                                maxWidth: '100%'
+                              }}
+                            >
                               {blog.title}
                             </h4>
                             {blog.excerpt && (
-                              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1 mt-1">
+                              <p 
+                                className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1 mt-1"
+                                style={{
+                                  wordBreak: 'break-word',
+                                  overflowWrap: 'break-word',
+                                  overflowX: 'hidden',
+                                  maxWidth: '100%'
+                                }}
+                              >
                                 {blog.excerpt}
                               </p>
                             )}
