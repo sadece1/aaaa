@@ -101,7 +101,7 @@ export const HomePage = () => {
       />
 
       {/* Hero Section - LCP Optimized */}
-      <section className="relative min-h-[85vh] flex items-center justify-center text-center text-white overflow-hidden">
+      <section className="relative min-h-[85vh] flex items-center justify-center text-center text-white overflow-hidden" style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600" />
         
@@ -136,13 +136,17 @@ export const HomePage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
+          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center"
           style={{ 
             display: 'flex', 
             flexDirection: 'column', 
             alignItems: 'center', 
             justifyContent: 'center',
-            textAlign: 'center'
+            textAlign: 'center',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            width: '100%',
+            maxWidth: '80rem'
           }}
         >
           <motion.div
