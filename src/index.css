@@ -62,7 +62,7 @@
     touch-action: pan-x pan-y;
   }
   
-  /* Force center alignment for hero section - FIXED */
+  /* Force center alignment for hero section - DO NOT OVERRIDE MOTION */
   section[class*="hero"] {
     text-align: center !important;
   }
@@ -71,12 +71,9 @@
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
   }
   
+  /* DO NOT override motion.div opacity - let animations work */
   section[class*="hero"] h1,
   section[class*="hero"] h1 span {
     text-align: center !important;
@@ -84,8 +81,6 @@
     margin-right: auto !important;
     width: 100% !important;
     display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
   }
   
   section[class*="hero"] p {
@@ -94,8 +89,6 @@
     margin-right: auto !important;
     width: 100% !important;
     display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
   }
   
   section[class*="hero"] div[class*="flex"] {

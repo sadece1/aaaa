@@ -156,10 +156,7 @@ export const HomePage = () => {
             marginLeft: 'auto',
             marginRight: 'auto',
             width: '100%',
-            maxWidth: '80rem',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            position: 'relative'
+            maxWidth: '80rem'
           }}
         >
           <motion.div
@@ -181,14 +178,11 @@ export const HomePage = () => {
                 textAlign: 'center',
                 width: '100%',
                 marginLeft: 'auto',
-                marginRight: 'auto',
-                display: 'block',
-                visibility: 'visible',
-                opacity: 1
+                marginRight: 'auto'
               }}
             >
-              <span style={{ display: 'block', textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto', visibility: 'visible', opacity: 1 }}>Doğada Unutulmaz</span>
-              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block', width: '100%', marginLeft: 'auto', marginRight: 'auto', visibility: 'visible', opacity: 1 }}>
+              <span style={{ display: 'block', textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>Doğada Unutulmaz</span>
+              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                 Deneyimler Yaşayın
               </span>
             </h1>
@@ -206,10 +200,7 @@ export const HomePage = () => {
               marginLeft: 'auto',
               marginRight: 'auto',
               paddingLeft: '1rem',
-              paddingRight: '1rem',
-              display: 'block',
-              visibility: 'visible',
-              opacity: 1
+              paddingRight: '1rem'
             }}
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
