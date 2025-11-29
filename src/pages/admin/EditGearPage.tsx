@@ -538,6 +538,94 @@ export const EditGearPage = () => {
         status: statusInput?.value || allFormValues.status || watchedValues.status || data.status || 'for-sale',
       };
       
+      // VALIDATION: Name validation
+      const name = (manualData.name || '').trim();
+      if (!name || name.length < 3) {
+        alert('⚠️ Ürün adı en az 3 karakter olmalıdır.');
+        setIsSubmitting(false);
+        return;
+      }
+      if (name.length > 200) {
+        alert('⚠️ Ürün adı en fazla 200 karakter olabilir.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // VALIDATION: Description validation
+      const description = (manualData.description || '').trim();
+      if (!description || description.length < 20) {
+        alert('⚠️ Açıklama en az 20 karakter olmalıdır.');
+        setIsSubmitting(false);
+        return;
+      }
+      if (description.length > 2000) {
+        alert('⚠️ Açıklama en fazla 2000 karakter olabilir.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // VALIDATION: Price validation
+      const pricePerDayValue = typeof manualData.pricePerDay === 'number' 
+        ? manualData.pricePerDay 
+        : (manualData.pricePerDay ? Number(manualData.pricePerDay) : 0);
+      if (isNaN(pricePerDayValue) || pricePerDayValue <= 0) {
+        alert('⚠️ Fiyat 0\'dan büyük bir sayı olmalıdır.');
+        setIsSubmitting(false);
+        return;
+      }
+      if (pricePerDayValue > 999999.99) {
+        alert('⚠️ Fiyat çok yüksek. Maksimum 999,999.99 TL olabilir.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // VALIDATION: Deposit validation (if provided)
+      let depositValue: number | null = null;
+      if (manualData.deposit !== null && manualData.deposit !== undefined && manualData.deposit !== '') {
+        depositValue = typeof manualData.deposit === 'number' 
+          ? manualData.deposit 
+          : Number(manualData.deposit);
+        if (isNaN(depositValue) || depositValue < 0) {
+          alert('⚠️ Teminat 0 veya pozitif bir sayı olmalıdır.');
+          setIsSubmitting(false);
+          return;
+        }
+        if (depositValue > 999999.99) {
+          alert('⚠️ Teminat çok yüksek. Maksimum 999,999.99 TL olabilir.');
+          setIsSubmitting(false);
+          return;
+        }
+      }
+      
+      // VALIDATION: Brand validation (if provided)
+      const brand = (manualData.brand || '').trim();
+      if (brand && brand.length > 100) {
+        alert('⚠️ Marka adı en fazla 100 karakter olabilir.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // VALIDATION: Color validation (if provided)
+      const color = (manualData.color || '').trim();
+      if (color && color.length > 50) {
+        alert('⚠️ Renk adı en fazla 50 karakter olabilir.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // VALIDATION: Rating validation (if provided)
+      let ratingValueFinal: number | null = null;
+      if (manualData.rating !== null && manualData.rating !== undefined && manualData.rating !== '') {
+        ratingValueFinal = typeof manualData.rating === 'number' 
+          ? manualData.rating 
+          : Number(manualData.rating);
+        if (isNaN(ratingValueFinal) || ratingValueFinal < 0 || ratingValueFinal > 5) {
+          alert('⚠️ Değerlendirme 0 ile 5 arasında olmalıdır.');
+          setIsSubmitting(false);
+          return;
+        }
+      }
+      
       // Use manual data
       const formData = manualData;
       // Son seçilen kategoriyi belirle - mevcut kategoriyi de kontrol et
@@ -583,6 +671,20 @@ export const EditGearPage = () => {
         : (currentGear.images && currentGear.images.length > 0 ? currentGear.images : []);
       const validImages = [...existingImages, ...uploadedImageUrls].filter(url => url.trim() !== '');
       
+      // VALIDATION: Image validation - at least 1 image required
+      if (validImages.length === 0) {
+        alert('⚠️ En az 1 resim eklemeniz gerekmektedir.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // VALIDATION: Maximum 10 images
+      if (validImages.length > 10) {
+        alert('⚠️ En fazla 10 resim ekleyebilirsiniz.');
+        setIsSubmitting(false);
+        return;
+      }
+      
       // YENİ MEKANİZMA 1: Teknik Özellikler - State'den direkt al, yoksa mevcut değerleri koru
       const specificationsObj: Record<string, string> = {};
       // ÖNEMLİ: specificationsState kullan (specifications değil!)
@@ -592,9 +694,9 @@ export const EditGearPage = () => {
         }
       });
       
-      // Extract and validate form values
-      const pricePerDay = typeof formData.pricePerDay === 'number' && !isNaN(formData.pricePerDay) ? formData.pricePerDay : (formData.pricePerDay ? Number(formData.pricePerDay) : 0);
-      const deposit = formData.deposit !== undefined && formData.deposit !== null && !isNaN(Number(formData.deposit)) ? Number(formData.deposit) : null;
+      // Extract and validate form values (already validated above)
+      const pricePerDay = pricePerDayValue;
+      const deposit = depositValue;
       
       // YENİ MEKANİZMA 2: Yıldız (Rating) - State'den direkt al, yoksa mevcut değeri koru
       // Eğer ratingState null/undefined ise, mevcut rating'i koru (0 dahil!)
@@ -636,21 +738,21 @@ export const EditGearPage = () => {
         || currentGear.categoryId 
         || '';
       
-      // Ensure all values are explicitly set, NEVER undefined - use formData
+      // Ensure all values are explicitly set, NEVER undefined - use validated formData
       const updates: Partial<Gear> = {
-        name: formData.name || data.name || '',
-        description: formData.description || data.description || '',
+        name: name, // Use validated name
+        description: description, // Use validated description
         category: finalCategorySlug || formData.category || data.category || 'other',
         categoryId: finalCategoryIdValue, // ALWAYS set, never undefined
-        images: validImages,
-        pricePerDay: pricePerDay,
-        deposit: deposit !== null ? deposit : null, // Explicitly set null
+        images: validImages, // Already validated (min 1, max 10)
+        pricePerDay: pricePerDay, // Already validated
+        deposit: deposit, // Already validated (can be null)
         available: (formData.status || data.status) === 'for-sale' || (formData.status || data.status) === 'orderable' ? true : false,
         status: (formData.status || data.status) ?? 'for-sale',
         specifications: finalSpecifications, // ALWAYS set, never undefined
-        brand: formData.brand || data.brand || '',
-        color: formData.color || data.color || '',
-        rating: finalRatingValue, // ALWAYS set, never undefined (null is valid)
+        brand: brand || '', // Use validated brand
+        color: color || '', // Use validated color
+        rating: ratingValueFinal !== null ? ratingValueFinal : finalRatingValue, // Use validated rating or fallback
         recommendedProducts: selectedRecommendedProducts.length > 0 ? selectedRecommendedProducts : (currentGear.recommendedProducts || []),
       };
 
@@ -671,9 +773,55 @@ export const EditGearPage = () => {
 
       await updateGearInStore(id, updates);
       navigate(routes.adminGear);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update gear:', error);
-      alert('Ürün güncellenemedi. Lütfen tekrar deneyin.');
+      
+      // Detailed error handling
+      let errorMessage = 'Ürün güncellenemedi. Lütfen tekrar deneyin.';
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+      
+      // Validation error messages
+      if (errorMessage.includes('must be at least 3 characters') || errorMessage.includes('en az 3 karakter')) {
+        alert('⚠️ Ürün adı en az 3 karakter olmalıdır.');
+        return;
+      }
+      if (errorMessage.includes('must not exceed 200 characters') || errorMessage.includes('en fazla 200 karakter')) {
+        alert('⚠️ Ürün adı en fazla 200 karakter olabilir.');
+        return;
+      }
+      if (errorMessage.includes('description') && (errorMessage.includes('at least 20') || errorMessage.includes('en az 20'))) {
+        alert('⚠️ Açıklama en az 20 karakter olmalıdır.');
+        return;
+      }
+      if (errorMessage.includes('description') && (errorMessage.includes('exceed 2000') || errorMessage.includes('en fazla 2000'))) {
+        alert('⚠️ Açıklama en fazla 2000 karakter olabilir.');
+        return;
+      }
+      if (errorMessage.includes('price') || errorMessage.includes('fiyat')) {
+        alert('⚠️ Fiyat geçersiz. Lütfen 0\'dan büyük bir sayı girin.');
+        return;
+      }
+      if (errorMessage.includes('category') || errorMessage.includes('kategori')) {
+        alert('⚠️ Kategori seçimi geçersiz. Lütfen geçerli bir kategori seçin.');
+        return;
+      }
+      if (errorMessage.includes('images') || errorMessage.includes('resim')) {
+        alert('⚠️ Resim yükleme hatası. Lütfen geçerli resimler ekleyin.');
+        return;
+      }
+      if (errorMessage.includes('rating') || errorMessage.includes('değerlendirme')) {
+        alert('⚠️ Değerlendirme 0 ile 5 arasında olmalıdır.');
+        return;
+      }
+      
+      alert(`❌ Hata: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
