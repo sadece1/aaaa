@@ -73,6 +73,7 @@ api.interceptors.response.use(
       // Check if this is a DELETE request - silently ignore 404 for DELETE
       if (error.config?.method?.toLowerCase() === 'delete') {
         // Silently resolve for DELETE 404 - item already deleted
+        // Don't log to console - this is expected behavior
         return Promise.resolve({
           data: { success: true },
           status: 200,
@@ -81,6 +82,18 @@ api.interceptors.response.use(
           config: error.config,
         } as any);
       }
+    }
+    
+    // Suppress console errors for DELETE 404 - prevent browser from logging
+    if (error.config?.method?.toLowerCase() === 'delete' && error.response?.status === 404) {
+      // Already handled above, but ensure no console output
+      return Promise.resolve({
+        data: { success: true },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: error.config,
+      } as any);
     }
     
     // Only handle 401 errors, ignore others (we'll use mock data)
