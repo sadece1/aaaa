@@ -399,29 +399,11 @@ export const HomePage = () => {
                     transition={{ delay: index * 0.05, duration: 0.3 }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden cursor-pointer"
-                    style={{
-                      background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
-                      padding: '3px',
-                    }}
+                    className="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden cursor-pointer flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-600 dark:to-primary-800 shadow-lg"
                   >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
-                      {/* Use slider images for categories, cycle through them */}
-                      {(() => {
-                        const imageIndex = index % sliderImages.length;
-                        const categoryImage = sliderImages[imageIndex];
-                        return (
-                          <img
-                            src={categoryImage}
-                            alt={category.name}
-                            className="w-full h-full rounded-full object-cover"
-                            loading="lazy"
-                            decoding="async"
-                            fetchPriority="low"
-                          />
-                        );
-                      })()}
-                    </div>
+                    <span className="text-2xl sm:text-3xl">
+                      {category.icon || '🏕️'}
+                    </span>
                   </motion.div>
                   <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center max-w-[70px] xs:max-w-[80px] sm:max-w-[100px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
                     {category.name}
