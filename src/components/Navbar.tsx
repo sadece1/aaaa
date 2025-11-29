@@ -373,7 +373,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Search Bar - Merkez */}
-          <div className="hidden lg:flex items-center w-96 relative mx-8" ref={desktopSearchRef}>
+          <div className="hidden lg:flex items-center w-96 relative mx-8 overflow-visible" ref={desktopSearchRef} style={{ zIndex: 50 }}>
             <div className="relative w-full">
               <input
                 type="text"
@@ -774,10 +774,11 @@ export const Navbar = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="relative z-50" 
+                  className="relative z-50 overflow-visible" 
                   ref={mobileSearchRef}
+                  style={{ maxWidth: '100%', boxSizing: 'border-box' }}
                 >
-                  <div className="relative">
+                  <div className="relative" style={{ maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
                     <input
                       type="text"
                       placeholder="Blog ve ürün ara..."
