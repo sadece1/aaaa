@@ -37,12 +37,20 @@ export const AdminCategoriesPage = () => {
   const loadCategories = async () => {
     try {
       const allCategories = await categoryManagementService.getAllCategories();
-    setCategories(allCategories);
-    
-    // Trigger navbar update
-    window.dispatchEvent(new Event('categoriesUpdated'));
+      // Force state update with new array reference
+      setCategories([...allCategories]);
+      
+      // Trigger navbar update
+      window.dispatchEvent(new Event('categoriesUpdated'));
     } catch (error) {
       console.error('Failed to load categories:', error);
+      // Even on error, try to update state to reflect current backend state
+      try {
+        const allCategories = await categoryManagementService.getAllCategories();
+        setCategories([...allCategories]);
+      } catch (retryError) {
+        console.error('Retry failed to load categories:', retryError);
+      }
     }
   };
 
@@ -165,6 +173,24 @@ export const AdminCategoriesPage = () => {
         await deleteChildrenRecursively(id);
         // 404 hatası sessizce handle edilir
         try {
+          // Optimistic update: Remove category and all children from UI immediately
+          setCategories(prev => {
+            // Collect all IDs to remove (category + all children)
+            const idsToRemove = new Set<string>([id]);
+            const collectChildren = (parentId: string) => {
+              prev.forEach(c => {
+                if (c.parentId === parentId) {
+                  idsToRemove.add(c.id);
+                  collectChildren(c.id);
+                }
+              });
+            };
+            collectChildren(id);
+            
+            // Filter out all removed categories
+            return prev.filter(c => !idsToRemove.has(c.id));
+          });
+          
           await categoryManagementService.deleteCategory(id);
         } catch (error) {
           // 404 hatası normal, diğer hatalar için log
@@ -172,7 +198,8 @@ export const AdminCategoriesPage = () => {
             throw error;
           }
         }
-        loadCategories();
+        // Reload from backend to ensure consistency
+        await loadCategories();
         alert('✅ Kategori ve tüm alt kategorileri başarıyla silindi.');
       } catch (error) {
         // Sadece 404 dışındaki hatalar için alert göster
@@ -189,13 +216,21 @@ export const AdminCategoriesPage = () => {
     // Normal silme işlemi (alt kategorileri olmayan kategoriler için)
     if (window.confirm(`${category.name} adlı kategoriyi silmek istediğinizden emin misiniz?`)) {
       try {
+        // Optimistic update: Remove from UI immediately
+        setCategories(prev => prev.filter(c => c.id !== id));
+        
         await categoryManagementService.deleteCategory(id);
-        loadCategories();
+        
+        // Reload from backend to ensure consistency
+        await loadCategories();
       } catch (error) {
         // 404 hatası = kategori zaten silinmiş, normal durum
         if (error instanceof Error && error.message.includes('404')) {
-          loadCategories(); // Liste güncelle
+          // Reload from backend
+          await loadCategories();
         } else {
+          // Error occurred, reload to restore correct state
+          await loadCategories();
           alert(error instanceof Error ? error.message : 'Silme işlemi başarısız oldu');
         }
       }
