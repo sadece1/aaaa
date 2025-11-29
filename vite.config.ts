@@ -96,8 +96,8 @@ export default defineConfig({
     reportCompressedSize: true,
     // Target modern browsers for smaller bundles
     target: 'es2015',
-    // CSS minification - enabled for production
-    cssMinify: 'lightningcss',
+    // CSS minification - use esbuild (default, no extra dependency needed)
+    cssMinify: true,
   },
   server: {
     port: 5173,
