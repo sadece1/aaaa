@@ -28,14 +28,23 @@ export const HomePage = () => {
   const [touchEnd, setTouchEnd] = useState(0);
   const [heroTouchStart, setHeroTouchStart] = useState(0);
   const [heroTouchEnd, setHeroTouchEnd] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [autoSlideInterval, setAutoSlideInterval] = useState<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
+    // Auto slide with pause on interaction
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 4000); // 4 saniyede bir değişir
+      if (!isDragging) {
+        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+      }
+    }, 5000); // 5 saniyede bir değişir
     
-    return () => clearInterval(interval);
-  }, [sliderImages.length]);
+    setAutoSlideInterval(interval);
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [sliderImages.length, isDragging]);
   
   // Swipe handlers for category stories
   const minSwipeDistance = 50;
@@ -72,8 +81,11 @@ export const HomePage = () => {
     }
   };
   
-  // Swipe handlers for hero slider
+  // Swipe handlers for hero slider - Instagram style smooth swipe
+  const heroMinSwipeDistance = 30;
+  
   const onHeroTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
     setHeroTouchEnd(0);
     setHeroTouchStart(e.targetTouches[0].clientX);
   };
@@ -83,16 +95,80 @@ export const HomePage = () => {
   };
   
   const onHeroTouchEnd = () => {
+    setIsDragging(false);
     if (!heroTouchStart || !heroTouchEnd) return;
     
     const distance = heroTouchStart - heroTouchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
+    const isLeftSwipe = distance > heroMinSwipeDistance;
+    const isRightSwipe = distance < -heroMinSwipeDistance;
     
     if (isLeftSwipe) {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
     } else if (isRightSwipe) {
       setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+    }
+    
+    // Reset after a delay
+    setTimeout(() => {
+      setHeroTouchStart(0);
+      setHeroTouchEnd(0);
+    }, 100);
+  };
+  
+  // Mouse drag handlers for desktop
+  const onHeroMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setHeroTouchEnd(0);
+    setHeroTouchStart(e.clientX);
+    e.preventDefault();
+  };
+  
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging && heroTouchStart) {
+        setHeroTouchEnd(e.clientX);
+      }
+    };
+    
+    const handleMouseUp = () => {
+      if (!isDragging) return;
+      
+      setIsDragging(false);
+      if (!heroTouchStart || !heroTouchEnd) return;
+      
+      const distance = heroTouchStart - heroTouchEnd;
+      const isLeftSwipe = distance > heroMinSwipeDistance;
+      const isRightSwipe = distance < -heroMinSwipeDistance;
+      
+      if (isLeftSwipe) {
+        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+      } else if (isRightSwipe) {
+        setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+      }
+      
+      // Reset after a delay
+      setTimeout(() => {
+        setHeroTouchStart(0);
+        setHeroTouchEnd(0);
+      }, 100);
+    };
+    
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, heroTouchStart, heroTouchEnd, heroMinSwipeDistance, sliderImages.length]);
+  
+  const onHeroMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setHeroTouchStart(0);
+      setHeroTouchEnd(0);
     }
   };
   
@@ -296,10 +372,12 @@ export const HomePage = () => {
 
       {/* Hero Section */}
       <section 
-        className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600"
+        className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 cursor-grab active:cursor-grabbing select-none"
         onTouchStart={onHeroTouchStart}
         onTouchMove={onHeroTouchMove}
         onTouchEnd={onHeroTouchEnd}
+        onMouseDown={onHeroMouseDown}
+        onMouseLeave={onHeroMouseLeave}
       >
         {/* Slider Background */}
         <div className="absolute inset-0 w-full h-full">
@@ -310,9 +388,12 @@ export const HomePage = () => {
               initial={{ opacity: 0 }}
               animate={{ 
                 opacity: currentSlide === index ? 1 : 0,
-                scale: currentSlide === index ? 1.05 : 1
+                scale: currentSlide === index ? 1 : 1.05
               }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
+              transition={{ 
+                duration: 0.8, 
+                ease: [0.4, 0.0, 0.2, 1] // Instagram-like smooth cubic bezier easing
+              }}
             >
               <picture>
                 <source
