@@ -146,43 +146,26 @@ export const HomePage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center"
+          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
           style={{ 
             display: 'flex', 
             flexDirection: 'column', 
             alignItems: 'center', 
             justifyContent: 'center',
-            textAlign: 'center',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            width: '100%',
-            maxWidth: '80rem'
+            textAlign: 'center'
           }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="w-full"
-            style={{ 
-              textAlign: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: '100%'
-            }}
+            className="w-full flex flex-col items-center"
           >
             <h1 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center"
-              style={{ 
-                textAlign: 'center',
-                width: '100%',
-                marginLeft: 'auto',
-                marginRight: 'auto'
-              }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center w-full"
             >
-              <span style={{ display: 'block', textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>Doğada Unutulmaz</span>
-              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+              <span className="block text-center">Doğada Unutulmaz</span>
+              <span className="block text-primary-200 mt-2 text-center">
                 Deneyimler Yaşayın
               </span>
             </h1>
@@ -192,16 +175,7 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed text-center"
-            style={{ 
-              textAlign: 'center',
-              maxWidth: '48rem',
-              width: '100%',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              paddingLeft: '1rem',
-              paddingRight: '1rem'
-            }}
+            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed text-center max-w-3xl mx-auto px-4"
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
             Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
@@ -211,16 +185,9 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4"
-            style={{ 
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-              marginLeft: 'auto',
-              marginRight: 'auto'
-            }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
           >
-            <Link to={routes.blog} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to={routes.blog}>
               <Button 
                 variant="secondary" 
                 size="lg"
@@ -230,7 +197,7 @@ export const HomePage = () => {
                 📖 Blog Yazılarını Keşfet
               </Button>
             </Link>
-            <Link to={routes.gear} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to={routes.gear}>
               <Button 
                 variant="outline" 
                 size="lg"
