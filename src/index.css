@@ -62,13 +62,18 @@
     touch-action: pan-x pan-y;
   }
   
-  /* Force center alignment for hero section */
-  section[class*="hero"] {
+  /* Force center alignment for hero section - AGGRESSIVE */
+  section[class*="hero"],
+  section[class*="hero"] *,
+  section[class*="hero"] > *,
+  section[class*="hero"] > * > *,
+  section[class*="hero"] > * > * > * {
     text-align: center !important;
   }
   
   section[class*="hero"] > div[class*="z-10"],
-  section[class*="hero"] > div[class*="z-10"] > * {
+  section[class*="hero"] > div[class*="z-10"] > *,
+  section[class*="hero"] > div[class*="z-10"] > * > * {
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -79,19 +84,24 @@
   }
   
   section[class*="hero"] h1,
+  section[class*="hero"] h1 *,
   section[class*="hero"] h1 span,
-  section[class*="hero"] p {
+  section[class*="hero"] p,
+  section[class*="hero"] p * {
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
     width: 100% !important;
+    display: block !important;
   }
   
-  section[class*="hero"] div[class*="flex"] {
+  section[class*="hero"] div[class*="flex"],
+  section[class*="hero"] div[class*="motion"] {
     justify-content: center !important;
     align-items: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
+    text-align: center !important;
   }
 }
 

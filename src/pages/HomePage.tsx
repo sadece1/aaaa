@@ -214,7 +214,8 @@ export const HomePage = () => {
               <Button 
                 variant="secondary" 
                 size="lg"
-                className="shadow-2xl hover:shadow-primary-500/50 transition-all duration-300"
+                className="shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
+                style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: 'white' }}
               >
                 📖 Blog Yazılarını Keşfet
               </Button>
@@ -598,7 +599,8 @@ export const HomePage = () => {
                 <Button 
                   variant="secondary" 
                   size="lg"
-                  className="shadow-2xl hover:shadow-white/20 transition-all duration-300"
+                  className="shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
+                  style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: 'white' }}
                 >
                   📖 Blog Yazılarını Keşfet
                 </Button>
