@@ -40,25 +40,26 @@ export const AdminCategoriesPage = () => {
       // Force state update with new array reference
       setCategories([...allCategories]);
       
-      // Trigger navbar update - use setTimeout to ensure state is updated first
-      setTimeout(() => {
-        window.dispatchEvent(new Event('categoriesUpdated'));
-        // Also trigger storage event for cross-tab updates
+      // Trigger navbar update immediately (no setTimeout needed)
+      window.dispatchEvent(new Event('categoriesUpdated'));
+      // Also trigger storage event for cross-tab updates
+      try {
         window.dispatchEvent(new StorageEvent('storage', {
           key: 'categoriesUpdated',
           newValue: Date.now().toString()
         }));
-      }, 0);
+      } catch (e) {
+        // StorageEvent might not be available in all browsers, use regular event
+        window.dispatchEvent(new Event('categoriesUpdated'));
+      }
     } catch (error) {
       console.error('Failed to load categories:', error);
       // Even on error, try to update state to reflect current backend state
       try {
         const allCategories = await categoryManagementService.getAllCategories();
         setCategories([...allCategories]);
-        // Trigger update even on retry
-        setTimeout(() => {
-          window.dispatchEvent(new Event('categoriesUpdated'));
-        }, 0);
+        // Trigger update even on retry (immediately)
+        window.dispatchEvent(new Event('categoriesUpdated'));
       } catch (retryError) {
         console.error('Retry failed to load categories:', retryError);
       }

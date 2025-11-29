@@ -17,6 +17,7 @@ const api: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true, // Send cookies (HttpOnly cookies) with requests
+  timeout: 10000, // 10 seconds timeout for all requests
   // DELETE 404 handling is done via:
   // 1. Response interceptor (below)
   // 2. XMLHttpRequest prototype override (errorHandler.ts)
