@@ -276,10 +276,10 @@ export const HomePage = () => {
 
   // Stats data - static values (no API dependency)
   const stats = [
-    { label: 'Kamp Alanı', value: '200+', icon: '🏕️', color: 'text-blue-600' },
     { label: 'Kamp Malzemesi', value: '500+', icon: '🎒', color: 'text-green-600' },
     { label: 'Blog Yazısı', value: '100+', icon: '📝', color: 'text-purple-600' },
     { label: 'Mutlu Müşteri', value: '5000+', icon: '😊', color: 'text-orange-600' },
+    { label: 'Kiralık Ekipman', value: '300+', icon: '⛺', color: 'text-blue-600' },
   ];
 
   // Structured Data for SEO
@@ -297,7 +297,7 @@ export const HomePage = () => {
           "width": 512,
           "height": 512
         },
-        "description": "Doğada unutulmaz kamp deneyimleri için kamp alanları ve kamp malzemeleri pazaryeri",
+        "description": "Doğada unutulmaz kamp deneyimleri için kiralık kamp malzemeleri pazaryeri",
         "contactPoint": {
           "@type": "ContactPoint",
           "contactType": "customer service",
@@ -310,7 +310,7 @@ export const HomePage = () => {
         "@id": `${baseUrl}/#website`,
         "url": baseUrl,
         "name": config.appName,
-        "description": "Kamp alanları ve kamp malzemeleri pazaryeri - Doğada unutulmaz deneyimler için",
+        "description": "Kiralık kamp malzemeleri pazaryeri - Doğada unutulmaz deneyimler için",
         "publisher": {
           "@id": `${baseUrl}/#organization`
         },
@@ -329,7 +329,7 @@ export const HomePage = () => {
         "@id": `${baseUrl}/#webpage`,
         "url": baseUrl,
         "name": `${config.appName} - Ana Sayfa`,
-        "description": "Doğada unutulmaz kamp deneyimleri için kamp alanları ve kamp malzemeleri. Türkiye'nin en kapsamlı kamp pazaryeri.",
+        "description": "Doğada unutulmaz kamp deneyimleri için kiralık kamp malzemeleri. Türkiye'nin en kapsamlı kamp malzemeleri pazaryeri.",
         "isPartOf": {
           "@id": `${baseUrl}/#website`
         },
@@ -350,9 +350,9 @@ export const HomePage = () => {
   return (
     <>
       <SEO
-        title="WeCamp - Kamp Alanı Pazar Yeri | Doğada Unutulmaz Deneyimler"
-        description="Doğada unutulmaz kamp deneyimleri için kamp alanları ve kamp malzemeleri. Türkiye'nin en kapsamlı kamp pazaryeri. 200+ kamp alanı, 500+ kamp malzemesi ile doğada unutulmaz anılar biriktirin."
-        keywords="kamp, kamp alanı, kamp malzemeleri, doğa, outdoor, kamp çadırı, kamp ekipmanları, kamp rehberi, Türkiye kamp alanları, kiralık kamp malzemeleri, kamp pazarı, doğa aktiviteleri, kamp deneyimi, kamp tüyoları, WeCamp"
+        title="WeCamp - Kiralık Kamp Malzemeleri Pazar Yeri | Doğada Unutulmaz Deneyimler"
+        description="Doğada unutulmaz kamp deneyimleri için kiralık kamp malzemeleri. Türkiye'nin en kapsamlı kamp malzemeleri pazaryeri. 500+ kamp malzemesi ile doğada unutulmaz anılar biriktirin."
+        keywords="kamp, kamp malzemeleri, doğa, outdoor, kamp çadırı, kamp ekipmanları, kamp rehberi, kiralık kamp malzemeleri, kamp pazarı, doğa aktiviteleri, kamp deneyimi, kamp tüyoları, WeCamp, kiralık çadır, kiralık kamp ekipmanları"
         image="/mutlaka-bunu-kullan.webp"
         url={baseUrl}
         canonicalUrl={baseUrl}
@@ -489,7 +489,7 @@ export const HomePage = () => {
                 <img
                   src={`${image}?w=1280&q=75`}
                   srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
-                  alt={`Kamp alanı ${index + 1}`}
+                  alt={`Kamp manzarası ${index + 1}`}
                   className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
                   style={{ 
                     objectPosition: 'center center',

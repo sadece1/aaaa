@@ -35,9 +35,9 @@ export const TermsOfServicePage = () => {
                   lütfen platformu kullanmayın.
                 </p>
                 <p className="text-gray-700 dark:text-gray-300">
-                  WeCamp, kamp alanları ve kamp malzemeleri için bir pazar yeri platformudur. 
-                  Platform, kullanıcıların kamp alanlarını keşfetmesini, rezervasyon yapmasını ve 
-                  kamp malzemeleri kiralamasını sağlar.
+                  WeCamp, kiralık kamp malzemeleri için bir pazar yeri platformudur. 
+                  Platform, kullanıcıların kamp malzemeleri kiralamasını ve 
+                  kamp deneyimlerini paylaşmasını sağlar.
                 </p>
               </section>
 
@@ -49,14 +49,13 @@ export const TermsOfServicePage = () => {
                   WeCamp aşağıdaki hizmetleri sunmaktadır:
                 </p>
                 <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                  <li>Kamp alanı listeleme ve rezervasyon hizmeti</li>
                   <li>Kamp malzemeleri kiralama platformu</li>
                   <li>Kullanıcı hesapları ve profil yönetimi</li>
                   <li>İletişim ve destek hizmetleri</li>
                   <li>Blog ve içerik paylaşımı</li>
                 </ul>
                 <p className="text-gray-700 dark:text-gray-300">
-                  WeCamp, bir aracı platformdur. Kamp alanları ve malzemeler, üçüncü taraf sağlayıcılar 
+                  WeCamp, bir aracı platformdur. Kamp malzemeleri, üçüncü taraf sağlayıcılar 
                   tarafından sunulmaktadır.
                 </p>
               </section>
@@ -85,19 +84,19 @@ export const TermsOfServicePage = () => {
                   4. Rezervasyon ve Ödeme
                 </h2>
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
-                  <strong>4.1. Rezervasyon İşlemleri:</strong>
+                  <strong>4.1. Kiralama İşlemleri:</strong>
                 </p>
                 <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                  <li>Rezervasyonlar, kamp alanı sahiplerinin onayına tabidir</li>
-                  <li>Rezervasyon iptal ve değişiklik koşulları, her kamp alanı için farklı olabilir</li>
-                  <li>Rezervasyon detayları, onay e-postası ile bildirilir</li>
+                  <li>Kiralama işlemleri, malzeme sahiplerinin onayına tabidir</li>
+                  <li>Kiralama iptal ve değişiklik koşulları, her malzeme için farklı olabilir</li>
+                  <li>Kiralama detayları, onay e-postası ile bildirilir</li>
                 </ul>
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
                   <strong>4.2. Ödeme:</strong>
                 </p>
                 <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
                   <li>Ödemeler, güvenli ödeme sağlayıcıları aracılığıyla işlenir</li>
-                  <li>Fiyatlar, kamp alanı sahipleri tarafından belirlenir</li>
+                  <li>Fiyatlar, malzeme sahipleri tarafından belirlenir</li>
                   <li>WeCamp, ödeme işlemlerinde aracılık yapar</li>
                   <li>Vergi ve ek ücretler, fiyata dahil olabilir veya ayrıca belirtilebilir</li>
                 </ul>
@@ -108,14 +107,14 @@ export const TermsOfServicePage = () => {
                   5. İptal ve İade Politikası
                 </h2>
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
-                  İptal ve iade koşulları, her kamp alanı ve malzeme sağlayıcısı için farklı olabilir. 
-                  Detaylı bilgi, rezervasyon sırasında ve onay e-postasında belirtilir.
+                  İptal ve iade koşulları, her malzeme sağlayıcısı için farklı olabilir. 
+                  Detaylı bilgi, kiralama sırasında ve onay e-postasında belirtilir.
                 </p>
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
                   Genel olarak:
                 </p>
                 <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                  <li>İptal talepleri, kamp alanı sahibine iletilir</li>
+                  <li>İptal talepleri, malzeme sahibine iletilir</li>
                   <li>İade işlemleri, sağlayıcının politikasına göre yapılır</li>
                   <li>WeCamp, iptal ve iade konusunda aracılık yapar ancak nihai karar sağlayıcıya aittir</li>
                 </ul>
@@ -143,14 +142,13 @@ export const TermsOfServicePage = () => {
                   WeCamp, bir aracı platformdur ve aşağıdaki konularda sorumluluk kabul etmez:
                 </p>
                 <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                  <li>Kamp alanlarının kalitesi, güvenliği veya uygunluğu</li>
                   <li>Kamp malzemelerinin durumu veya işlevselliği</li>
-                  <li>Rezervasyon iptalleri veya değişiklikleri</li>
+                  <li>Kiralama iptalleri veya değişiklikleri</li>
                   <li>Üçüncü taraf sağlayıcıların hizmetleri</li>
                   <li>Doğal afetler, hava koşulları veya diğer mücbir sebep durumları</li>
                 </ul>
                 <p className="text-gray-700 dark:text-gray-300">
-                  Kullanıcılar, rezervasyon yaparken kamp alanı ve malzeme sağlayıcılarının 
+                  Kullanıcılar, kiralama yaparken malzeme sağlayıcılarının 
                   koşullarını dikkatle okumalıdır.
                 </p>
               </section>

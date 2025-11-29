@@ -1,7 +1,7 @@
 export const config = {
   apiBaseUrl: '/api',
   appName: import.meta.env.VITE_APP_NAME || 'CampScape',
-  appDescription: import.meta.env.VITE_APP_DESCRIPTION || 'Doğada unutulmaz kamp deneyimleri için kamp alanları ve kiralık kamp malzemeleri',
+  appDescription: import.meta.env.VITE_APP_DESCRIPTION || 'Doğada unutulmaz kamp deneyimleri için kiralık kamp malzemeleri',
   enableDarkMode: true,
   itemsPerPage: 12,
   imagePlaceholder: '/placeholder-image.jpg',

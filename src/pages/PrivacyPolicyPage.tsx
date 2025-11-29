@@ -103,7 +103,7 @@ export const PrivacyPolicyPage = () => {
                 </p>
                 <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
                   <li>Ödeme işleme sağlayıcıları (güvenli ödeme için)</li>
-                  <li>Kamp alanı sahipleri (rezervasyon işlemleri için)</li>
+                  <li>Malzeme sahipleri (kiralama işlemleri için)</li>
                   <li>Yasal merciler (yasal zorunluluklar gereği)</li>
                   <li>Hizmet sağlayıcılarımız (hosting, analitik - sadece gerekli veriler)</li>
                 </ul>

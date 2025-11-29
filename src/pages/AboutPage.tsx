@@ -189,7 +189,7 @@ export const AboutPage = () => {
       <SEO 
         title="Hakkımızda - WeCamp | Misyonumuz, Vizyonumuz ve Değerlerimiz" 
         description="WeCamp hakkında bilgiler. Doğada unutulmaz kamp deneyimleri için güvenilir kamp partneriniz. Türkiye'nin en kapsamlı kamp pazar yeri. Misyonumuz, vizyonumuz ve değerlerimizi keşfedin."
-        keywords="WeCamp hakkında, kamp pazar yeri, kamp malzemeleri, kamp alanları, doğa aktiviteleri, kamp rehberi, kamp platformu Türkiye, kamp şirketi, outdoor platform"
+        keywords="WeCamp hakkında, kamp pazar yeri, kamp malzemeleri, kiralık kamp ekipmanları, doğa aktiviteleri, kamp rehberi, kamp platformu Türkiye, kamp şirketi, outdoor platform"
       />
 
       <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -229,8 +229,8 @@ export const AboutPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
               {[
-                { value: '200+', label: 'Kamp Alanı', icon: '🏕️' },
                 { value: '500+', label: 'Kiralık Malzeme', icon: '🎒' },
+                { value: '100+', label: 'Blog Yazısı', icon: '📝' },
                 { value: '5000+', label: 'Mutlu Müşteri', icon: '😊' },
                 { value: '50+', label: 'Farklı Bölge', icon: '📍' },
               ].map((stat, index) => (
@@ -275,7 +275,7 @@ export const AboutPage = () => {
                 </p>
                 <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                   Her kamp deneyiminin özel ve benzersiz olduğuna inanıyoruz. 
-                  Müşterilerimize en kaliteli kamp alanları ve ekipmanları sunmak, 
+                  Müşterilerimize en kaliteli kiralık kamp ekipmanları sunmak, 
                   kamp kültürünü yaygınlaştırmak ve herkesin doğayla buluşmasını sağlamak için 
                   sürekli gelişiyor ve çalışıyoruz.
                 </p>
@@ -302,8 +302,8 @@ export const AboutPage = () => {
               </div>
               <div className="space-y-4 sm:space-y-5">
                 <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                  Türkiye'nin en güvenilir, kapsamlı ve kullanıcı dostu kamp alanı 
-                  ve malzeme platformu olmak.
+                  Türkiye'nin en güvenilir, kapsamlı ve kullanıcı dostu kiralık 
+                  kamp malzemeleri platformu olmak.
                 </p>
                 <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                   Doğa severlerin birinci tercihi olarak, kamp kültürünü yaygınlaştırmak, 

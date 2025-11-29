@@ -15,7 +15,7 @@ export const Footer = () => {
               <span className="text-2xl font-bold text-white">WeCamp</span>
             </Link>
             <p className="text-gray-400 mb-4">
-              Doğada unutulmaz kamp deneyimleri için kamp alanları ve kamp malzemeleri
+              Doğada unutulmaz kamp deneyimleri için kiralık kamp malzemeleri
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Facebook">
