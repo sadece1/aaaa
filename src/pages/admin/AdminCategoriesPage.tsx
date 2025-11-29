@@ -182,37 +182,50 @@ export const AdminCategoriesPage = () => {
           }
         };
         
-        await deleteChildrenRecursively(id);
-        // 404 hatası sessizce handle edilir
-        try {
-          // Optimistic update: Remove category and all children from UI immediately
-          setCategories(prev => {
-            // Collect all IDs to remove (category + all children)
-            const idsToRemove = new Set<string>([id]);
-            const collectChildren = (parentId: string) => {
-              prev.forEach(c => {
-                if (c.parentId === parentId) {
-                  idsToRemove.add(c.id);
-                  collectChildren(c.id);
-                }
-              });
-            };
-            collectChildren(id);
-            
-            // Filter out all removed categories
-            return prev.filter(c => !idsToRemove.has(c.id));
-          });
+        // Optimistic update: Remove category and all children from UI immediately (BEFORE API calls)
+        setCategories(prev => {
+          // Collect all IDs to remove (category + all children)
+          const idsToRemove = new Set<string>([id]);
+          const collectChildren = (parentId: string) => {
+            prev.forEach(c => {
+              if (c.parentId === parentId) {
+                idsToRemove.add(c.id);
+                collectChildren(c.id);
+              }
+            });
+          };
+          collectChildren(id);
           
-          await categoryManagementService.deleteCategory(id);
-        } catch (error) {
-          // 404 hatası normal, diğer hatalar için log
-          if (error instanceof Error && !error.message.includes('404')) {
-            throw error;
-          }
-        }
-        // Reload from backend to ensure consistency (don't await - update immediately)
-        loadCategories(); // Fire and forget - UI already updated optimistically
-        alert('✅ Kategori ve tüm alt kategorileri başarıyla silindi.');
+          // Filter out all removed categories
+          return prev.filter(c => !idsToRemove.has(c.id));
+        });
+        
+        // Trigger navbar update immediately (BEFORE API calls)
+        window.dispatchEvent(new Event('categoriesUpdated'));
+        
+        // API calls in background (don't await - UI already updated)
+        deleteChildrenRecursively(id)
+          .then(() => {
+            // 404 hatası sessizce handle edilir
+            return categoryManagementService.deleteCategory(id).catch((error) => {
+              // 404 hatası normal, diğer hatalar için log
+              if (error instanceof Error && !error.message.includes('404')) {
+                throw error;
+              }
+            });
+          })
+          .then(() => {
+            // Success - reload from backend in background to ensure consistency
+            loadCategories(); // Fire and forget
+            alert('✅ Kategori ve tüm alt kategorileri başarıyla silindi.');
+          })
+          .catch((error) => {
+            // Error occurred, reload to restore correct state
+            loadCategories(); // Fire and forget
+            if (error instanceof Error && !error.message.includes('404')) {
+              alert(error.message || 'Silme işlemi başarısız oldu');
+            }
+          });
       } catch (error) {
         // Sadece 404 dışındaki hatalar için alert göster
         if (error instanceof Error && !error.message.includes('404')) {
@@ -227,28 +240,29 @@ export const AdminCategoriesPage = () => {
 
     // Normal silme işlemi (alt kategorileri olmayan kategoriler için)
     if (window.confirm(`${category.name} adlı kategoriyi silmek istediğinizden emin misiniz?`)) {
-      try {
-        // Optimistic update: Remove from UI immediately
-        setCategories(prev => prev.filter(c => c.id !== id));
-        
-        // Trigger navbar update immediately (before API call)
-        window.dispatchEvent(new Event('categoriesUpdated'));
-        
-        await categoryManagementService.deleteCategory(id);
-        
-        // Reload from backend to ensure consistency (don't await - already updated)
-        loadCategories(); // Fire and forget
-      } catch (error) {
-        // 404 hatası = kategori zaten silinmiş, normal durum
-        if (error instanceof Error && error.message.includes('404')) {
-          // Reload from backend
-          await loadCategories();
-        } else {
-          // Error occurred, reload to restore correct state
-          await loadCategories();
-          alert(error instanceof Error ? error.message : 'Silme işlemi başarısız oldu');
-        }
-      }
+      // Optimistic update: Remove from UI immediately (BEFORE API call)
+      setCategories(prev => prev.filter(c => c.id !== id));
+      
+      // Trigger navbar update immediately (BEFORE API call)
+      window.dispatchEvent(new Event('categoriesUpdated'));
+      
+      // API call in background (don't await - UI already updated)
+      categoryManagementService.deleteCategory(id)
+        .then(() => {
+          // Success - reload from backend in background to ensure consistency
+          loadCategories(); // Fire and forget
+        })
+        .catch((error) => {
+          // 404 hatası = kategori zaten silinmiş, normal durum
+          if (error instanceof Error && error.message.includes('404')) {
+            // Reload from backend in background
+            loadCategories(); // Fire and forget
+          } else {
+            // Error occurred, reload to restore correct state
+            loadCategories(); // Fire and forget
+            alert(error instanceof Error ? error.message : 'Silme işlemi başarısız oldu');
+          }
+        });
     }
   };
 
