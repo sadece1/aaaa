@@ -137,18 +137,18 @@ export const HomePage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center"
-          style={{ textAlign: 'center' }}
+          style={{ textAlign: 'center', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="mb-6"
-            style={{ textAlign: 'center' }}
+            className="mb-6 w-full"
+            style={{ textAlign: 'center', width: '100%' }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center" style={{ textAlign: 'center' }}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center w-full" style={{ textAlign: 'center', width: '100%' }}>
               Doğada Unutulmaz
-              <span className="block text-primary-200 mt-2">Deneyimler Yaşayın</span>
+              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center' }}>Deneyimler Yaşayın</span>
             </h1>
           </motion.div>
           
@@ -156,8 +156,8 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 max-w-3xl mx-auto leading-relaxed text-center"
-            style={{ textAlign: 'center' }}
+            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 max-w-3xl mx-auto leading-relaxed text-center w-full"
+            style={{ textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
             Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
@@ -167,8 +167,8 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            style={{ justifyContent: 'center', alignItems: 'center' }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
+            style={{ justifyContent: 'center', alignItems: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}
           >
             <Link to={routes.blog}>
               <Button 
