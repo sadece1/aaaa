@@ -100,30 +100,15 @@ export const HomePage = () => {
         locale="tr_TR"
       />
 
-      {/* Hero Section - LCP Optimized */}
-      <section 
-        className="hero-section relative min-h-[85vh] flex items-center justify-center text-center text-white overflow-hidden" 
-        style={{ 
-          textAlign: 'center', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          width: '100%',
-          margin: '0 auto'
-        }}
-      >
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600" />
-        
-        {/* LCP Image - Optimized with WebP format */}
+      {/* Hero Section */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600">
+        {/* Background Image */}
         <picture>
-          {/* WebP format (already optimized) */}
           <source
             srcSet="/mutlaka-bunu-kullan.webp"
             type="image/webp"
             sizes="100vw"
           />
-          {/* Fallback to WebP - LCP image */}
           <img
             src="/mutlaka-bunu-kullan.webp"
             alt="Kamp alanı ve doğa manzarası"
@@ -134,91 +119,73 @@ export const HomePage = () => {
             decoding="async"
             width="1280"
             height="853"
-            sizes="100vw"
           />
         </picture>
         
-        {/* Overlay gradient */}
+        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-        {/* Content - Centered */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
-          style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            textAlign: 'center'
-          }}
-        >
+        {/* Content Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="w-full flex flex-col items-center justify-center"
-            style={{ textAlign: 'center', width: '100%' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex flex-col items-center justify-center text-center text-white"
           >
-            <h1 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center w-full"
-              style={{ textAlign: 'center', width: '100%', margin: '0 auto' }}
+            {/* Title */}
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl"
             >
-              <span className="block text-center" style={{ textAlign: 'center', display: 'block', width: '100%' }}>Doğada Unutulmaz</span>
-              <span className="block text-primary-200 mt-2 text-center" style={{ textAlign: 'center', display: 'block', width: '100%' }}>
-                Deneyimler Yaşayın
-              </span>
-            </h1>
-          </motion.div>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed text-center max-w-3xl mx-auto px-4"
-            style={{ 
-              textAlign: 'center', 
-              marginLeft: 'auto', 
-              marginRight: 'auto', 
-              width: '100%',
-              maxWidth: '48rem'
-            }}
-          >
-            Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
-            Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
-          </motion.p>
+              <span className="block">Doğada Unutulmaz</span>
+              <span className="block text-primary-200 mt-2">Deneyimler Yaşayın</span>
+            </motion.h1>
+            
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed max-w-3xl"
+            >
+              Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
+              Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
+            </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
-          >
-            <Link to={routes.blog}>
-              <Button 
-                variant="secondary" 
-                size="lg"
-                className="shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
-                style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: 'white' }}
-              >
-                📖 Blog Yazılarını Keşfet
-              </Button>
-            </Link>
-            <Link to={routes.gear}>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl"
-              >
-                🎒 Malzemeleri İncele
-              </Button>
-            </Link>
+            {/* Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
+              <Link to={routes.blog}>
+                <Button 
+                  variant="secondary" 
+                  size="lg"
+                  className="shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
+                  style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: 'white' }}
+                >
+                  📖 Blog Yazılarını Keşfet
+                </Button>
+              </Link>
+              <Link to={routes.gear}>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl"
+                >
+                  🎒 Malzemeleri İncele
+                </Button>
+              </Link>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
