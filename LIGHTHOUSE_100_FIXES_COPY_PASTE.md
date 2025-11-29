@@ -163,3 +163,5 @@ add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment
 - Console hataları (ERR_BLOCKED_BY_CLIENT) yakalanıyor ve yok ediliyor
 - Accessibility için skip link ve ARIA labels eklendi
 
+
+

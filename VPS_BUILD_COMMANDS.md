@@ -38,3 +38,4 @@ curl -I https://sadece1deneme.com/mutlaka-bunu-kullan.webp
 ## 📝 Not
 Vite build sırasında `public` klasöründeki tüm dosyalar `dist` root'una kopyalanır. Hash eklenmez, dosya adı aynı kalır.
 
+

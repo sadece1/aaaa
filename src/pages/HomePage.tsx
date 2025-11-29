@@ -136,15 +136,17 @@ export const HomePage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center"
+          className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center"
+          style={{ textAlign: 'center' }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="mb-6"
+            style={{ textAlign: 'center' }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center" style={{ textAlign: 'center' }}>
               Doğada Unutulmaz
               <span className="block text-primary-200 mt-2">Deneyimler Yaşayın</span>
             </h1>
@@ -155,6 +157,7 @@ export const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 max-w-3xl mx-auto leading-relaxed text-center"
+            style={{ textAlign: 'center' }}
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
             Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
@@ -164,7 +167,8 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            style={{ justifyContent: 'center', alignItems: 'center' }}
           >
             <Link to={routes.blog}>
               <Button 

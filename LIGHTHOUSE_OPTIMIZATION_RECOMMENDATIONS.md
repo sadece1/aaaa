@@ -304,3 +304,4 @@ export default {
 **Hazırlayan**: AI Assistant
 **Durum**: Uygulanmaya Hazır
 
+

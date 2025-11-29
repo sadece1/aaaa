@@ -239,3 +239,5 @@ self.addEventListener('fetch', (e) => {
 5. **Images**: Tüm `<img>` tag'lerine `width` ve `height` ekle
 6. **Service Worker**: `public/sw.js` olarak oluştur ve `index.html`'de register et
 
+
+

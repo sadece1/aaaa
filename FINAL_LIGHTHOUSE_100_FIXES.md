@@ -142,3 +142,5 @@ add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsaf
 - **Best Practices**: 100 ✅
 - **SEO**: 100 ✅
 
+
+

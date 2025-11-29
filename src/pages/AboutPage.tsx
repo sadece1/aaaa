@@ -409,6 +409,12 @@ export const AboutPage = () => {
                   emoji: '👨‍💻',
                   description: 'Teknoloji ve inovasyon alanında ekibimize öncülük ediyor.'
                 },
+                { 
+                  name: 'Murat Evren', 
+                  role: 'Geliştirme Lideri', 
+                  emoji: '👨‍💻',
+                  description: 'Yazılım geliştirme ve teknoloji alanında ekibimize liderlik ediyor.'
+                },
               ].map((member, index) => (
                 <motion.div
                   key={index}
