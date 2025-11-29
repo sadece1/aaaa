@@ -1,12 +1,98 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SEO } from '@/components/SEO';
 import { Button } from '@/components/Button';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { routes, config } from '@/config';
+import { categoryManagementService } from '@/services/categoryManagementService';
+import { Category } from '@/types';
 
 export const HomePage = () => {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  
+  // Slider images
+  const sliderImages = [
+    '/mutlaka-bunu-kullan.webp',
+    '/mutlaka-bunu-kullan.webp',
+    '/mutlaka-bunu-kullan.webp',
+    '/mutlaka-bunu-kullan.webp',
+    '/mutlaka-bunu-kullan.webp',
+    '/mutlaka-bunu-kullan.webp',
+  ];
+  
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [subCategories, setSubCategories] = useState<Category[]>([]);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 4000); // 4 saniyede bir değişir
+    
+    return () => clearInterval(interval);
+  }, [sliderImages.length]);
+  
+  // Swipe handlers for category stories
+  const minSwipeDistance = 50;
+  
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+  
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe || isRightSwipe) {
+      const scrollContainer = document.getElementById('category-stories-container');
+      if (scrollContainer) {
+        const scrollAmount = scrollContainer.offsetWidth * 0.8;
+        const newPosition = isLeftSwipe 
+          ? scrollContainer.scrollLeft + scrollAmount
+          : scrollContainer.scrollLeft - scrollAmount;
+        
+        scrollContainer.scrollTo({
+          left: newPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+  
+  // Fetch subcategories
+  useEffect(() => {
+    const loadSubCategories = async () => {
+      try {
+        // Get root categories first
+        const rootCategories = await categoryManagementService.getRootCategories();
+        
+        // Get all subcategories from root categories
+        const allSubCategories: Category[] = [];
+        for (const rootCat of rootCategories) {
+          const children = await categoryManagementService.getChildCategories(rootCat.id);
+          allSubCategories.push(...children);
+        }
+        
+        // Limit to first 10 subcategories for display
+        setSubCategories(allSubCategories.slice(0, 10));
+      } catch (error) {
+        console.error('Failed to load subcategories:', error);
+      }
+    };
+    
+    loadSubCategories();
+  }, []);
   
   // No API calls - static content only
   // Data will be loaded on-demand when user navigates to blog/gear pages
@@ -101,106 +187,126 @@ export const HomePage = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600">
-        {/* Background Image */}
-        <picture>
-          <source
-            srcSet="/mutlaka-bunu-kullan.webp"
-            type="image/webp"
-            sizes="100vw"
-          />
-          <img
-            src="/mutlaka-bunu-kullan.webp"
-            alt="Kamp alanı ve doğa manzarası"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-            style={{ transform: 'scale(1.1)' }}
-            fetchPriority="high"
-            loading="eager"
-            decoding="async"
-            width="1280"
-            height="853"
-          />
-        </picture>
+      <section className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600">
+        {/* Slider Background */}
+        <div className="absolute inset-0 w-full h-full">
+          {sliderImages.map((image, index) => (
+            <motion.div
+              key={index}
+              className="absolute inset-0 w-full h-full"
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: currentSlide === index ? 1 : 0,
+                scale: currentSlide === index ? 1.05 : 1
+              }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+            >
+              <picture>
+                <source
+                  srcSet={image}
+                  type="image/webp"
+                  sizes="100vw"
+                />
+                <img
+                  src={image}
+                  alt={`Kamp alanı ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
+                  style={{ 
+                    objectPosition: 'center',
+                    minHeight: '100%',
+                    minWidth: '100%'
+                  }}
+                  fetchPriority={index === 0 ? "high" : "low"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  width="1280"
+                  height="853"
+                />
+              </picture>
+            </motion.div>
+          ))}
+        </div>
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-        {/* Title Container */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center text-center text-white">
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl"
-          >
-            <span className="block">Doğada Unutulmaz</span>
-            <span className="block text-primary-200 mt-2">Deneyimler Yaşayın</span>
-          </motion.h1>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
         
-        {/* Description Container */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center text-center text-white">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed max-w-3xl"
-          >
-            Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
-            Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
-          </motion.p>
-        </div>
-
-        {/* Buttons Container */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4"
-          >
-            <Link to={routes.blog}>
-              <Button 
-                variant="secondary" 
-                size="lg"
-                className="shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
-                style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: 'white' }}
-              >
-                📖 Blog Yazılarını Keşfet
-              </Button>
-            </Link>
-            <Link to={routes.gear}>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl"
-              >
-                🎒 Malzemeleri İncele
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.6 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
-          >
-            <motion.div
-              animate={{ y: [0, 12, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-1.5 h-3 bg-white/70 rounded-full mt-2"
+        {/* Slider Indicators */}
+        <div className="absolute bottom-4 sm:bottom-8 md:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
+          {sliderImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                currentSlide === index 
+                  ? 'w-6 sm:w-8 bg-white' 
+                  : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Slide ${index + 1}`}
             />
-          </motion.div>
-        </motion.div>
+          ))}
+        </div>
       </section>
+
+      {/* Category Stories Section - Instagram Style */}
+      {subCategories.length > 0 && (
+        <section className="py-4 sm:py-6 md:py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+            <div
+              id="category-stories-container"
+              className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+              style={{ 
+                scrollbarWidth: 'none', 
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch',
+                scrollSnapType: 'x mandatory'
+              }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              {subCategories.map((category, index) => (
+                <Link
+                  key={category.id}
+                  to={`/category/${category.slug}`}
+                  className="flex-shrink-0 flex flex-col items-center group snap-center"
+                  style={{ minWidth: '80px' }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden cursor-pointer"
+                    style={{
+                      background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
+                      padding: '3px',
+                    }}
+                  >
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
+                      {category.icon ? (
+                        <div className="w-full h-full rounded-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 flex items-center justify-center text-2xl xs:text-3xl sm:text-4xl">
+                          {category.icon}
+                        </div>
+                      ) : (
+                        <div className="w-full h-full rounded-full bg-gradient-to-br from-primary-400 to-primary-600 dark:from-primary-600 dark:to-primary-800 flex items-center justify-center">
+                          <span className="text-white font-bold text-base xs:text-lg sm:text-xl md:text-2xl">
+                            {category.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                  <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center max-w-[70px] xs:max-w-[80px] sm:max-w-[100px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
+                    {category.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Stats Section */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">

@@ -243,5 +243,31 @@
       width: 200px;
     }
   }
+
+  /* Hide scrollbar for category stories */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Snap scroll for category stories */
+  .snap-x {
+    scroll-snap-type: x mandatory;
+  }
+
+  .snap-center {
+    scroll-snap-align: center;
+  }
+
+  /* Smooth scrolling for touch devices */
+  @supports (-webkit-overflow-scrolling: touch) {
+    .scrollbar-hide {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
 
