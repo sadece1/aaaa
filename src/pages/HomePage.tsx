@@ -30,6 +30,10 @@ export const HomePage = () => {
   const [heroTouchEnd, setHeroTouchEnd] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [autoSlideInterval, setAutoSlideInterval] = useState<NodeJS.Timeout | null>(null);
+  const [categoryMouseStart, setCategoryMouseStart] = useState(0);
+  const [categoryMouseEnd, setCategoryMouseEnd] = useState(0);
+  const [isCategoryDragging, setIsCategoryDragging] = useState(false);
+  const [categoryScrollLeft, setCategoryScrollLeft] = useState(0);
   
   useEffect(() => {
     // Auto slide with pause on interaction
@@ -80,6 +84,46 @@ export const HomePage = () => {
       }
     }
   };
+  
+  // Mouse drag handlers for category stories (desktop)
+  const onCategoryMouseDown = (e: React.MouseEvent) => {
+    setIsCategoryDragging(true);
+    setCategoryMouseStart(e.clientX);
+    const scrollContainer = document.getElementById('category-stories-container');
+    if (scrollContainer) {
+      setCategoryScrollLeft(scrollContainer.scrollLeft);
+    }
+    e.preventDefault();
+  };
+  
+  useEffect(() => {
+    const handleCategoryMouseMove = (e: MouseEvent) => {
+      if (!isCategoryDragging || !categoryMouseStart) return;
+      
+      const scrollContainer = document.getElementById('category-stories-container');
+      if (scrollContainer) {
+        const x = e.clientX;
+        const walk = (x - categoryMouseStart) * 2; // Scroll speed multiplier
+        scrollContainer.scrollLeft = categoryScrollLeft - walk;
+      }
+    };
+    
+    const handleCategoryMouseUp = () => {
+      setIsCategoryDragging(false);
+      setCategoryMouseStart(0);
+      setCategoryScrollLeft(0);
+    };
+    
+    if (isCategoryDragging) {
+      window.addEventListener('mousemove', handleCategoryMouseMove);
+      window.addEventListener('mouseup', handleCategoryMouseUp);
+      
+      return () => {
+        window.removeEventListener('mousemove', handleCategoryMouseMove);
+        window.removeEventListener('mouseup', handleCategoryMouseUp);
+      };
+    }
+  }, [isCategoryDragging, categoryMouseStart, categoryScrollLeft]);
   
   // Swipe handlers for hero slider - Instagram style smooth swipe
   const heroMinSwipeDistance = 30;
@@ -312,10 +356,12 @@ export const HomePage = () => {
       {/* Category Stories Section - Instagram Style */}
       {subCategories.length > 0 && (
         <section className="py-4 sm:py-6 md:py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="w-full">
             <div
               id="category-stories-container"
-              className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+              className={`flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory pl-2 sm:pl-4 md:pl-0 ${
+                isCategoryDragging ? 'cursor-grabbing' : 'cursor-grab'
+              } select-none`}
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none',
@@ -325,6 +371,7 @@ export const HomePage = () => {
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
+              onMouseDown={onCategoryMouseDown}
             >
               {subCategories.map((category, index) => (
                 <Link
