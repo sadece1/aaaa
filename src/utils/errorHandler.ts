@@ -1,11 +1,74 @@
 // ERR_BLOCKED_BY_CLIENT console hatalarını yok eder - Ad blocker bypass
 if (typeof window !== 'undefined') {
+  // Override console.error to suppress DELETE 404 errors
+  const originalConsoleError = console.error;
+  const originalConsoleWarn = console.warn;
+  
+  const shouldSuppressError = (message: string): boolean => {
+    // Suppress DELETE 404 errors - item already deleted
+    // Pattern: "DELETE https://.../api/categories/... 404 (Not Found)"
+    // Also check for "404 (Not Found)" pattern
+    const has404 = message.includes('404') || message.includes('Not Found');
+    const hasDelete = message.includes('DELETE') || message.includes('delete');
+    const hasCategories = message.includes('/api/categories/') || 
+                         message.includes('/categories/') ||
+                         message.includes('categories') ||
+                         message.includes('category');
+    
+    if (has404 && hasDelete && hasCategories) {
+      return true;
+    }
+    
+    // Also check for URL pattern in error messages
+    if (has404 && hasDelete) {
+      // Check if URL contains categories
+      const urlMatch = message.match(/https?:\/\/[^\s]+/);
+      if (urlMatch && (urlMatch[0].includes('/categories/') || urlMatch[0].includes('categories'))) {
+        return true;
+      }
+    }
+    
+    // Suppress ERR_BLOCKED_BY_CLIENT errors
+    if (message.includes('ERR_BLOCKED_BY_CLIENT') || 
+        message.includes('net::ERR_BLOCKED_BY_CLIENT') ||
+        message.includes('gen204') ||
+        message.includes('pagespeed')) {
+      return true;
+    }
+    
+    return false;
+  };
+  
+  console.error = function(...args: any[]) {
+    const message = args.join(' ');
+    
+    if (shouldSuppressError(message)) {
+      // Silently ignore DELETE 404 errors
+      return;
+    }
+    
+    // Call original console.error for other errors
+    originalConsoleError.apply(console, args);
+  };
+  
+  console.warn = function(...args: any[]) {
+    const message = args.join(' ');
+    
+    if (shouldSuppressError(message)) {
+      // Silently ignore DELETE 404 errors
+      return;
+    }
+    
+    // Call original console.warn for other warnings
+    originalConsoleWarn.apply(console, args);
+  };
+  
   // Global error handler
   window.addEventListener('error', (e) => {
     // Suppress DELETE 404 errors - item already deleted
     if (e.message?.includes('404') && 
-        e.message?.includes('DELETE') &&
-        e.message?.includes('/api/categories/')) {
+        (e.message?.includes('DELETE') || e.message?.includes('delete')) &&
+        (e.message?.includes('/api/categories/') || e.message?.includes('categories'))) {
       e.preventDefault();
       e.stopPropagation();
       return false;
@@ -30,7 +93,15 @@ if (typeof window !== 'undefined') {
     // Suppress DELETE 404 errors - item already deleted
     if (reason?.config?.method?.toLowerCase() === 'delete' && 
         reason?.response?.status === 404 &&
-        reason?.config?.url?.includes('/api/categories/')) {
+        (reason?.config?.url?.includes('/api/categories/') || reason?.config?.url?.includes('categories'))) {
+      e.preventDefault();
+      return false;
+    }
+    
+    // Also check error message for DELETE 404
+    if (errorMessage.includes('404') && 
+        (errorMessage.includes('DELETE') || errorMessage.includes('delete')) &&
+        (errorMessage.includes('/api/categories/') || errorMessage.includes('categories'))) {
       e.preventDefault();
       return false;
     }
