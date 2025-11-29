@@ -269,5 +269,20 @@
       -webkit-overflow-scrolling: touch;
     }
   }
+
+  /* Smooth scrolling for category stories */
+  #category-stories-container {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Momentum scrolling for mobile */
+  @media (max-width: 768px) {
+    #category-stories-container {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+  }
 }
 

@@ -70,8 +70,9 @@ export const HomePage = () => {
     const scrollContainer = document.getElementById('category-stories-container');
     if (scrollContainer) {
       const x = e.targetTouches[0].clientX;
-      const walk = (x - categoryTouchStart) * 1.5; // Scroll speed multiplier
+      const walk = (x - categoryTouchStart) * 1.2; // Daha yumuşak scroll
       setCategoryDragDistance(Math.abs(walk));
+      // Direkt scrollLeft kullan - touch sırasında instant, iOS momentum scrolling otomatik
       scrollContainer.scrollLeft = categoryTouchScrollLeft - walk;
     }
   };
@@ -364,13 +365,15 @@ export const HomePage = () => {
           <div className="w-full">
             <div
               id="category-stories-container"
-              className={`flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 ${
+              className={`flex gap-2 sm:gap-3 overflow-x-auto pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 ${
                 isCategoryDragging || isCategoryTouchDragging ? 'cursor-grabbing' : 'cursor-grab'
               } select-none`}
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none',
-                WebkitOverflowScrolling: 'touch'
+                WebkitOverflowScrolling: 'touch',
+                scrollBehavior: 'smooth',
+                overscrollBehaviorX: 'contain'
               }}
               onTouchStart={onCategoryTouchStart}
               onTouchMove={onCategoryTouchMove}
@@ -382,7 +385,7 @@ export const HomePage = () => {
                   key={category.id}
                   to={`/category/${category.slug}`}
                   className="flex-shrink-0 flex flex-col items-center group"
-                  style={{ minWidth: '80px' }}
+                  style={{ minWidth: '96px' }}
                   onClick={(e) => {
                     // Prevent navigation if user was dragging (more than 5px)
                     if (categoryDragDistance > 5) {
@@ -397,7 +400,7 @@ export const HomePage = () => {
                     transition={{ delay: index * 0.05, duration: 0.3 }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden cursor-pointer"
+                    className="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden cursor-pointer"
                     style={{
                       background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
                       padding: '3px',
