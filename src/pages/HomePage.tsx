@@ -14,10 +14,10 @@ export const HomePage = () => {
   
   // Slider images
   const sliderImages = [
-    '/1.png',
-    '/2.png',
-    '/3.png',
-    '/4.png',
+    '/1.webp',
+    '/2.webp',
+    '/3.webp',
+    '/4.webp',
   ];
   
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -403,29 +403,20 @@ export const HomePage = () => {
                       padding: '3px',
                     }}
                   >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5 relative">
-                      {/* Background image from slider */}
-                      {sliderImages[index % sliderImages.length] && (
-                        <img
-                          src={sliderImages[index % sliderImages.length]}
-                          alt={category.name}
-                          className="absolute inset-0 w-full h-full object-cover rounded-full"
-                        />
-                      )}
-                      {/* Overlay for better visibility */}
-                      <div className="absolute inset-0 bg-black/20 rounded-full"></div>
-                      {/* Icon or initial letter overlay */}
-                      {category.icon ? (
-                        <div className="absolute inset-0 flex items-center justify-center text-2xl xs:text-3xl sm:text-4xl z-10 drop-shadow-lg">
-                          {category.icon}
-                        </div>
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center z-10">
-                          <span className="text-white font-bold text-base xs:text-lg sm:text-xl md:text-2xl drop-shadow-lg">
-                            {category.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
+                      {/* Use slider images for categories, cycle through them */}
+                      {(() => {
+                        const imageIndex = index % sliderImages.length;
+                        const categoryImage = sliderImages[imageIndex];
+                        return (
+                          <img
+                            src={categoryImage}
+                            alt={category.name}
+                            className="w-full h-full rounded-full object-cover"
+                            loading="lazy"
+                          />
+                        );
+                      })()}
                     </div>
                   </motion.div>
                   <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center max-w-[70px] xs:max-w-[80px] sm:max-w-[100px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
