@@ -364,34 +364,39 @@ export const HomePage = () => {
       {/* Category Stories Section - Instagram Style - Render first so it appears above hero */}
       {subCategories.length > 0 && (
         <section className="pt-0 pb-4 sm:pb-6 md:pb-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-          <div className="w-full">
+          <div className="w-full max-w-7xl mx-auto px-4">
             <div
               id="category-stories-container"
-              className={`flex gap-2 sm:gap-3 overflow-x-auto pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 ${
+              className={`flex gap-2 sm:gap-2 md:gap-3 lg:gap-2 overflow-x-auto lg:overflow-x-hidden pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 lg:pl-0 lg:justify-center snap-x snap-mandatory ${
                 isCategoryDragging || isCategoryTouchDragging ? 'cursor-grabbing' : 'cursor-grab'
               } select-none`}
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none',
                 WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
-                scrollBehavior: 'auto', // Native scroll behavior
+                scrollBehavior: 'smooth', // Smooth scroll for snap
                 overscrollBehaviorX: 'contain',
                 touchAction: 'pan-x', // Sadece yatay scroll'a izin ver
-                // Force hide scrollbar on all browsers including mobile
-                overflowX: 'auto',
-                overflowY: 'hidden'
+                scrollSnapType: 'x mandatory', // Snap scrolling
               }}
               onTouchStart={onCategoryTouchStart}
               onTouchMove={onCategoryTouchMove}
               onTouchEnd={onCategoryTouchEnd}
               onMouseDown={onCategoryMouseDown}
             >
-              {subCategories.map((category, index) => (
+              {subCategories.slice(0, 12).map((category, index) => {
+                // Her 4. item'da snap (0, 4, 8, 12...)
+                const isSnapPoint = index % 4 === 0;
+                return (
                 <Link
                   key={category.id}
                   to={`/category/${category.slug}`}
-                  className="flex-shrink-0 flex flex-col items-center group"
-                  style={{ minWidth: '64px' }}
+                  className="flex-shrink-0 flex flex-col items-center group snap-start sm:snap-start md:snap-none lg:snap-none"
+                  style={{ 
+                    minWidth: '64px',
+                    scrollSnapAlign: 'start',
+                    scrollSnapStop: isSnapPoint ? 'always' : 'normal', // Her 4. item'da dur
+                  }}
                   onClick={(e) => {
                     // Prevent navigation if user was dragging (more than 5px)
                     if (categoryDragDistance > 5) {
@@ -406,7 +411,7 @@ export const HomePage = () => {
                     transition={{ delay: index * 0.05, duration: 0.3 }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-20 md:h-20 rounded-full overflow-hidden cursor-pointer"
+                    className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-16 md:h-16 lg:w-16 lg:h-16 rounded-full overflow-hidden cursor-pointer"
                     style={{
                       background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
                       padding: '2px',
@@ -430,11 +435,12 @@ export const HomePage = () => {
                       })()}
                     </div>
                   </motion.div>
-                  <span className="mt-1 sm:mt-1.5 text-[9px] xs:text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 text-center max-w-[60px] xs:max-w-[70px] sm:max-w-[80px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
+                  <span className="mt-1 sm:mt-1.5 text-[9px] xs:text-[10px] sm:text-xs lg:text-[10px] text-gray-700 dark:text-gray-300 text-center max-w-[56px] xs:max-w-[64px] sm:max-w-[72px] lg:max-w-[64px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
                     {category.name}
                   </span>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
