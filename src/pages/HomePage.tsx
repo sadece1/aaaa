@@ -7,6 +7,7 @@ import { OptimizedImage } from '@/components/OptimizedImage';
 import { routes, config } from '@/config';
 import { categoryManagementService } from '@/services/categoryManagementService';
 import { Category } from '@/types';
+import { formatDate, formatPrice } from '@/utils/validation';
 
 export const HomePage = () => {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
@@ -34,6 +35,10 @@ export const HomePage = () => {
   const [categoryMouseEnd, setCategoryMouseEnd] = useState(0);
   const [isCategoryDragging, setIsCategoryDragging] = useState(false);
   const [categoryScrollLeft, setCategoryScrollLeft] = useState(0);
+  const [categoryTouchStart, setCategoryTouchStart] = useState(0);
+  const [categoryTouchScrollLeft, setCategoryTouchScrollLeft] = useState(0);
+  const [isCategoryTouchDragging, setIsCategoryTouchDragging] = useState(false);
+  const [categoryDragDistance, setCategoryDragDistance] = useState(0);
   
   useEffect(() => {
     // Auto slide with pause on interaction
@@ -50,44 +55,42 @@ export const HomePage = () => {
     };
   }, [sliderImages.length, isDragging]);
   
-  // Swipe handlers for category stories
-  const minSwipeDistance = 50;
-  
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(0);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-  
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-  
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    if (isLeftSwipe || isRightSwipe) {
-      const scrollContainer = document.getElementById('category-stories-container');
-      if (scrollContainer) {
-        const scrollAmount = scrollContainer.offsetWidth * 0.8;
-        const newPosition = isLeftSwipe 
-          ? scrollContainer.scrollLeft + scrollAmount
-          : scrollContainer.scrollLeft - scrollAmount;
-        
-        scrollContainer.scrollTo({
-          left: newPosition,
-          behavior: 'smooth'
-        });
-      }
+  // Touch drag handlers for category stories (mobile) - free scrolling
+  const onCategoryTouchStart = (e: React.TouchEvent) => {
+    setIsCategoryTouchDragging(true);
+    setCategoryDragDistance(0);
+    setCategoryTouchStart(e.targetTouches[0].clientX);
+    const scrollContainer = document.getElementById('category-stories-container');
+    if (scrollContainer) {
+      setCategoryTouchScrollLeft(scrollContainer.scrollLeft);
     }
+  };
+  
+  const onCategoryTouchMove = (e: React.TouchEvent) => {
+    if (!isCategoryTouchDragging || !categoryTouchStart) return;
+    
+    const scrollContainer = document.getElementById('category-stories-container');
+    if (scrollContainer) {
+      const x = e.targetTouches[0].clientX;
+      const walk = (x - categoryTouchStart) * 1.5; // Scroll speed multiplier
+      setCategoryDragDistance(Math.abs(walk));
+      scrollContainer.scrollLeft = categoryTouchScrollLeft - walk;
+    }
+  };
+  
+  const onCategoryTouchEnd = () => {
+    setIsCategoryTouchDragging(false);
+    setTimeout(() => {
+      setCategoryDragDistance(0);
+    }, 100);
+    setCategoryTouchStart(0);
+    setCategoryTouchScrollLeft(0);
   };
   
   // Mouse drag handlers for category stories (desktop)
   const onCategoryMouseDown = (e: React.MouseEvent) => {
     setIsCategoryDragging(true);
+    setCategoryDragDistance(0);
     setCategoryMouseStart(e.clientX);
     const scrollContainer = document.getElementById('category-stories-container');
     if (scrollContainer) {
@@ -104,12 +107,16 @@ export const HomePage = () => {
       if (scrollContainer) {
         const x = e.clientX;
         const walk = (x - categoryMouseStart) * 2; // Scroll speed multiplier
+        setCategoryDragDistance(Math.abs(walk));
         scrollContainer.scrollLeft = categoryScrollLeft - walk;
       }
     };
     
     const handleCategoryMouseUp = () => {
       setIsCategoryDragging(false);
+      setTimeout(() => {
+        setCategoryDragDistance(0);
+      }, 100);
       setCategoryMouseStart(0);
       setCategoryScrollLeft(0);
     };
@@ -359,26 +366,31 @@ export const HomePage = () => {
           <div className="w-full">
             <div
               id="category-stories-container"
-              className={`flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory pl-2 sm:pl-4 md:pl-0 ${
-                isCategoryDragging ? 'cursor-grabbing' : 'cursor-grab'
+              className={`flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 ${
+                isCategoryDragging || isCategoryTouchDragging ? 'cursor-grabbing' : 'cursor-grab'
               } select-none`}
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none',
-                WebkitOverflowScrolling: 'touch',
-                scrollSnapType: 'x mandatory'
+                WebkitOverflowScrolling: 'touch'
               }}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
+              onTouchStart={onCategoryTouchStart}
+              onTouchMove={onCategoryTouchMove}
+              onTouchEnd={onCategoryTouchEnd}
               onMouseDown={onCategoryMouseDown}
             >
               {subCategories.map((category, index) => (
                 <Link
                   key={category.id}
                   to={`/category/${category.slug}`}
-                  className="flex-shrink-0 flex flex-col items-center group snap-center"
+                  className="flex-shrink-0 flex flex-col items-center group"
                   style={{ minWidth: '80px' }}
+                  onClick={(e) => {
+                    // Prevent navigation if user was dragging (more than 5px)
+                    if (categoryDragDistance > 5) {
+                      e.preventDefault();
+                    }
+                  }}
                 >
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
