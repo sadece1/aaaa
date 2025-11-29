@@ -272,30 +272,54 @@ export const AdminCategoriesPage = () => {
       if (!category) return;
 
       const siblings = categories.filter(c => c.parentId === category.parentId);
-      const sortedSiblings = siblings.sort((a, b) => (a.order || 0) - (b.order || 0));
+      const sortedSiblings = [...siblings].sort((a, b) => (a.order || 0) - (b.order || 0));
       const currentIndex = sortedSiblings.findIndex(c => c.id === categoryId);
 
       if (direction === 'up' && currentIndex > 0) {
         const prevCategory = sortedSiblings[currentIndex - 1];
         const tempOrder = category.order || 0;
-        category.order = prevCategory.order || 0;
-        prevCategory.order = tempOrder;
+        const newCategoryOrder = prevCategory.order || 0;
+        const newPrevOrder = tempOrder;
         
-        await categoryManagementService.updateCategory(category.id, { order: category.order });
-        await categoryManagementService.updateCategory(prevCategory.id, { order: prevCategory.order });
+        // Optimistic update: Update state without mutating original objects
+        setCategories(prev => prev.map(c => {
+          if (c.id === categoryId) {
+            return { ...c, order: newCategoryOrder };
+          }
+          if (c.id === prevCategory.id) {
+            return { ...c, order: newPrevOrder };
+          }
+          return c;
+        }));
+        
+        await categoryManagementService.updateCategory(category.id, { order: newCategoryOrder });
+        await categoryManagementService.updateCategory(prevCategory.id, { order: newPrevOrder });
         loadCategories();
       } else if (direction === 'down' && currentIndex < sortedSiblings.length - 1) {
         const nextCategory = sortedSiblings[currentIndex + 1];
         const tempOrder = category.order || 0;
-        category.order = nextCategory.order || 0;
-        nextCategory.order = tempOrder;
+        const newCategoryOrder = nextCategory.order || 0;
+        const newNextOrder = tempOrder;
         
-        await categoryManagementService.updateCategory(category.id, { order: category.order });
-        await categoryManagementService.updateCategory(nextCategory.id, { order: nextCategory.order });
+        // Optimistic update: Update state without mutating original objects
+        setCategories(prev => prev.map(c => {
+          if (c.id === categoryId) {
+            return { ...c, order: newCategoryOrder };
+          }
+          if (c.id === nextCategory.id) {
+            return { ...c, order: newNextOrder };
+          }
+          return c;
+        }));
+        
+        await categoryManagementService.updateCategory(category.id, { order: newCategoryOrder });
+        await categoryManagementService.updateCategory(nextCategory.id, { order: newNextOrder });
         loadCategories();
       }
     } catch (error) {
       alert('Sıralama değiştirme başarısız oldu');
+      // Reload on error to restore correct state
+      loadCategories();
     }
   };
 

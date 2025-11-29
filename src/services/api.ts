@@ -126,25 +126,22 @@ api.interceptors.response.use(
     }
     
     // Handle validation errors (400) with detailed messages
+    // Don't log to console - user will see alert, console.error override will suppress it
     if (error.response?.status === 400) {
       const errorData = error.response.data as { message?: string; errors?: Array<{ field: string; message: string }> };
       
-      // Log full error response for debugging (only in development)
-      logger.error('=== VALIDATION ERROR ===');
-      logger.error('Full error response:', error.response.data);
-      logger.error('Status:', error.response.status);
-      logger.error('Headers:', error.response.headers);
-      
+      // Only log in development mode (logger.error checks for dev mode)
       if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
         // Build detailed validation error message
         const validationMessages = errorData.errors.map(err => `${err.field}: ${err.message}`).join('\n');
-        logger.error('Validation errors array:', errorData.errors);
-        logger.error('Validation error details:', validationMessages);
-        alert(`VALIDATION HATALARI:\n\n${validationMessages}\n\nConsole'da detayları görebilirsiniz.`);
+        // Show user-friendly alert (console.error override will suppress console output)
+        alert(`⚠️ VALIDATION HATALARI:\n\n${validationMessages}`);
         return Promise.reject(new Error(`Validation error:\n${validationMessages}`));
       } else {
-        logger.error('No errors array found in response');
-        logger.error('Error data:', errorData);
+        // Generic validation error
+        const errorMessage = errorData.message || 'Geçersiz veri gönderildi';
+        alert(`⚠️ Hata: ${errorMessage}`);
+        return Promise.reject(new Error(errorMessage));
       }
     }
     

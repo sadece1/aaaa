@@ -172,25 +172,183 @@ export const EditCategoryPage = () => {
     if (!id) return;
     setIsSubmitting(true);
     try {
+      // Name validation: min 2, max 100 karakter
+      if (data.name !== undefined) {
+        if (!data.name || data.name.trim().length < 2) {
+          alert('⚠️ Kategori adı en az 2 karakter olmalıdır.');
+          setIsSubmitting(false);
+          return;
+        }
+        if (data.name.trim().length > 100) {
+          alert('⚠️ Kategori adı en fazla 100 karakter olabilir.');
+          setIsSubmitting(false);
+          return;
+        }
+        data.name = data.name.trim();
+      }
+
+      // Slug validation ve normalize etme
+      if (data.slug !== undefined) {
+        let normalizedSlug = data.slug?.trim() || '';
+        if (!normalizedSlug) {
+          // Slug yoksa name'den oluştur
+          const nameToUse = data.name || category?.name || '';
+          normalizedSlug = nameToUse
+            .toLowerCase()
+            .replace(/ğ/g, 'g')
+            .replace(/ü/g, 'u')
+            .replace(/ş/g, 's')
+            .replace(/ı/g, 'i')
+            .replace(/ö/g, 'o')
+            .replace(/ç/g, 'c')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        } else {
+          // Slug'u normalize et: sadece küçük harf, sayı ve tire
+          normalizedSlug = normalizedSlug
+            .toLowerCase()
+            .replace(/ğ/g, 'g')
+            .replace(/ü/g, 'u')
+            .replace(/ş/g, 's')
+            .replace(/ı/g, 'i')
+            .replace(/ö/g, 'o')
+            .replace(/ç/g, 'c')
+            .replace(/[^a-z0-9-]/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        }
+
+        // Slug pattern validation: sadece küçük harf, sayı ve tire
+        if (!/^[a-z0-9-]+$/.test(normalizedSlug)) {
+          alert('⚠️ Slug sadece küçük harf, sayı ve tire (-) içerebilir.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (normalizedSlug.length < 2) {
+          alert('⚠️ Slug en az 2 karakter olmalıdır.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (normalizedSlug.length > 100) {
+          alert('⚠️ Slug en fazla 100 karakter olabilir.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        data.slug = normalizedSlug;
+      }
+
+      // Parent ID validation: UUID format veya null
+      if (data.parentId !== undefined) {
+        if (data.parentId && data.parentId.trim() !== '') {
+          const parentIdTrimmed = data.parentId.trim();
+          // UUID format kontrolü
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          if (!uuidRegex.test(parentIdTrimmed)) {
+            alert('⚠️ Geçersiz üst kategori ID formatı.');
+            setIsSubmitting(false);
+            return;
+          }
+          data.parentId = parentIdTrimmed;
+        } else {
+          data.parentId = null;
+        }
+      }
+
+      // Order validation: number, integer, min 0
+      if (data.order !== undefined && data.order !== null) {
+        if (typeof data.order === 'number') {
+          data.order = Math.max(0, Math.floor(data.order));
+        } else {
+          const parsed = parseInt(String(data.order), 10);
+          if (isNaN(parsed) || parsed < 0) {
+            data.order = 0;
+          } else {
+            data.order = parsed;
+          }
+        }
+      }
+
+      // Description validation: max 500 karakter
+      if (data.description !== undefined) {
+        data.description = data.description && data.description.trim().length > 500 
+          ? data.description.trim().substring(0, 500) 
+          : data.description?.trim() || null;
+      }
+
+      // Icon validation: max 50 karakter
+      if (data.icon !== undefined) {
+        data.icon = data.icon && data.icon.trim().length > 50 
+          ? data.icon.trim().substring(0, 50) 
+          : data.icon?.trim() || null;
+      }
+
       await categoryManagementService.updateCategory(id, data);
       window.dispatchEvent(new Event('categoriesUpdated'));
       navigate(routes.adminCategories);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Kategori güncellenemedi');
+      let errorMessage = 'Kategori güncellenemedi';
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if ((error as any).response?.data?.message) {
+        errorMessage = (error as any).response.data.message;
+      } else if ((error as any).response?.data?.error) {
+        errorMessage = (error as any).response.data.error;
+      }
+
+      // Validation hataları için özel mesajlar
+      if (errorMessage.includes('must be at least 2 characters') || errorMessage.includes('en az 2 karakter')) {
+        alert('⚠️ Kategori adı en az 2 karakter olmalıdır.');
+        return;
+      }
+      if (errorMessage.includes('must not exceed 100 characters') || errorMessage.includes('en fazla 100 karakter')) {
+        alert('⚠️ Kategori adı en fazla 100 karakter olabilir.');
+        return;
+      }
+      if (errorMessage.includes('Slug must contain only lowercase') || errorMessage.includes('Slug sadece')) {
+        alert('⚠️ Slug sadece küçük harf, sayı ve tire (-) içerebilir.');
+        return;
+      }
+      if (errorMessage.includes('already exists') || errorMessage.includes('zaten mevcut')) {
+        alert(`⚠️ Bu kategori zaten mevcut!\n\nKategori adı veya slug'u değiştirip tekrar deneyin.`);
+        return;
+      }
+      if (errorMessage.includes('Parent category not found') || errorMessage.includes('Üst kategori bulunamadı')) {
+        alert('⚠️ Seçilen üst kategori bulunamadı. Lütfen geçerli bir üst kategori seçin.');
+        return;
+      }
+      if (errorMessage.includes('cannot exceed three levels') || errorMessage.includes('üç seviyeyi aşamaz')) {
+        alert('⚠️ Kategori hiyerarşisi en fazla 3 seviye olabilir (Ana Başlık > Sütun > Alt Kategori).');
+        return;
+      }
+
+      alert(`❌ Hata: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleAddColumnCategory = async () => {
+    // Name validation: min 2, max 100 karakter
     if (!columnCategoryForm.columnName.trim()) {
-      alert('Lütfen sütun adını girin');
+      alert('⚠️ Lütfen sütun adını girin');
+      return;
+    }
+    if (columnCategoryForm.columnName.trim().length < 2) {
+      alert('⚠️ Sütun adı en az 2 karakter olmalıdır.');
+      return;
+    }
+    if (columnCategoryForm.columnName.trim().length > 100) {
+      alert('⚠️ Sütun adı en fazla 100 karakter olabilir.');
       return;
     }
 
     // Mevcut düzenlenen kategoriyi üst kategori olarak kullan
     if (!id) {
-      alert('Kategori ID bulunamadı');
+      alert('⚠️ Kategori ID bulunamadı');
       return;
     }
 
@@ -259,13 +417,22 @@ export const EditCategoryPage = () => {
   };
 
   const handleAddSubCategory = async () => {
+    // Name validation: min 2, max 100 karakter
     if (!subCategoryForm.subCategoryName.trim()) {
-      alert('Lütfen alt kategori adını girin');
+      alert('⚠️ Lütfen alt kategori adını girin');
+      return;
+    }
+    if (subCategoryForm.subCategoryName.trim().length < 2) {
+      alert('⚠️ Alt kategori adı en az 2 karakter olmalıdır.');
+      return;
+    }
+    if (subCategoryForm.subCategoryName.trim().length > 100) {
+      alert('⚠️ Alt kategori adı en fazla 100 karakter olabilir.');
       return;
     }
 
     if (!subCategoryForm.selectedColumnId) {
-      alert('Önce bir sütun kategorisi seçmelisiniz');
+      alert('⚠️ Önce bir sütun kategorisi seçmelisiniz');
       return;
     }
 
@@ -298,7 +465,7 @@ export const EditCategoryPage = () => {
       
       // Refresh categories
       const allCategories = await categoryManagementService.getAllCategories();
-      setCategories(allCategories);
+      setCategories([...allCategories]);
       window.dispatchEvent(new Event('categoriesUpdated'));
       
       // Reset form

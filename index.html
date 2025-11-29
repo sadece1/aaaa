@@ -140,6 +140,12 @@
             return; // Silently ignore POST 409 for categories
           }
           
+          // Suppress POST 400 (Bad Request) for categories - validation errors are shown to user via alert
+          const has400 = message.includes('400') || lowerMessage.includes('bad request');
+          if (hasPost && has400 && (hasCategories || hasCategoryUrl || hasXHRSend)) {
+            return; // Silently ignore POST 400 for categories - user sees alert
+          }
+          
           originalConsoleError.apply(console, args);
         };
         
