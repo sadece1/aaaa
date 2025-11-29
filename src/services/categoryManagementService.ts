@@ -62,7 +62,13 @@ export const categoryManagementService = {
       }
       
       return null;
-    } catch (error) {
+    } catch (error: any) {
+      // 404 hatası = kategori bulunamadı, bu normal bir durum
+      if (error.response?.status === 404) {
+        // Sessizce null döndür, console.error yapma
+        return null;
+      }
+      // Diğer hatalar için log
       console.error('Failed to fetch category:', error);
       return null;
     }

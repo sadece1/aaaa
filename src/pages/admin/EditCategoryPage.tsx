@@ -71,7 +71,17 @@ export const EditCategoryPage = () => {
           reset(found);
           setSelectedParentId(found.parentId || '');
           setAutoGenerateSlug(false);
+        } else {
+          // Category not found (404) - redirect to categories list
+          console.warn(`Category with id ${id} not found, redirecting to categories list`);
+          navigate(routes.adminCategories, { 
+            replace: true,
+            state: { error: 'Kategori bulunamadı. Kategori silinmiş olabilir.' }
+          });
+          return;
         }
+        setIsLoading(false);
+      } else {
         setIsLoading(false);
       }
     };
