@@ -20,19 +20,25 @@ const transformToBackend = (cat: Partial<Category>): any => {
   let orderValue = 0;
   if (cat.order !== undefined && cat.order !== null) {
     if (typeof cat.order === 'number') {
-      orderValue = cat.order;
+      orderValue = Math.max(0, Math.floor(cat.order)); // Integer, min 0
     } else {
       const parsed = parseInt(String(cat.order), 10);
-      orderValue = isNaN(parsed) ? 0 : parsed;
+      orderValue = isNaN(parsed) || parsed < 0 ? 0 : parsed;
     }
   }
 
+  // parent_id: undefined yerine null gönder (backend null bekliyor)
+  let parentIdValue: string | null = null;
+  if (cat.parentId !== undefined && cat.parentId !== null && cat.parentId.trim() !== '') {
+    parentIdValue = cat.parentId.trim();
+  }
+
   return {
-    name: cat.name,
-    slug: cat.slug,
-    description: cat.description || null,
-    parent_id: cat.parentId !== undefined ? (cat.parentId || null) : undefined,
-    icon: cat.icon || null,
+    name: cat.name?.trim() || '',
+    slug: cat.slug?.trim() || '',
+    description: cat.description?.trim() || null,
+    parent_id: parentIdValue,
+    icon: cat.icon?.trim() || null,
     order: orderValue,
   };
 };

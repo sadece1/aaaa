@@ -48,23 +48,149 @@ export const AddCategoryPage = () => {
 
   const onSubmit = async (data: Omit<Category, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
-      // Normalize parentId: empty string should be null
+      // Name validation: min 2, max 100 karakter
+      if (!data.name || data.name.trim().length < 2) {
+        alert('⚠️ Kategori adı en az 2 karakter olmalıdır.');
+        return;
+      }
+      if (data.name.trim().length > 100) {
+        alert('⚠️ Kategori adı en fazla 100 karakter olabilir.');
+        return;
+      }
+
+      // Slug validation ve normalize etme
+      let normalizedSlug = data.slug?.trim() || '';
+      if (!normalizedSlug) {
+        // Slug yoksa name'den oluştur
+        normalizedSlug = data.name
+          .toLowerCase()
+          .replace(/ğ/g, 'g')
+          .replace(/ü/g, 'u')
+          .replace(/ş/g, 's')
+          .replace(/ı/g, 'i')
+          .replace(/ö/g, 'o')
+          .replace(/ç/g, 'c')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      } else {
+        // Slug'u normalize et: sadece küçük harf, sayı ve tire
+        normalizedSlug = normalizedSlug
+          .toLowerCase()
+          .replace(/ğ/g, 'g')
+          .replace(/ü/g, 'u')
+          .replace(/ş/g, 's')
+          .replace(/ı/g, 'i')
+          .replace(/ö/g, 'o')
+          .replace(/ç/g, 'c')
+          .replace(/[^a-z0-9-]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Slug pattern validation: sadece küçük harf, sayı ve tire
+      if (!/^[a-z0-9-]+$/.test(normalizedSlug)) {
+        alert('⚠️ Slug sadece küçük harf, sayı ve tire (-) içerebilir.');
+        return;
+      }
+
+      if (normalizedSlug.length < 2) {
+        alert('⚠️ Slug en az 2 karakter olmalıdır.');
+        return;
+      }
+
+      if (normalizedSlug.length > 100) {
+        alert('⚠️ Slug en fazla 100 karakter olabilir.');
+        return;
+      }
+
+      // Parent ID validation: UUID format veya null
+      let normalizedParentId: string | null = null;
+      if (data.parentId && data.parentId.trim() !== '') {
+        const parentIdTrimmed = data.parentId.trim();
+        // UUID format kontrolü
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(parentIdTrimmed)) {
+          alert('⚠️ Geçersiz üst kategori ID formatı.');
+          return;
+        }
+        normalizedParentId = parentIdTrimmed;
+      }
+
+      // Order validation: number, integer, min 0
+      let normalizedOrder = 0;
+      if (data.order !== undefined && data.order !== null) {
+        if (typeof data.order === 'number') {
+          normalizedOrder = Math.max(0, Math.floor(data.order));
+        } else {
+          const parsed = parseInt(String(data.order), 10);
+          if (isNaN(parsed) || parsed < 0) {
+            normalizedOrder = 0;
+          } else {
+            normalizedOrder = parsed;
+          }
+        }
+      }
+
+      // Description validation: max 500 karakter
+      const normalizedDescription = data.description && data.description.trim().length > 500 
+        ? data.description.trim().substring(0, 500) 
+        : data.description?.trim() || null;
+
+      // Icon validation: max 50 karakter
+      const normalizedIcon = data.icon && data.icon.trim().length > 50 
+        ? data.icon.trim().substring(0, 50) 
+        : data.icon?.trim() || null;
+
       const normalizedData = {
-        ...data,
-        parentId: data.parentId && data.parentId.trim() !== '' ? data.parentId : null,
-        // order'ı sayıya dönüştür (form'dan string gelebilir)
-        order: typeof data.order === 'number' ? data.order : (data.order ? parseInt(String(data.order), 10) : 0),
+        name: data.name.trim(),
+        slug: normalizedSlug,
+        description: normalizedDescription,
+        parentId: normalizedParentId,
+        icon: normalizedIcon,
+        order: normalizedOrder,
       };
+
       await categoryManagementService.createCategory(normalizedData);
       navigate(routes.adminCategories);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Kategori eklenemedi';
-      // 409 Conflict için daha anlaşılır mesaj
-      if (errorMessage.includes('zaten mevcut') || errorMessage.includes('already exists')) {
-        alert(`⚠️ Bu kategori zaten mevcut!\n\nKategori adı veya slug'u değiştirip tekrar deneyin.`);
-      } else {
-        alert(errorMessage);
+    } catch (error: any) {
+      let errorMessage = 'Kategori eklenemedi';
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
       }
+
+      // Validation hataları için özel mesajlar
+      if (errorMessage.includes('must be at least 2 characters') || errorMessage.includes('en az 2 karakter')) {
+        alert('⚠️ Kategori adı en az 2 karakter olmalıdır.');
+        return;
+      }
+      if (errorMessage.includes('must not exceed 100 characters') || errorMessage.includes('en fazla 100 karakter')) {
+        alert('⚠️ Kategori adı en fazla 100 karakter olabilir.');
+        return;
+      }
+      if (errorMessage.includes('Slug must contain only lowercase') || errorMessage.includes('Slug sadece')) {
+        alert('⚠️ Slug sadece küçük harf, sayı ve tire (-) içerebilir.');
+        return;
+      }
+      if (errorMessage.includes('already exists') || errorMessage.includes('zaten mevcut')) {
+        alert(`⚠️ Bu kategori zaten mevcut!\n\nKategori adı veya slug'u değiştirip tekrar deneyin.`);
+        return;
+      }
+      if (errorMessage.includes('Parent category not found') || errorMessage.includes('Üst kategori bulunamadı')) {
+        alert('⚠️ Seçilen üst kategori bulunamadı. Lütfen geçerli bir üst kategori seçin.');
+        return;
+      }
+      if (errorMessage.includes('cannot exceed three levels') || errorMessage.includes('üç seviyeyi aşamaz')) {
+        alert('⚠️ Kategori hiyerarşisi en fazla 3 seviye olabilir (Ana Başlık > Sütun > Alt Kategori).');
+        return;
+      }
+
+      // Genel hata mesajı
+      alert(`❌ Hata: ${errorMessage}`);
     }
   };
 
@@ -162,15 +288,27 @@ export const AddCategoryPage = () => {
 
             <Input
               label="Kategori Adı"
-              {...register('name', { required: 'Kategori adı gereklidir' })}
+              {...register('name', { 
+                required: 'Kategori adı gereklidir',
+                minLength: { value: 2, message: 'En az 2 karakter olmalıdır' },
+                maxLength: { value: 100, message: 'En fazla 100 karakter olabilir' },
+              })}
               error={errors.name?.message}
             />
 
             <Input
               label="Slug"
-              {...register('slug', { required: 'Slug gereklidir' })}
+              {...register('slug', { 
+                required: false,
+                pattern: {
+                  value: /^[a-z0-9-]+$/,
+                  message: 'Sadece küçük harf, sayı ve tire (-) içerebilir'
+                },
+                minLength: { value: 2, message: 'En az 2 karakter olmalıdır' },
+                maxLength: { value: 100, message: 'En fazla 100 karakter olabilir' },
+              })}
               error={errors.slug?.message}
-              placeholder="kategori-adi"
+              placeholder="kategori-adi (boş bırakılırsa otomatik oluşturulur)"
             />
 
             <div>
