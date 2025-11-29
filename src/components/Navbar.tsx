@@ -216,14 +216,37 @@ export const Navbar = () => {
     loadCategories();
 
     // Listen for custom event when categories are updated (for same-tab updates)
-    const handleCategoryUpdate = () => {
-      loadCategories();
+    const handleCategoryUpdate = async () => {
+      // Force reload categories
+      try {
+        const allCategories = await categoryManagementService.getAllCategories();
+        const rootCategories = allCategories
+          .filter(cat => !cat.parentId)
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        const categoryItems = rootCategories.map(rootCat => 
+          convertCategoryToItem(rootCat, allCategories)
+        );
+
+        if (categoryItems.length > 0) {
+          setCategories(categoryItems);
+        } else {
+          // Fallback to legacy if no categories
+          setCategories(legacyCategories);
+        }
+      } catch (error) {
+        console.error('Failed to reload categories on update:', error);
+        // Try to reload anyway
+        loadCategories();
+      }
     };
 
     window.addEventListener('categoriesUpdated', handleCategoryUpdate);
+    window.addEventListener('storage', handleCategoryUpdate);
 
     return () => {
       window.removeEventListener('categoriesUpdated', handleCategoryUpdate);
+      window.removeEventListener('storage', handleCategoryUpdate);
     };
   }, []);
 

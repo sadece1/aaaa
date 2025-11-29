@@ -94,12 +94,33 @@
         // Override console.error IMMEDIATELY to catch DELETE 404
         const originalConsoleError = console.error;
         console.error = function(...args) {
-          const message = args.map(a => String(a)).join(' ');
-          const hasDelete = message.includes('DELETE') || message.toLowerCase().includes('delete');
-          const has404 = message.includes('404') || message.includes('Not Found');
-          const hasCategories = message.includes('/api/categories/') || message.includes('/categories/') || message.includes('categories');
+          // Convert all args to string
+          let message = '';
+          for (let i = 0; i < args.length; i++) {
+            try {
+              message += String(args[i]) + ' ';
+            } catch(e) {
+              message += '[object] ';
+            }
+          }
           
-          if (hasDelete && has404 && hasCategories) {
+          // Check for DELETE 404 categories pattern (case insensitive)
+          const lowerMessage = message.toLowerCase();
+          const hasDelete = lowerMessage.includes('delete');
+          const has404 = message.includes('404') || lowerMessage.includes('not found');
+          const hasCategories = lowerMessage.includes('/api/categories/') || 
+                               lowerMessage.includes('/categories/') || 
+                               lowerMessage.includes('categories') ||
+                               lowerMessage.includes('category');
+          
+          // Also check URL pattern
+          const urlMatch = message.match(/https?:\/\/[^\s]+/);
+          const hasCategoryUrl = urlMatch && (
+            urlMatch[0].includes('/categories/') || 
+            urlMatch[0].includes('categories')
+          );
+          
+          if (hasDelete && has404 && (hasCategories || hasCategoryUrl)) {
             return; // Silently ignore DELETE 404 for categories
           }
           
