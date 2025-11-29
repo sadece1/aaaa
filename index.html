@@ -48,15 +48,16 @@
     
     <!-- LCP Optimization: Preload critical resources -->
     <!-- Hero image preload for LCP (Largest Contentful Paint) optimization -->
-    <!-- Preload WebP image that will be used by React component -->
-    <link rel="preload" as="image" href="/1.webp" fetchpriority="high" />
+    <!-- Preload optimized WebP image with responsive srcset -->
+    <link rel="preload" as="image" href="/1.webp?w=800&q=75" fetchpriority="high" imagesrcset="/1.webp?w=400&q=75 400w, /1.webp?w=800&q=75 800w, /1.webp?w=1280&q=75 1280w" imagesizes="100vw" />
     
     <!-- LCP Image inline in HTML for instant discovery (critical for LCP score) -->
     <!-- Hidden but discoverable by Lighthouse - matches React component exactly -->
     <div style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none">
       <picture>
-        <source srcset="/1.webp" type="image/webp" sizes="100vw" />
-        <img src="/1.webp" alt="Kamp alanı ve doğa manzarası" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async" sizes="100vw" />
+        <source srcset="/1.webp?w=400&q=75&fm=avif 400w, /1.webp?w=800&q=75&fm=avif 800w, /1.webp?w=1280&q=75&fm=avif 1280w" type="image/avif" sizes="100vw" />
+        <source srcset="/1.webp?w=400&q=75&fm=webp 400w, /1.webp?w=800&q=75&fm=webp 800w, /1.webp?w=1280&q=75&fm=webp 1280w" type="image/webp" sizes="100vw" />
+        <img src="/1.webp?w=1280&q=75" srcset="/1.webp?w=400&q=75 400w, /1.webp?w=800&q=75 800w, /1.webp?w=1280&q=75 1280w" alt="Kamp alanı ve doğa manzarası" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async" sizes="100vw" />
       </picture>
     </div>
     

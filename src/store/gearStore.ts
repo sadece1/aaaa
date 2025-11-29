@@ -84,9 +84,9 @@ export const useGearStore = create<GearState>((set, get) => ({
       let backendCategoryId: string | null = null;
       if (gearData.categoryId) {
         try {
-          // Fetch backend categories to find UUID
-          const response = await fetch('/api/categories');
-          const backendCategoriesResponse = await response.json();
+          // Fetch backend categories to find UUID (with cache)
+          const { cachedFetch } = await import('@/utils/apiCache');
+          const backendCategoriesResponse = await cachedFetch<{ success: boolean; data: any[] }>('/api/categories', {}, 5 * 60 * 1000); // Cache for 5 minutes
           if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
             const backendCategories = backendCategoriesResponse.data;
             // Get frontend category to find matching backend category
@@ -161,8 +161,10 @@ export const useGearStore = create<GearState>((set, get) => ({
                   if (newBackendCategory) {
                     // Try to get the UUID from backend response
                     // The createCategory might return a local category, so we need to fetch from backend
-                    const refreshResponse = await fetch('/api/categories');
-                    const refreshData = await refreshResponse.json();
+                    // Clear cache first to get fresh data
+                    const { cachedFetch, clearCache } = await import('@/utils/apiCache');
+                    clearCache('/api/categories');
+                    const refreshData = await cachedFetch<{ success: boolean; data: any[] }>('/api/categories', {}, 5 * 60 * 1000);
                     if (refreshData.success && refreshData.data) {
                       const refreshedBackendCategories = refreshData.data;
                       const createdCategory = refreshedBackendCategories.find((bc: any) => 

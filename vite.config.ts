@@ -65,6 +65,15 @@ export default defineConfig({
               id.includes('node_modules/scheduler')) {
             return 'react-vendor';
           }
+          // Separate large animation library
+          if (id.includes('node_modules/framer-motion')) {
+            return 'framer-motion';
+          }
+          // Separate UI libraries
+          if (id.includes('node_modules/axios') || 
+              id.includes('node_modules/zustand')) {
+            return 'utils';
+          }
           // Let Vite handle all other chunking automatically
           // This prevents React from being split across multiple chunks
         },
@@ -87,8 +96,8 @@ export default defineConfig({
     reportCompressedSize: true,
     // Target modern browsers for smaller bundles
     target: 'es2015',
-    // CSS minification - handled by cssnano in PostCSS for better optimization
-    cssMinify: false,
+    // CSS minification - enabled for production
+    cssMinify: 'lightningcss',
   },
   server: {
     port: 5173,

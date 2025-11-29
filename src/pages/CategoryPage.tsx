@@ -86,11 +86,11 @@ export const CategoryPage = () => {
             // Get all categories to build a mapping
             const allCategories = await categoryManagementService.getAllCategories();
             
-            // Fetch backend categories to map UUID category_ids
+            // Fetch backend categories to map UUID category_ids (with cache)
             let backendCategories: any[] = [];
             try {
-              const response = await fetch('/api/categories');
-              const backendCategoriesResponse = await response.json();
+              const { cachedFetch } = await import('@/utils/apiCache');
+              const backendCategoriesResponse = await cachedFetch<{ success: boolean; data: any[] }>('/api/categories', {}, 5 * 60 * 1000); // Cache for 5 minutes
               if (backendCategoriesResponse.success && backendCategoriesResponse.data) {
                 backendCategories = backendCategoriesResponse.data;
               }

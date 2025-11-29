@@ -433,17 +433,18 @@ export const HomePage = () => {
         </section>
       )}
 
-      {/* Hero Section */}
+      {/* Hero Section - Fixed aspect ratio to prevent CLS */}
       <section 
         className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 cursor-grab active:cursor-grabbing select-none"
+        style={{ aspectRatio: '16/9' }}
         onTouchStart={onHeroTouchStart}
         onTouchMove={onHeroTouchMove}
         onTouchEnd={onHeroTouchEnd}
         onMouseDown={onHeroMouseDown}
         onMouseLeave={onHeroMouseLeave}
       >
-        {/* Slider Background */}
-        <div className="absolute inset-0 w-full h-full">
+        {/* Slider Background - Fixed aspect ratio container */}
+        <div className="absolute inset-0 w-full h-full" style={{ aspectRatio: '16/9' }}>
           {sliderImages.map((image, index) => (
             <motion.div
               key={index}
@@ -458,28 +459,45 @@ export const HomePage = () => {
                 ease: [0.4, 0.0, 0.2, 1] // Instagram-like smooth cubic bezier easing
               }}
             >
-        <picture>
-          <source
-                  srcSet={image}
-            type="image/webp"
-            sizes="100vw"
-          />
-          <img
-                  src={image}
+              {/* Optimized responsive images with WebP/AVIF support */}
+              <picture>
+                {/* AVIF format (best compression) */}
+                <source
+                  srcSet={`${image}?w=400&q=75&fm=avif 400w, ${image}?w=800&q=75&fm=avif 800w, ${image}?w=1280&q=75&fm=avif 1280w, ${image}?w=1920&q=75&fm=avif 1920w`}
+                  type="image/avif"
+                  sizes="100vw"
+                />
+                {/* WebP format (good compression, wider support) */}
+                <source
+                  srcSet={`${image}?w=400&q=75&fm=webp 400w, ${image}?w=800&q=75&fm=webp 800w, ${image}?w=1280&q=75&fm=webp 1280w, ${image}?w=1920&q=75&fm=webp 1920w`}
+                  type="image/webp"
+                  sizes="100vw"
+                />
+                {/* Fallback to original WebP with responsive srcset */}
+                <source
+                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
+                  type="image/webp"
+                  sizes="100vw"
+                />
+                <img
+                  src={`${image}?w=1280&q=75`}
+                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
                   alt={`Kamp alanı ${index + 1}`}
                   className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
                   style={{ 
-                    objectPosition: 'center',
+                    objectPosition: 'center center',
                     minHeight: '100%',
-                    minWidth: '100%'
+                    minWidth: '100%',
+                    aspectRatio: '16/9'
                   }}
                   fetchPriority={index === 0 ? "high" : "low"}
                   loading={index === 0 ? "eager" : "lazy"}
-            decoding="async"
-            width="1280"
-            height="853"
-          />
-        </picture>
+                  decoding="async"
+                  width="1280"
+                  height="853"
+                  sizes="100vw"
+                />
+              </picture>
             </motion.div>
           ))}
         </div>
@@ -507,16 +525,16 @@ export const HomePage = () => {
           </svg>
         </button>
 
-        {/* Slider Indicators */}
+        {/* Slider Indicators - Mobile touch targets minimum 44x44px */}
         <div className="absolute bottom-4 sm:bottom-8 md:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
           {sliderImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+              className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center ${
                 currentSlide === index 
-                  ? 'w-6 sm:w-8 bg-white' 
-                  : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/75'
+                  ? 'w-8 sm:w-10 bg-white' 
+                  : 'w-2 sm:w-2.5 bg-white/50 hover:bg-white/75'
               }`}
               aria-label={`Slide ${index + 1}`}
             />
