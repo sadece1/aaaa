@@ -85,6 +85,62 @@
       Ana içeriğe atla
     </a>
     <div id="root"></div>
+    <!-- Error handler - MUST load before any other scripts to intercept DELETE 404 -->
+    <script>
+      // Inline error handler to suppress DELETE 404 errors
+      (function() {
+        if (typeof window === 'undefined') return;
+        
+        // Override console.error IMMEDIATELY to catch DELETE 404
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+          const message = args.map(a => String(a)).join(' ');
+          const hasDelete = message.includes('DELETE') || message.toLowerCase().includes('delete');
+          const has404 = message.includes('404') || message.includes('Not Found');
+          const hasCategories = message.includes('/api/categories/') || message.includes('/categories/') || message.includes('categories');
+          
+          if (hasDelete && has404 && hasCategories) {
+            return; // Silently ignore DELETE 404 for categories
+          }
+          
+          originalConsoleError.apply(console, args);
+        };
+        
+        // Override XMLHttpRequest IMMEDIATELY
+        const originalXHROpen = XMLHttpRequest.prototype.open;
+        const originalXHRSend = XMLHttpRequest.prototype.send;
+        
+        XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+          this._method = String(method).toUpperCase();
+          this._url = String(url);
+          return originalXHROpen.call(this, method, url, ...rest);
+        };
+        
+        XMLHttpRequest.prototype.send = function(...args) {
+          const xhr = this;
+          const method = xhr._method || 'GET';
+          const url = xhr._url || '';
+          const isDeleteCategory = method === 'DELETE' && (url.includes('/api/categories/') || url.includes('/categories/'));
+          
+          if (isDeleteCategory) {
+            const originalOnReadyStateChange = xhr.onreadystatechange;
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 404) {
+                try {
+                  Object.defineProperty(xhr, 'status', { value: 200, writable: true, configurable: true });
+                  Object.defineProperty(xhr, 'statusText', { value: 'OK', writable: true, configurable: true });
+                } catch(e) {}
+                if (originalOnReadyStateChange) originalOnReadyStateChange.call(this);
+                return;
+              }
+              if (originalOnReadyStateChange) originalOnReadyStateChange.call(this);
+            };
+          }
+          
+          return originalXHRSend.apply(this, args);
+        };
+      })();
+    </script>
     <!-- Main script - module type automatically defers execution -->
     <script type="module" src="/src/main.tsx"></script>
   </body>

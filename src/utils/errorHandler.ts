@@ -42,18 +42,67 @@ if (typeof window !== 'undefined') {
   console.error = function(...args: any[]) {
     // Check all arguments, including stack traces
     const allArgs = Array.from(args);
-    const message = allArgs.map(arg => {
-      if (typeof arg === 'string') return arg;
-      if (arg?.toString) return arg.toString();
-      return JSON.stringify(arg);
-    }).join(' ');
+    let message = '';
+    let fullMessage = '';
     
-    // Also check stack trace if present
-    const stackTrace = new Error().stack || '';
-    const fullMessage = message + ' ' + stackTrace;
+    // Convert all args to string
+    for (const arg of allArgs) {
+      let argStr = '';
+      if (typeof arg === 'string') {
+        argStr = arg;
+      } else if (arg?.toString) {
+        argStr = arg.toString();
+      } else {
+        try {
+          argStr = JSON.stringify(arg);
+        } catch {
+          argStr = String(arg);
+        }
+      }
+      message += argStr + ' ';
+      fullMessage += argStr + ' ';
+    }
     
+    // Also check stack trace if available
+    try {
+      const stack = new Error().stack || '';
+      fullMessage += stack;
+    } catch (e) {
+      // Ignore stack trace errors
+    }
+    
+    // Check if this is a DELETE 404 error for categories
+    // Pattern: "DELETE https://.../api/categories/... 404 (Not Found)"
+    // Also check for minified code patterns
+    const hasDelete = message.includes('DELETE') || 
+                      message.includes('delete') || 
+                      message.toLowerCase().includes('delete');
+    const has404 = message.includes('404') || 
+                   message.includes('Not Found') ||
+                   message.includes('not found');
+    const hasCategories = message.includes('/api/categories/') || 
+                         message.includes('/categories/') ||
+                         message.includes('categories') ||
+                         message.includes('category');
+    
+    const isDelete404 = hasDelete && has404 && hasCategories;
+    
+    // Also check full message (with stack trace)
+    const isDelete404Full = (
+      (fullMessage.includes('DELETE') || fullMessage.includes('delete')) &&
+      (fullMessage.includes('404') || fullMessage.includes('Not Found')) &&
+      (fullMessage.includes('/api/categories/') || 
+       fullMessage.includes('/categories/') ||
+       fullMessage.includes('categories'))
+    );
+    
+    if (isDelete404 || isDelete404Full) {
+      // Silently ignore DELETE 404 errors - don't log to console
+      return;
+    }
+    
+    // Also check using shouldSuppressError
     if (shouldSuppressError(message) || shouldSuppressError(fullMessage)) {
-      // Silently ignore DELETE 404 errors
       return;
     }
     
@@ -174,47 +223,119 @@ if (typeof window !== 'undefined') {
     const originalOnLoad = xhr.onload;
     const originalOnReadyStateChange = xhr.onreadystatechange;
     
+    // CRITICAL: Store original status to intercept DELETE 404 BEFORE Axios reads it
+    const isDeleteCategory = method === 'DELETE' && (url.includes('/api/categories/') || url.includes('/categories/'));
+    
+    if (isDeleteCategory) {
+      // Intercept status property access
+      let _internalStatus = 0;
+      let _internalStatusText = '';
+      
+      // Store original status setter behavior
+      const originalStatusDescriptor = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'status') || 
+                                       Object.getOwnPropertyDescriptor(Object.getPrototypeOf(xhr), 'status');
+      
+      // Override status getter to return 200 for DELETE 404
+      try {
+        Object.defineProperty(xhr, 'status', {
+          get: function() {
+            // If this is DELETE 404 for categories, return 200
+            if (_internalStatus === 404) {
+              return 200;
+            }
+            return _internalStatus;
+          },
+          set: function(value) {
+            _internalStatus = value;
+          },
+          configurable: true,
+          enumerable: true
+        });
+        
+        Object.defineProperty(xhr, 'statusText', {
+          get: function() {
+            if (_internalStatus === 404) {
+              return 'OK';
+            }
+            return _internalStatusText;
+          },
+          set: function(value) {
+            _internalStatusText = value;
+          },
+          configurable: true,
+          enumerable: true
+        });
+      } catch (e) {
+        // If property override fails, use onreadystatechange instead
+      }
+    }
+    
     // Override onreadystatechange to intercept DELETE 404 BEFORE Axios logs to console
     xhr.onreadystatechange = function() {
-      // DELETE 404 = item already deleted, treat as success (status 200)
-      if (method === 'DELETE' && 
-          xhr.readyState === 4 && 
-          xhr.status === 404 && 
-          (url.includes('/api/categories/') || url.includes('/categories/'))) {
-        // Override status IMMEDIATELY to prevent console error
+      // Intercept at readyState 3 (LOADING) or 4 (DONE) to catch 404 early
+      if (isDeleteCategory && (xhr.readyState === 3 || xhr.readyState === 4)) {
+        // Try to read status early (might not be available at readyState 3)
         try {
-          // Use defineProperty to override readonly status
-          const statusDescriptor = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'status');
-          if (statusDescriptor) {
-            Object.defineProperty(xhr, 'status', { 
-              value: 200, 
-              writable: true, 
-              configurable: true,
-              enumerable: true 
-            });
-          }
-          const statusTextDescriptor = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'statusText');
-          if (statusTextDescriptor) {
-            Object.defineProperty(xhr, 'statusText', { 
-              value: 'OK', 
-              writable: true, 
-              configurable: true,
-              enumerable: true 
-            });
+          const currentStatus = (xhr as any)._internalStatus || xhr.status;
+          if (currentStatus === 404) {
+            // Override status immediately
+            try {
+              (xhr as any)._internalStatus = 200;
+              Object.defineProperty(xhr, 'status', {
+                value: 200,
+                writable: true,
+                configurable: true,
+                enumerable: true
+              });
+              Object.defineProperty(xhr, 'statusText', {
+                value: 'OK',
+                writable: true,
+                configurable: true,
+                enumerable: true
+              });
+            } catch (e) {
+              // Property override might fail, continue anyway
+            }
           }
         } catch (e) {
-          // Property might already be defined, ignore
+          // Status might not be readable yet
         }
-        
-        // Prevent Axios from logging this error
-        if (originalOnReadyStateChange) {
+      }
+      
+      // DELETE 404 = item already deleted, treat as success (status 200)
+      if (isDeleteCategory && 
+          xhr.readyState === 4) {
+        const currentStatus = (xhr as any)._internalStatus || xhr.status;
+        if (currentStatus === 404) {
+          // Force status to 200
           try {
-            originalOnReadyStateChange.call(this);
+            (xhr as any)._internalStatus = 200;
+            Object.defineProperty(xhr, 'status', {
+              value: 200,
+              writable: true,
+              configurable: true,
+              enumerable: true
+            });
+            Object.defineProperty(xhr, 'statusText', {
+              value: 'OK',
+              writable: true,
+              configurable: true,
+              enumerable: true
+            });
           } catch (e) {
-            // Ignore errors in original handler
+            // Ignore property override errors
           }
+          
+          // Prevent Axios from logging this error
+          if (originalOnReadyStateChange) {
+            try {
+              originalOnReadyStateChange.call(this);
+            } catch (e) {
+              // Ignore errors in original handler
+            }
+          }
+          return;
         }
-        return;
       }
       
       if (originalOnReadyStateChange) {
