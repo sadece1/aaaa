@@ -229,26 +229,29 @@ export const HomePage = () => {
     setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
   };
   
-  // Fetch sub-subcategories (alt alt kategoriler)
+  // Fetch sub-subcategories (alt alt kategoriler) - Load immediately on mount
   useEffect(() => {
     const loadSubSubCategories = async () => {
       try {
-        // Get root categories first
-        const rootCategories = await categoryManagementService.getRootCategories();
+        // Get all categories at once (faster than multiple calls)
+        const allCategories = await categoryManagementService.getAllCategories();
+        
+        // Get root categories
+        const rootCategories = allCategories.filter(cat => !cat.parentId);
         
         // Get all subcategories from root categories
         const allSubCategories: Category[] = [];
-        for (const rootCat of rootCategories) {
-          const children = await categoryManagementService.getChildCategories(rootCat.id);
+        rootCategories.forEach(rootCat => {
+          const children = allCategories.filter(cat => cat.parentId === rootCat.id);
           allSubCategories.push(...children);
-        }
+        });
         
         // Get sub-subcategories (alt alt kategoriler)
         const allSubSubCategories: Category[] = [];
-        for (const subCat of allSubCategories) {
-          const subChildren = await categoryManagementService.getChildCategories(subCat.id);
+        allSubCategories.forEach(subCat => {
+          const subChildren = allCategories.filter(cat => cat.parentId === subCat.id);
           allSubSubCategories.push(...subChildren);
-        }
+        });
         
         // If no sub-subcategories, use subcategories instead
         const categoriesToShow = allSubSubCategories.length > 0 
@@ -262,6 +265,7 @@ export const HomePage = () => {
       }
     };
     
+    // Load immediately, don't wait
     loadSubSubCategories();
   }, []);
   
@@ -357,7 +361,7 @@ export const HomePage = () => {
         locale="tr_TR"
       />
 
-      {/* Category Stories Section - Instagram Style */}
+      {/* Category Stories Section - Instagram Style - Render first so it appears above hero */}
       {subCategories.length > 0 && (
         <section className="pt-0 pb-4 sm:pb-6 md:pb-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           <div className="w-full">
@@ -439,6 +443,115 @@ export const HomePage = () => {
       {/* Hero Section - Fixed aspect ratio to prevent CLS */}
       <section 
         className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 cursor-grab active:cursor-grabbing select-none"
+        style={{ aspectRatio: '16/9' }}
+        onTouchStart={onHeroTouchStart}
+        onTouchMove={onHeroTouchMove}
+        onTouchEnd={onHeroTouchEnd}
+        onMouseDown={onHeroMouseDown}
+        onMouseLeave={onHeroMouseLeave}
+      >
+        {/* Slider Background - Fixed aspect ratio container */}
+        <div className="absolute inset-0 w-full h-full" style={{ aspectRatio: '16/9' }}>
+          {sliderImages.map((image, index) => (
+            <motion.div
+              key={index}
+              className="absolute inset-0 w-full h-full"
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: currentSlide === index ? 1 : 0,
+                scale: currentSlide === index ? 1 : 1.05
+              }}
+              transition={{ 
+                duration: 0.8, 
+                ease: [0.4, 0.0, 0.2, 1] // Instagram-like smooth cubic bezier easing
+              }}
+            >
+              {/* Optimized responsive images with WebP/AVIF support */}
+              <picture>
+                {/* AVIF format (best compression) */}
+                <source
+                  srcSet={`${image}?w=400&q=75&fm=avif 400w, ${image}?w=800&q=75&fm=avif 800w, ${image}?w=1280&q=75&fm=avif 1280w, ${image}?w=1920&q=75&fm=avif 1920w`}
+                  type="image/avif"
+                  sizes="100vw"
+                />
+                {/* WebP format (good compression, wider support) */}
+                <source
+                  srcSet={`${image}?w=400&q=75&fm=webp 400w, ${image}?w=800&q=75&fm=webp 800w, ${image}?w=1280&q=75&fm=webp 1280w, ${image}?w=1920&q=75&fm=webp 1920w`}
+                  type="image/webp"
+                  sizes="100vw"
+                />
+                {/* Fallback to original WebP with responsive srcset */}
+                <source
+                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
+                  type="image/webp"
+                  sizes="100vw"
+                />
+                <img
+                  src={`${image}?w=1280&q=75`}
+                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
+                  alt={`Kamp alanı ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
+                  style={{ 
+                    objectPosition: 'center center',
+                    minHeight: '100%',
+                    minWidth: '100%',
+                    aspectRatio: '16/9'
+                  }}
+                  fetchPriority={index === 0 ? "high" : "low"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  width="1280"
+                  height="853"
+                  sizes="100vw"
+                />
+              </picture>
+            </motion.div>
+          ))}
+        </div>
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
+
+        {/* Navigation Buttons */}
+        <button
+          onClick={goToPrevSlide}
+          className="absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
+          aria-label="Previous slide"
+          >
+          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={goToNextSlide}
+          className="absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
+          aria-label="Next slide"
+          >
+          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        {/* Slider Indicators - Mobile touch targets minimum 44x44px */}
+        <div className="absolute bottom-4 sm:bottom-8 md:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
+          {sliderImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center ${
+                currentSlide === index 
+                  ? 'w-8 sm:w-10 bg-white' 
+                  : 'w-2 sm:w-2.5 bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Hero Section - Fixed aspect ratio to prevent CLS - Render after categories but show first */}
+      <section 
+        className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 cursor-grab active:cursor-grabbing select-none order-last"
         style={{ aspectRatio: '16/9' }}
         onTouchStart={onHeroTouchStart}
         onTouchMove={onHeroTouchMove}
