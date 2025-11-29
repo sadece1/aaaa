@@ -136,16 +136,13 @@ export const HomePage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-20"
+          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
           style={{ 
             display: 'flex', 
             flexDirection: 'column', 
             alignItems: 'center', 
             justifyContent: 'center',
-            textAlign: 'center',
-            width: '100%',
-            maxWidth: '100%',
-            margin: '0 auto'
+            textAlign: 'center'
           }}
         >
           <motion.div
