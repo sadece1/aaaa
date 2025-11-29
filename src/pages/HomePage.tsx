@@ -406,37 +406,19 @@ export const HomePage = () => {
                     }}
                   >
                     <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
-                      {/* Use slider images for categories, cycle through them - Optimized for small size (96-112px) */}
+                      {/* Use slider images for categories, cycle through them */}
                       {(() => {
                         const imageIndex = index % sliderImages.length;
                         const categoryImage = sliderImages[imageIndex];
-                        // Small size for category stories (max 112px = 112 * 2 for retina = 224px)
-                        const smallImageSize = 224;
                         return (
-                          <picture>
-                            {/* AVIF format for best compression */}
-                            <source
-                              srcSet={`${categoryImage}?w=${smallImageSize}&q=70&fm=avif`}
-                              type="image/avif"
-                            />
-                            {/* WebP format */}
-                            <source
-                              srcSet={`${categoryImage}?w=${smallImageSize}&q=70&fm=webp`}
-                              type="image/webp"
-                            />
-                            {/* Fallback with optimized size */}
-                            <img
-                              src={`${categoryImage}?w=${smallImageSize}&q=70`}
-                              alt={category.name}
-                              className="w-full h-full rounded-full object-cover"
-                              loading="lazy"
-                              decoding="async"
-                              fetchPriority="low"
-                              width={112}
-                              height={112}
-                              sizes="112px"
-                            />
-                          </picture>
+                          <img
+                            src={categoryImage}
+                            alt={category.name}
+                            className="w-full h-full rounded-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                            fetchPriority="low"
+                          />
                         );
                       })()}
                     </div>
@@ -477,29 +459,29 @@ export const HomePage = () => {
                 ease: [0.4, 0.0, 0.2, 1] // Instagram-like smooth cubic bezier easing
               }}
             >
-              {/* Optimized responsive images with WebP/AVIF support - Optimized for actual viewport sizes */}
+              {/* Optimized responsive images with WebP/AVIF support */}
               <picture>
-                {/* AVIF format (best compression) - Optimized sizes based on viewport */}
+                {/* AVIF format (best compression) */}
                 <source
-                  srcSet={`${image}?w=640&q=70&fm=avif 640w, ${image}?w=1024&q=70&fm=avif 1024w, ${image}?w=1600&q=70&fm=avif 1600w`}
+                  srcSet={`${image}?w=400&q=75&fm=avif 400w, ${image}?w=800&q=75&fm=avif 800w, ${image}?w=1280&q=75&fm=avif 1280w, ${image}?w=1920&q=75&fm=avif 1920w`}
                   type="image/avif"
                   sizes="100vw"
                 />
                 {/* WebP format (good compression, wider support) */}
                 <source
-                  srcSet={`${image}?w=640&q=70&fm=webp 640w, ${image}?w=1024&q=70&fm=webp 1024w, ${image}?w=1600&q=70&fm=webp 1600w`}
+                  srcSet={`${image}?w=400&q=75&fm=webp 400w, ${image}?w=800&q=75&fm=webp 800w, ${image}?w=1280&q=75&fm=webp 1280w, ${image}?w=1920&q=75&fm=webp 1920w`}
                   type="image/webp"
                   sizes="100vw"
                 />
                 {/* Fallback to original WebP with responsive srcset */}
                 <source
-                  srcSet={`${image}?w=640&q=70 640w, ${image}?w=1024&q=70 1024w, ${image}?w=1600&q=70 1600w`}
+                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
                   type="image/webp"
                   sizes="100vw"
                 />
                 <img
-                  src={`${image}?w=1024&q=70`}
-                  srcSet={`${image}?w=640&q=70 640w, ${image}?w=1024&q=70 1024w, ${image}?w=1600&q=70 1600w`}
+                  src={`${image}?w=1280&q=75`}
+                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
                   alt={`Kamp alanı ${index + 1}`}
                   className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
                   style={{ 
