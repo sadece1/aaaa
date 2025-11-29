@@ -131,24 +131,49 @@ export const HomePage = () => {
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-        {/* Content */}
+        {/* Content - Centered */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center"
-          style={{ textAlign: 'center', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-20"
+          style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%',
+            maxWidth: '100%',
+            margin: '0 auto'
+          }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="mb-6 w-full"
-            style={{ textAlign: 'center', width: '100%' }}
+            className="w-full"
+            style={{ 
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%'
+            }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center w-full" style={{ textAlign: 'center', width: '100%' }}>
-              Doğada Unutulmaz
-              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center' }}>Deneyimler Yaşayın</span>
+            <h1 
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl"
+              style={{ 
+                textAlign: 'center',
+                width: '100%',
+                marginLeft: 'auto',
+                marginRight: 'auto'
+              }}
+            >
+              <span style={{ display: 'block', textAlign: 'center' }}>Doğada Unutulmaz</span>
+              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block' }}>
+                Deneyimler Yaşayın
+              </span>
             </h1>
           </motion.div>
           
@@ -156,8 +181,16 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 max-w-3xl mx-auto leading-relaxed text-center w-full"
-            style={{ textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}
+            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed"
+            style={{ 
+              textAlign: 'center',
+              maxWidth: '48rem',
+              width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              paddingLeft: '1rem',
+              paddingRight: '1rem'
+            }}
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
             Türkiye'nin en kapsamlı kamp pazaryerinde maceranıza başlayın.
@@ -167,10 +200,16 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
-            style={{ justifyContent: 'center', alignItems: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}
+            className="flex flex-col sm:flex-row gap-4"
+            style={{ 
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
           >
-            <Link to={routes.blog}>
+            <Link to={routes.blog} style={{ display: 'flex', justifyContent: 'center' }}>
               <Button 
                 variant="secondary" 
                 size="lg"
@@ -179,7 +218,7 @@ export const HomePage = () => {
                 📖 Blog Yazılarını Keşfet
               </Button>
             </Link>
-            <Link to={routes.gear}>
+            <Link to={routes.gear} style={{ display: 'flex', justifyContent: 'center' }}>
               <Button 
                 variant="outline" 
                 size="lg"
