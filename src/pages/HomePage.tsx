@@ -176,20 +176,19 @@ export const HomePage = () => {
             }}
           >
             <h1 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-2xl text-center"
               style={{ 
                 textAlign: 'center',
                 width: '100%',
                 marginLeft: 'auto',
                 marginRight: 'auto',
                 display: 'block',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                position: 'relative'
+                visibility: 'visible',
+                opacity: 1
               }}
             >
-              <span style={{ display: 'block', textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>Doğada Unutulmaz</span>
-              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+              <span style={{ display: 'block', textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto', visibility: 'visible', opacity: 1 }}>Doğada Unutulmaz</span>
+              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block', width: '100%', marginLeft: 'auto', marginRight: 'auto', visibility: 'visible', opacity: 1 }}>
                 Deneyimler Yaşayın
               </span>
             </h1>
@@ -199,7 +198,7 @@ export const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed"
+            className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed text-center"
             style={{ 
               textAlign: 'center',
               maxWidth: '48rem',
@@ -209,9 +208,8 @@ export const HomePage = () => {
               paddingLeft: '1rem',
               paddingRight: '1rem',
               display: 'block',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              position: 'relative'
+              visibility: 'visible',
+              opacity: 1
             }}
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 

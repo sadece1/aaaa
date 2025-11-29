@@ -62,28 +62,12 @@
     touch-action: pan-x pan-y;
   }
   
-  /* ULTRA AGGRESSIVE - Force center alignment for hero section */
-  section[class*="hero"],
-  section[class*="hero"] *,
-  section[class*="hero"] * *,
-  section[class*="hero"] * * *,
-  section[class*="hero"] * * * *,
-  section[class*="hero"] > *,
-  section[class*="hero"] > * > *,
-  section[class*="hero"] > * > * > *,
-  section[class*="hero"] > * > * > * > * {
+  /* Force center alignment for hero section - FIXED */
+  section[class*="hero"] {
     text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
   }
   
-  section[class*="hero"] > div,
-  section[class*="hero"] > div > *,
-  section[class*="hero"] > div > * > *,
-  section[class*="hero"] > div[class*="z-10"],
-  section[class*="hero"] > div[class*="z-10"] > *,
-  section[class*="hero"] > div[class*="z-10"] > * > *,
-  section[class*="hero"] > div[class*="z-10"] > * > * > * {
+  section[class*="hero"] > div[class*="z-10"] {
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -91,39 +75,34 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 100% !important;
   }
   
   section[class*="hero"] h1,
-  section[class*="hero"] h1 *,
-  section[class*="hero"] h1 span,
-  section[class*="hero"] h1 span *,
-  section[class*="hero"] p,
-  section[class*="hero"] p * {
+  section[class*="hero"] h1 span {
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
     width: 100% !important;
     display: block !important;
-    text-align: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
-  section[class*="hero"] div[class*="flex"],
-  section[class*="hero"] div[class*="motion"],
-  section[class*="hero"] div[class*="motion"] > * {
+  section[class*="hero"] p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  section[class*="hero"] div[class*="flex"] {
     justify-content: center !important;
     align-items: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    text-align: center !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  
-  /* Override any inline styles */
-  section[class*="hero"] [style*="text-align"],
-  section[class*="hero"] [style*="textAlign"] {
-    text-align: center !important;
   }
 }
 
