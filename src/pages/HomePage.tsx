@@ -14,12 +14,10 @@ export const HomePage = () => {
   
   // Slider images
   const sliderImages = [
-    '/mutlaka-bunu-kullan.webp',
-    '/mutlaka-bunu-kullan.webp',
-    '/mutlaka-bunu-kullan.webp',
-    '/mutlaka-bunu-kullan.webp',
-    '/mutlaka-bunu-kullan.webp',
-    '/mutlaka-bunu-kullan.webp',
+    '/1.png',
+    '/2.png',
+    '/3.png',
+    '/4.png',
   ];
   
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -362,7 +360,7 @@ export const HomePage = () => {
 
       {/* Category Stories Section - Instagram Style */}
       {subCategories.length > 0 && (
-        <section className="py-4 sm:py-6 md:py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <section className="pt-0 pb-4 sm:pb-6 md:pb-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           <div className="w-full">
             <div
               id="category-stories-container"
@@ -405,14 +403,25 @@ export const HomePage = () => {
                       padding: '3px',
                     }}
                   >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5 relative">
+                      {/* Background image from slider */}
+                      {sliderImages[index % sliderImages.length] && (
+                        <img
+                          src={sliderImages[index % sliderImages.length]}
+                          alt={category.name}
+                          className="absolute inset-0 w-full h-full object-cover rounded-full"
+                        />
+                      )}
+                      {/* Overlay for better visibility */}
+                      <div className="absolute inset-0 bg-black/20 rounded-full"></div>
+                      {/* Icon or initial letter overlay */}
                       {category.icon ? (
-                        <div className="w-full h-full rounded-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 flex items-center justify-center text-2xl xs:text-3xl sm:text-4xl">
+                        <div className="absolute inset-0 flex items-center justify-center text-2xl xs:text-3xl sm:text-4xl z-10 drop-shadow-lg">
                           {category.icon}
                         </div>
                       ) : (
-                        <div className="w-full h-full rounded-full bg-gradient-to-br from-primary-400 to-primary-600 dark:from-primary-600 dark:to-primary-800 flex items-center justify-center">
-                          <span className="text-white font-bold text-base xs:text-lg sm:text-xl md:text-2xl">
+                        <div className="absolute inset-0 flex items-center justify-center z-10">
+                          <span className="text-white font-bold text-base xs:text-lg sm:text-xl md:text-2xl drop-shadow-lg">
                             {category.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
