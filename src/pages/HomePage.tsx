@@ -101,7 +101,17 @@ export const HomePage = () => {
       />
 
       {/* Hero Section - LCP Optimized */}
-      <section className="relative min-h-[85vh] flex items-center justify-center text-center text-white overflow-hidden" style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <section 
+        className="relative min-h-[85vh] flex items-center justify-center text-center text-white overflow-hidden" 
+        style={{ 
+          textAlign: 'center', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          width: '100%',
+          margin: '0 auto'
+        }}
+      >
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600" />
         
@@ -146,7 +156,10 @@ export const HomePage = () => {
             marginLeft: 'auto',
             marginRight: 'auto',
             width: '100%',
-            maxWidth: '80rem'
+            maxWidth: '80rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            position: 'relative'
           }}
         >
           <motion.div
@@ -168,11 +181,15 @@ export const HomePage = () => {
                 textAlign: 'center',
                 width: '100%',
                 marginLeft: 'auto',
-                marginRight: 'auto'
+                marginRight: 'auto',
+                display: 'block',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                position: 'relative'
               }}
             >
-              <span style={{ display: 'block', textAlign: 'center' }}>Doğada Unutulmaz</span>
-              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block' }}>
+              <span style={{ display: 'block', textAlign: 'center', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>Doğada Unutulmaz</span>
+              <span className="block text-primary-200 mt-2" style={{ textAlign: 'center', display: 'block', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                 Deneyimler Yaşayın
               </span>
             </h1>
@@ -190,7 +207,11 @@ export const HomePage = () => {
               marginLeft: 'auto',
               marginRight: 'auto',
               paddingLeft: '1rem',
-              paddingRight: '1rem'
+              paddingRight: '1rem',
+              display: 'block',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              position: 'relative'
             }}
           >
             Kamp alanları ve kamp malzemeleriyle doğanın büyüsünü keşfedin. 
