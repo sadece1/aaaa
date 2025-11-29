@@ -150,16 +150,38 @@ export const AdminCategoriesPage = () => {
             if (grandChildren.length > 0) {
               await deleteChildrenRecursively(child.id);
             }
-            await categoryManagementService.deleteCategory(child.id);
+            // 404 hatası sessizce handle edilir (kategori zaten silinmiş olabilir)
+            try {
+              await categoryManagementService.deleteCategory(child.id);
+            } catch (error) {
+              // 404 hatası normal, diğer hatalar için log
+              if (error instanceof Error && !error.message.includes('404')) {
+                console.warn(`Failed to delete child category ${child.id}:`, error);
+              }
+            }
           }
         };
         
         await deleteChildrenRecursively(id);
-        await categoryManagementService.deleteCategory(id);
+        // 404 hatası sessizce handle edilir
+        try {
+          await categoryManagementService.deleteCategory(id);
+        } catch (error) {
+          // 404 hatası normal, diğer hatalar için log
+          if (error instanceof Error && !error.message.includes('404')) {
+            throw error;
+          }
+        }
         loadCategories();
         alert('✅ Kategori ve tüm alt kategorileri başarıyla silindi.');
       } catch (error) {
-        alert(error instanceof Error ? error.message : 'Silme işlemi başarısız oldu');
+        // Sadece 404 dışındaki hatalar için alert göster
+        if (error instanceof Error && !error.message.includes('404')) {
+          alert(error.message || 'Silme işlemi başarısız oldu');
+        } else {
+          // 404 hatası = kategori zaten silinmiş, liste güncelle
+          loadCategories();
+        }
       }
       return;
     }
@@ -170,7 +192,12 @@ export const AdminCategoriesPage = () => {
         await categoryManagementService.deleteCategory(id);
         loadCategories();
       } catch (error) {
-        alert(error instanceof Error ? error.message : 'Silme işlemi başarısız oldu');
+        // 404 hatası = kategori zaten silinmiş, normal durum
+        if (error instanceof Error && error.message.includes('404')) {
+          loadCategories(); // Liste güncelle
+        } else {
+          alert(error instanceof Error ? error.message : 'Silme işlemi başarısız oldu');
+        }
       }
     }
   };

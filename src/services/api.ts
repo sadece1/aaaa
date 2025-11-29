@@ -68,6 +68,21 @@ api.interceptors.response.use(
       } as any);
     }
     
+    // Handle 404 errors silently (for DELETE operations where item might already be deleted)
+    if (error.response?.status === 404) {
+      // Check if this is a DELETE request - silently ignore 404 for DELETE
+      if (error.config?.method?.toLowerCase() === 'delete') {
+        // Silently resolve for DELETE 404 - item already deleted
+        return Promise.resolve({
+          data: { success: true },
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config: error.config,
+        } as any);
+      }
+    }
+    
     // Only handle 401 errors, ignore others (we'll use mock data)
     if (error.response?.status === 401) {
       // Unauthorized - clear auth and redirect to login
