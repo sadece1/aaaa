@@ -417,22 +417,11 @@ export const HomePage = () => {
                       padding: '2px',
                     }}
                   >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
-                      {/* Use slider images for categories, cycle through them */}
-                      {(() => {
-                        const imageIndex = index % sliderImages.length;
-                        const categoryImage = sliderImages[imageIndex];
-                        return (
-                          <img
-                            src={categoryImage}
-                            alt={category.name}
-                            className="w-full h-full rounded-full object-cover"
-                            loading="lazy"
-                            decoding="async"
-                            fetchPriority="low"
-                          />
-                        );
-                      })()}
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 flex items-center justify-center">
+                      {/* Use category icon if available, otherwise use tent icon */}
+                      <span className="text-2xl sm:text-3xl md:text-3xl lg:text-3xl">
+                        {category.icon || '⛺'}
+                      </span>
                     </div>
                   </motion.div>
                   <span className="mt-1 sm:mt-1.5 text-[9px] xs:text-[10px] sm:text-xs lg:text-[10px] text-gray-700 dark:text-gray-300 text-center max-w-[56px] xs:max-w-[64px] sm:max-w-[72px] lg:max-w-[64px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
@@ -446,18 +435,17 @@ export const HomePage = () => {
         </section>
       )}
 
-      {/* Hero Section - Fixed aspect ratio to prevent CLS */}
+      {/* Hero Section - Mobile optimized */}
       <section 
-        className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 cursor-grab active:cursor-grabbing select-none"
-        style={{ aspectRatio: '16/9' }}
+        className="relative h-[50vh] sm:h-[60vh] md:min-h-[70vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 cursor-grab active:cursor-grabbing select-none"
         onTouchStart={onHeroTouchStart}
         onTouchMove={onHeroTouchMove}
         onTouchEnd={onHeroTouchEnd}
         onMouseDown={onHeroMouseDown}
         onMouseLeave={onHeroMouseLeave}
       >
-        {/* Slider Background - Fixed aspect ratio container */}
-        <div className="absolute inset-0 w-full h-full" style={{ aspectRatio: '16/9' }}>
+        {/* Slider Background */}
+        <div className="absolute inset-0 w-full h-full">
           {sliderImages.map((image, index) => (
             <motion.div
               key={index}
@@ -496,12 +484,11 @@ export const HomePage = () => {
                   src={`${image}?w=1280&q=75`}
                   srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
                   alt={`Kamp manzarası ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover opacity-20 sm:opacity-25 md:opacity-20"
+                  className="absolute inset-0 w-full h-full object-cover opacity-25 sm:opacity-30 md:opacity-20"
                   style={{ 
                     objectPosition: 'center center',
                     minHeight: '100%',
                     minWidth: '100%',
-                    aspectRatio: '16/9'
                   }}
                   fetchPriority={index === 0 ? "high" : "low"}
                   loading={index === 0 ? "eager" : "lazy"}
@@ -516,12 +503,12 @@ export const HomePage = () => {
         </div>
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
 
-        {/* Navigation Buttons */}
+        {/* Navigation Buttons - Hidden on mobile, visible on larger screens */}
         <button
           onClick={goToPrevSlide}
-          className="absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
+          className="hidden sm:flex absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
           aria-label="Previous slide"
           >
           <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -530,7 +517,7 @@ export const HomePage = () => {
         </button>
         <button
           onClick={goToNextSlide}
-          className="absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
+          className="hidden sm:flex absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
           aria-label="Next slide"
           >
           <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -538,16 +525,16 @@ export const HomePage = () => {
           </svg>
         </button>
 
-        {/* Slider Indicators - Mobile touch targets minimum 44x44px */}
-        <div className="absolute bottom-4 sm:bottom-8 md:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
+        {/* Slider Indicators - Mobile optimized */}
+        <div className="absolute bottom-3 sm:bottom-6 md:bottom-8 lg:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
           {sliderImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center ${
+              className={`h-1.5 sm:h-2 md:h-2.5 rounded-full transition-all duration-300 flex items-center justify-center ${
                 currentSlide === index 
-                  ? 'w-8 sm:w-10 bg-white' 
-                  : 'w-2 sm:w-2.5 bg-white/50 hover:bg-white/75'
+                  ? 'w-6 sm:w-8 md:w-10 bg-white' 
+                  : 'w-1.5 sm:w-2 md:w-2.5 bg-white/50 hover:bg-white/75'
               }`}
               aria-label={`Slide ${index + 1}`}
             />
