@@ -12,23 +12,13 @@ import { formatDate, formatPrice } from '@/utils/validation';
 export const HomePage = () => {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   
-  // Slider images
-  const sliderImages = [
-    '/1.webp',
-    '/2.webp',
-    '/3.webp',
-    '/4.webp',
-  ];
+  // Hero background image
+  const heroImage = '/1.webp';
   
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [heroTouchStart, setHeroTouchStart] = useState(0);
-  const [heroTouchEnd, setHeroTouchEnd] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [autoSlideInterval, setAutoSlideInterval] = useState<NodeJS.Timeout | null>(null);
   const [categoryMouseStart, setCategoryMouseStart] = useState(0);
   const [categoryMouseEnd, setCategoryMouseEnd] = useState(0);
   const [isCategoryDragging, setIsCategoryDragging] = useState(false);
@@ -38,20 +28,6 @@ export const HomePage = () => {
   const [isCategoryTouchDragging, setIsCategoryTouchDragging] = useState(false);
   const [categoryDragDistance, setCategoryDragDistance] = useState(0);
   
-  useEffect(() => {
-    // Auto slide with pause on interaction
-    const interval = setInterval(() => {
-      if (!isDragging) {
-        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-      }
-    }, 5000); // 5 saniyede bir değişir
-    
-    setAutoSlideInterval(interval);
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [sliderImages.length, isDragging]);
   
   // Touch handlers for category stories (mobile) - native scroll with link click prevention
   const onCategoryTouchStart = (e: React.TouchEvent) => {
@@ -128,106 +104,6 @@ export const HomePage = () => {
       };
     }
   }, [isCategoryDragging, categoryMouseStart, categoryScrollLeft]);
-  
-  // Swipe handlers for hero slider - Instagram style smooth swipe
-  const heroMinSwipeDistance = 30;
-  
-  const onHeroTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    setHeroTouchEnd(0);
-    setHeroTouchStart(e.targetTouches[0].clientX);
-  };
-  
-  const onHeroTouchMove = (e: React.TouchEvent) => {
-    setHeroTouchEnd(e.targetTouches[0].clientX);
-  };
-  
-  const onHeroTouchEnd = () => {
-    setIsDragging(false);
-    if (!heroTouchStart || !heroTouchEnd) return;
-    
-    const distance = heroTouchStart - heroTouchEnd;
-    const isLeftSwipe = distance > heroMinSwipeDistance;
-    const isRightSwipe = distance < -heroMinSwipeDistance;
-    
-    if (isLeftSwipe) {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    } else if (isRightSwipe) {
-      setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
-    }
-    
-    // Reset after a delay
-    setTimeout(() => {
-      setHeroTouchStart(0);
-      setHeroTouchEnd(0);
-    }, 100);
-  };
-  
-  // Mouse drag handlers for desktop
-  const onHeroMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setHeroTouchEnd(0);
-    setHeroTouchStart(e.clientX);
-    e.preventDefault();
-  };
-  
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging && heroTouchStart) {
-        setHeroTouchEnd(e.clientX);
-      }
-    };
-    
-    const handleMouseUp = () => {
-      if (!isDragging) return;
-      
-      setIsDragging(false);
-      if (!heroTouchStart || !heroTouchEnd) return;
-      
-      const distance = heroTouchStart - heroTouchEnd;
-      const isLeftSwipe = distance > heroMinSwipeDistance;
-      const isRightSwipe = distance < -heroMinSwipeDistance;
-      
-      if (isLeftSwipe) {
-        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-      } else if (isRightSwipe) {
-        setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
-      }
-      
-      // Reset after a delay
-      setTimeout(() => {
-        setHeroTouchStart(0);
-        setHeroTouchEnd(0);
-      }, 100);
-    };
-    
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
-  }, [isDragging, heroTouchStart, heroTouchEnd, heroMinSwipeDistance, sliderImages.length]);
-  
-  const onHeroMouseLeave = () => {
-    if (isDragging) {
-      setIsDragging(false);
-      setHeroTouchStart(0);
-      setHeroTouchEnd(0);
-    }
-  };
-  
-  // Navigation buttons for hero
-  const goToNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-  };
-  
-  const goToPrevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
-  };
   
   // Fetch sub-subcategories (alt alt kategoriler) - Load immediately on mount
   useEffect(() => {
@@ -418,21 +294,15 @@ export const HomePage = () => {
                     }}
                   >
                     <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
-                      {/* Use slider images for categories, cycle through them */}
-                      {(() => {
-                        const imageIndex = index % sliderImages.length;
-                        const categoryImage = sliderImages[imageIndex];
-                        return (
-                          <img
-                            src={categoryImage}
-                            alt={category.name}
-                            className="w-full h-full rounded-full object-cover"
-                            loading="lazy"
-                            decoding="async"
-                            fetchPriority="low"
-                          />
-                        );
-                      })()}
+                      {/* Use hero image for categories */}
+                      <img
+                        src={heroImage}
+                        alt={category.name}
+                        className="w-full h-full rounded-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                        fetchPriority="low"
+                      />
                     </div>
                   </motion.div>
                   <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm lg:text-xs text-gray-700 dark:text-gray-300 text-center max-w-[72px] xs:max-w-[80px] sm:max-w-[88px] lg:max-w-[80px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
@@ -446,111 +316,53 @@ export const HomePage = () => {
         </section>
       )}
 
-      {/* Hero Section - Mobile optimized */}
+      {/* Hero Section - Simple static hero */}
       <section 
-        className="relative h-[50vh] sm:h-[60vh] md:min-h-[70vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 cursor-grab active:cursor-grabbing select-none"
-        onTouchStart={onHeroTouchStart}
-        onTouchMove={onHeroTouchMove}
-        onTouchEnd={onHeroTouchEnd}
-        onMouseDown={onHeroMouseDown}
-        onMouseLeave={onHeroMouseLeave}
+        className="relative h-[50vh] sm:h-[60vh] md:min-h-[70vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600"
       >
-        {/* Slider Background */}
+        {/* Hero Background Image */}
         <div className="absolute inset-0 w-full h-full">
-          {sliderImages.map((image, index) => (
-            <motion.div
-              key={index}
-              className="absolute inset-0 w-full h-full"
-              initial={{ opacity: 0 }}
-              animate={{ 
-                opacity: currentSlide === index ? 1 : 0,
-                scale: currentSlide === index ? 1 : 1.05
+          <picture>
+            {/* AVIF format (best compression) */}
+            <source
+              srcSet={`${heroImage}?w=400&q=75&fm=avif 400w, ${heroImage}?w=800&q=75&fm=avif 800w, ${heroImage}?w=1280&q=75&fm=avif 1280w, ${heroImage}?w=1920&q=75&fm=avif 1920w`}
+              type="image/avif"
+              sizes="100vw"
+            />
+            {/* WebP format (good compression, wider support) */}
+            <source
+              srcSet={`${heroImage}?w=400&q=75&fm=webp 400w, ${heroImage}?w=800&q=75&fm=webp 800w, ${heroImage}?w=1280&q=75&fm=webp 1280w, ${heroImage}?w=1920&q=75&fm=webp 1920w`}
+              type="image/webp"
+              sizes="100vw"
+            />
+            {/* Fallback to original WebP with responsive srcset */}
+            <source
+              srcSet={`${heroImage}?w=400&q=75 400w, ${heroImage}?w=800&q=75 800w, ${heroImage}?w=1280&q=75 1280w, ${heroImage}?w=1920&q=75 1920w`}
+              type="image/webp"
+              sizes="100vw"
+            />
+            <img
+              src={`${heroImage}?w=1280&q=75`}
+              srcSet={`${heroImage}?w=400&q=75 400w, ${heroImage}?w=800&q=75 800w, ${heroImage}?w=1280&q=75 1280w, ${heroImage}?w=1920&q=75 1920w`}
+              alt="Kamp manzarası"
+              className="absolute inset-0 w-full h-full object-cover opacity-25 sm:opacity-30 md:opacity-20"
+              style={{ 
+                objectPosition: 'center center',
+                minHeight: '100%',
+                minWidth: '100%',
               }}
-              transition={{ 
-                duration: 0.8, 
-                ease: [0.4, 0.0, 0.2, 1] // Instagram-like smooth cubic bezier easing
-              }}
-            >
-              {/* Optimized responsive images with WebP/AVIF support */}
-              <picture>
-                {/* AVIF format (best compression) */}
-                <source
-                  srcSet={`${image}?w=400&q=75&fm=avif 400w, ${image}?w=800&q=75&fm=avif 800w, ${image}?w=1280&q=75&fm=avif 1280w, ${image}?w=1920&q=75&fm=avif 1920w`}
-                  type="image/avif"
-                  sizes="100vw"
-                />
-                {/* WebP format (good compression, wider support) */}
-                <source
-                  srcSet={`${image}?w=400&q=75&fm=webp 400w, ${image}?w=800&q=75&fm=webp 800w, ${image}?w=1280&q=75&fm=webp 1280w, ${image}?w=1920&q=75&fm=webp 1920w`}
-                  type="image/webp"
-                  sizes="100vw"
-                />
-                {/* Fallback to original WebP with responsive srcset */}
-                <source
-                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
-                  type="image/webp"
-                  sizes="100vw"
-                />
-                <img
-                  src={`${image}?w=1280&q=75`}
-                  srcSet={`${image}?w=400&q=75 400w, ${image}?w=800&q=75 800w, ${image}?w=1280&q=75 1280w, ${image}?w=1920&q=75 1920w`}
-                  alt={`Kamp manzarası ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover opacity-25 sm:opacity-30 md:opacity-20"
-                  style={{ 
-                    objectPosition: 'center center',
-                    minHeight: '100%',
-                    minWidth: '100%',
-                  }}
-                  fetchPriority={index === 0 ? "high" : "low"}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="1280"
-                  height="853"
-                  sizes="100vw"
-                />
-              </picture>
-            </motion.div>
-          ))}
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+              width="1280"
+              height="853"
+              sizes="100vw"
+            />
+          </picture>
         </div>
         
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
-
-        {/* Navigation Buttons - Hidden on mobile, visible on larger screens */}
-        <button
-          onClick={goToPrevSlide}
-          className="hidden sm:flex absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
-          aria-label="Previous slide"
-          >
-          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={goToNextSlide}
-          className="hidden sm:flex absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-300"
-          aria-label="Next slide"
-          >
-          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-
-        {/* Slider Indicators - Mobile optimized */}
-        <div className="absolute bottom-3 sm:bottom-6 md:bottom-8 lg:bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
-          {sliderImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`h-1.5 sm:h-2 md:h-2.5 rounded-full transition-all duration-300 flex items-center justify-center ${
-                currentSlide === index 
-                  ? 'w-6 sm:w-8 md:w-10 bg-white' 
-                  : 'w-1.5 sm:w-2 md:w-2.5 bg-white/50 hover:bg-white/75'
-              }`}
-              aria-label={`Slide ${index + 1}`}
-            />
-          ))}
-        </div>
       </section>
 
       {/* Stats Section */}
