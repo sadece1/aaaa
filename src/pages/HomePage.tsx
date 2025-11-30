@@ -239,12 +239,12 @@ export const HomePage = () => {
 
       {/* Category Stories Section - Optimized for mobile and PC */}
       {subCategories.length > 0 && (
-        <section className="pt-0 pb-4 sm:pb-6 md:pb-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <section className="pt-2 pb-2 sm:pt-2 sm:pb-2 md:pt-2 md:pb-2 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           <div className="w-full max-w-7xl mx-auto px-4">
             {/* Mobile: Scrollable with snap */}
             <div
               id="category-stories-container"
-              className={`flex gap-2 sm:gap-2 md:gap-3 lg:gap-3 overflow-x-auto lg:overflow-x-hidden pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 lg:pl-0 snap-x snap-mandatory lg:justify-center lg:flex-wrap ${
+              className={`flex gap-2 sm:gap-2 md:gap-3 lg:gap-3 overflow-x-auto lg:overflow-x-hidden pb-0 scrollbar-hide pl-2 sm:pl-4 md:pl-0 lg:pl-0 snap-x snap-mandatory lg:justify-center lg:flex-wrap ${
                 isCategoryDragging || isCategoryTouchDragging ? 'cursor-grabbing' : 'cursor-grab'
               } select-none`}
               style={{ 
