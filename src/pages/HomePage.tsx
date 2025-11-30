@@ -261,7 +261,7 @@ export const HomePage = () => {
               onTouchEnd={onCategoryTouchEnd}
               onMouseDown={onCategoryMouseDown}
             >
-              {subCategories.slice(0, 12).map((category, index) => {
+              {subCategories.slice(0, 8).map((category, index) => {
                 const isSnapPoint = index % 4 === 0;
                 return (
                 <Link
@@ -297,7 +297,7 @@ export const HomePage = () => {
                         src={heroImage}
                         alt={category.name}
                         className="w-full h-full rounded-full object-cover"
-                        loading={index < 8 ? "eager" : "lazy"}
+                        loading={index < 4 ? "eager" : "lazy"}
                         decoding="async"
                         fetchPriority={index < 4 ? "high" : "low"}
                       />
