@@ -417,11 +417,22 @@ export const HomePage = () => {
                       padding: '2px',
                     }}
                   >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 flex items-center justify-center">
-                      {/* Use category icon if available, otherwise use tent icon */}
-                      <span className="text-2xl sm:text-3xl md:text-3xl lg:text-3xl">
-                        {category.icon || '⛺'}
-                      </span>
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
+                      {/* Use slider images for categories, cycle through them */}
+                      {(() => {
+                        const imageIndex = index % sliderImages.length;
+                        const categoryImage = sliderImages[imageIndex];
+                        return (
+                          <img
+                            src={categoryImage}
+                            alt={category.name}
+                            className="w-full h-full rounded-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                            fetchPriority="low"
+                          />
+                        );
+                      })()}
                     </div>
                   </motion.div>
                   <span className="mt-1 sm:mt-1.5 text-[9px] xs:text-[10px] sm:text-xs lg:text-[10px] text-gray-700 dark:text-gray-300 text-center max-w-[56px] xs:max-w-[64px] sm:max-w-[72px] lg:max-w-[64px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
