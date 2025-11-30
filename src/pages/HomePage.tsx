@@ -316,7 +316,7 @@ export const HomePage = () => {
         </section>
       )}
 
-      {/* Hero Section - Simple static hero */}
+      {/* Hero Section - Simple static hero with content */}
       <section 
         className="relative h-[50vh] sm:h-[60vh] md:min-h-[70vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600"
       >
@@ -362,7 +362,96 @@ export const HomePage = () => {
         </div>
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent sm:from-black/60 sm:via-black/20 z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 z-[1]" />
+        
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="space-y-6 sm:space-y-8"
+          >
+            {/* Main Title */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl leading-tight">
+              Doğada Unutulmaz
+              <br />
+              <span className="text-yellow-400">Kamp Deneyimleri</span>
+            </h1>
+            
+            {/* Subtitle */}
+            <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-3xl mx-auto drop-shadow-lg leading-relaxed">
+              Türkiye'nin en kapsamlı kiralık kamp malzemeleri platformu. 
+              <br className="hidden sm:block" />
+              Doğada unutulmaz anılar biriktirin.
+            </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center pt-4">
+              <Link to={routes.gear}>
+                <Button 
+                  variant="secondary" 
+                  size="lg"
+                  className="w-full sm:w-auto text-lg px-8 py-4 shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500 font-semibold"
+                >
+                  🎒 Kamp Malzemelerini Keşfet
+                </Button>
+              </Link>
+              <Link to={routes.blog}>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="w-full sm:w-auto text-lg px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl font-semibold"
+                >
+                  📖 Blog Yazılarını Oku
+                </Button>
+              </Link>
+            </div>
+            
+            {/* Stats Preview */}
+            <div className="grid grid-cols-3 gap-4 sm:gap-6 pt-8 sm:pt-12 max-w-2xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-center"
+              >
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400 drop-shadow-lg">
+                  500+
+                </div>
+                <div className="text-xs sm:text-sm text-white/80 mt-1">
+                  Kamp Malzemesi
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="text-center"
+              >
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400 drop-shadow-lg">
+                  5000+
+                </div>
+                <div className="text-xs sm:text-sm text-white/80 mt-1">
+                  Mutlu Müşteri
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="text-center"
+              >
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400 drop-shadow-lg">
+                  100+
+                </div>
+                <div className="text-xs sm:text-sm text-white/80 mt-1">
+                  Blog Yazısı
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* Stats Section */}
