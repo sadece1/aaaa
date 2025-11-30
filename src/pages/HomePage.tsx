@@ -393,7 +393,7 @@ export const HomePage = () => {
                   to={`/category/${category.slug}`}
                   className="flex-shrink-0 flex flex-col items-center group snap-start sm:snap-start md:snap-none lg:snap-none"
                   style={{ 
-                    minWidth: '64px',
+                    minWidth: '80px',
                     scrollSnapAlign: 'start',
                     scrollSnapStop: isSnapPoint ? 'always' : 'normal', // Her 4. item'da dur
                   }}
@@ -411,10 +411,10 @@ export const HomePage = () => {
                     transition={{ delay: index * 0.05, duration: 0.3 }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-16 md:h-16 lg:w-16 lg:h-16 rounded-full overflow-hidden cursor-pointer"
+                    className="relative w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-20 lg:h-20 rounded-full overflow-hidden cursor-pointer"
                     style={{
                       background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
-                      padding: '2px',
+                      padding: '3px',
                     }}
                   >
                     <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
@@ -435,7 +435,7 @@ export const HomePage = () => {
                       })()}
                     </div>
                   </motion.div>
-                  <span className="mt-1 sm:mt-1.5 text-[9px] xs:text-[10px] sm:text-xs lg:text-[10px] text-gray-700 dark:text-gray-300 text-center max-w-[56px] xs:max-w-[64px] sm:max-w-[72px] lg:max-w-[64px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
+                  <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm lg:text-xs text-gray-700 dark:text-gray-300 text-center max-w-[72px] xs:max-w-[80px] sm:max-w-[88px] lg:max-w-[80px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
                     {category.name}
                   </span>
                 </Link>
