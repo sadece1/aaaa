@@ -13,7 +13,7 @@ export const HomePage = () => {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   
   // Hero background image
-  const heroImage = '/1.webp';
+  const heroImage = '/mutlaka-bunu-kullan.webp';
   
   const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -237,23 +237,24 @@ export const HomePage = () => {
         locale="tr_TR"
       />
 
-      {/* Category Stories Section - Instagram Style - Render first so it appears above hero */}
+      {/* Category Stories Section - Optimized for mobile and PC */}
       {subCategories.length > 0 && (
         <section className="pt-0 pb-4 sm:pb-6 md:pb-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           <div className="w-full max-w-7xl mx-auto px-4">
+            {/* Mobile: Scrollable with snap */}
             <div
               id="category-stories-container"
-              className={`flex gap-2 sm:gap-2 md:gap-3 lg:gap-2 overflow-x-auto lg:overflow-x-hidden pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 lg:pl-0 lg:justify-center snap-x snap-mandatory ${
+              className={`flex gap-2 sm:gap-2 md:gap-3 lg:gap-3 overflow-x-auto lg:overflow-x-hidden pb-4 scrollbar-hide pl-2 sm:pl-4 md:pl-0 lg:pl-0 snap-x snap-mandatory lg:justify-center lg:flex-wrap ${
                 isCategoryDragging || isCategoryTouchDragging ? 'cursor-grabbing' : 'cursor-grab'
               } select-none`}
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none',
-                WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
-                scrollBehavior: 'smooth', // Smooth scroll for snap
+                WebkitOverflowScrolling: 'touch',
+                scrollBehavior: 'smooth',
                 overscrollBehaviorX: 'contain',
-                touchAction: 'pan-x', // Sadece yatay scroll'a izin ver
-                scrollSnapType: 'x mandatory', // Snap scrolling
+                touchAction: 'pan-x',
+                scrollSnapType: 'x mandatory',
               }}
               onTouchStart={onCategoryTouchStart}
               onTouchMove={onCategoryTouchMove}
@@ -261,20 +262,18 @@ export const HomePage = () => {
               onMouseDown={onCategoryMouseDown}
             >
               {subCategories.slice(0, 12).map((category, index) => {
-                // Her 4. item'da snap (0, 4, 8, 12...)
                 const isSnapPoint = index % 4 === 0;
                 return (
                 <Link
                   key={category.id}
                   to={`/category/${category.slug}`}
-                  className="flex-shrink-0 flex flex-col items-center group snap-start sm:snap-start md:snap-none lg:snap-none"
+                  className="flex-shrink-0 flex flex-col items-center group snap-start sm:snap-start md:snap-none lg:snap-none lg:mb-4"
                   style={{ 
                     minWidth: '80px',
                     scrollSnapAlign: 'start',
-                    scrollSnapStop: isSnapPoint ? 'always' : 'normal', // Her 4. item'da dur
+                    scrollSnapStop: isSnapPoint ? 'always' : 'normal',
                   }}
                   onClick={(e) => {
-                    // Prevent navigation if user was dragging (more than 5px)
                     if (categoryDragDistance > 5) {
                       e.preventDefault();
                     }
@@ -283,29 +282,28 @@ export const HomePage = () => {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.05, duration: 0.3 }}
-                    whileHover={{ scale: 1.1 }}
+                    viewport={{ once: true, margin: '-50px' }}
+                    transition={{ delay: Math.min(index * 0.03, 0.3), duration: 0.3 }}
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-20 lg:h-20 rounded-full overflow-hidden cursor-pointer"
+                    className="relative w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-24 lg:h-24 rounded-full overflow-hidden cursor-pointer"
                     style={{
                       background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
                       padding: '3px',
                     }}
                   >
                     <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 p-0.5">
-                      {/* Use hero image for categories */}
                       <img
                         src={heroImage}
                         alt={category.name}
                         className="w-full h-full rounded-full object-cover"
-                        loading="lazy"
+                        loading={index < 8 ? "eager" : "lazy"}
                         decoding="async"
-                        fetchPriority="low"
+                        fetchPriority={index < 4 ? "high" : "low"}
                       />
                     </div>
                   </motion.div>
-                  <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm lg:text-xs text-gray-700 dark:text-gray-300 text-center max-w-[72px] xs:max-w-[80px] sm:max-w-[88px] lg:max-w-[80px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
+                  <span className="mt-1.5 sm:mt-2 text-[10px] xs:text-xs sm:text-sm lg:text-xs text-gray-700 dark:text-gray-300 text-center max-w-[72px] xs:max-w-[80px] sm:max-w-[88px] lg:max-w-[88px] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors px-1">
                     {category.name}
                   </span>
                 </Link>
@@ -316,110 +314,85 @@ export const HomePage = () => {
         </section>
       )}
 
-      {/* Hero Section - Simple static hero with content */}
+      {/* Hero Section - Mobile optimized with mutlaka-bunu-kullan.webp */}
       <section 
-        className="relative h-[50vh] sm:h-[60vh] md:min-h-[70vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600"
+        className="relative h-[55vh] sm:h-[65vh] md:min-h-[75vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600"
       >
         {/* Hero Background Image */}
         <div className="absolute inset-0 w-full h-full">
-          <picture>
-            {/* AVIF format (best compression) */}
-            <source
-              srcSet={`${heroImage}?w=400&q=75&fm=avif 400w, ${heroImage}?w=800&q=75&fm=avif 800w, ${heroImage}?w=1280&q=75&fm=avif 1280w, ${heroImage}?w=1920&q=75&fm=avif 1920w`}
-              type="image/avif"
-              sizes="100vw"
-            />
-            {/* WebP format (good compression, wider support) */}
-            <source
-              srcSet={`${heroImage}?w=400&q=75&fm=webp 400w, ${heroImage}?w=800&q=75&fm=webp 800w, ${heroImage}?w=1280&q=75&fm=webp 1280w, ${heroImage}?w=1920&q=75&fm=webp 1920w`}
-              type="image/webp"
-              sizes="100vw"
-            />
-            {/* Fallback to original WebP with responsive srcset */}
-            <source
-              srcSet={`${heroImage}?w=400&q=75 400w, ${heroImage}?w=800&q=75 800w, ${heroImage}?w=1280&q=75 1280w, ${heroImage}?w=1920&q=75 1920w`}
-              type="image/webp"
-              sizes="100vw"
-            />
-            <img
-              src={`${heroImage}?w=1280&q=75`}
-              srcSet={`${heroImage}?w=400&q=75 400w, ${heroImage}?w=800&q=75 800w, ${heroImage}?w=1280&q=75 1280w, ${heroImage}?w=1920&q=75 1920w`}
-              alt="Kamp manzarası"
-              className="absolute inset-0 w-full h-full object-cover opacity-25 sm:opacity-30 md:opacity-20"
-              style={{ 
-                objectPosition: 'center center',
-                minHeight: '100%',
-                minWidth: '100%',
-              }}
-              fetchPriority="high"
-              loading="eager"
-              decoding="async"
-              width="1280"
-              height="853"
-              sizes="100vw"
-            />
-          </picture>
+          <img
+            src={heroImage}
+            alt="Kamp manzarası"
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-30 sm:opacity-35 md:opacity-25"
+            style={{ 
+              minHeight: '100%',
+              minWidth: '100%',
+            }}
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+          />
         </div>
         
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 z-[1]" />
+        {/* Overlay - Mobile için daha koyu */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/50 to-black/30 sm:from-black/70 sm:via-black/40 sm:to-black/20 z-[1]" />
         
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Hero Content - Mobile responsive */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-6 sm:space-y-8"
+            className="space-y-4 sm:space-y-6 md:space-y-8"
           >
-            {/* Main Title */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl leading-tight">
+            {/* Main Title - Mobile optimized */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl leading-tight px-2">
               Doğada Unutulmaz
-              <br />
-              <span className="text-yellow-400">Kamp Deneyimleri</span>
+              <br className="hidden sm:block" />
+              <span className="text-yellow-400 block sm:inline"> Kamp Deneyimleri</span>
             </h1>
             
-            {/* Subtitle */}
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-3xl mx-auto drop-shadow-lg leading-relaxed">
-              Türkiye'nin en kapsamlı kiralık kamp malzemeleri platformu. 
+            {/* Subtitle - Mobile optimized */}
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 max-w-3xl mx-auto drop-shadow-lg leading-relaxed px-2">
+              Türkiye'nin en kapsamlı kiralık kamp malzemeleri platformu
               <br className="hidden sm:block" />
-              Doğada unutulmaz anılar biriktirin.
+              <span className="hidden sm:inline">Doğada unutulmaz anılar biriktirin.</span>
             </p>
             
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center pt-4">
-              <Link to={routes.gear}>
+            {/* CTA Buttons - Mobile optimized */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center items-center pt-2 sm:pt-4 px-2">
+              <Link to={routes.gear} className="w-full sm:w-auto">
                 <Button 
                   variant="secondary" 
                   size="lg"
-                  className="w-full sm:w-auto text-lg px-8 py-4 shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500 font-semibold"
+                  className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500 font-semibold"
                 >
                   🎒 Kamp Malzemelerini Keşfet
                 </Button>
               </Link>
-              <Link to={routes.blog}>
+              <Link to={routes.blog} className="w-full sm:w-auto">
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="w-full sm:w-auto text-lg px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl font-semibold"
+                  className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 transition-all duration-300 shadow-xl font-semibold"
                 >
                   📖 Blog Yazılarını Oku
                 </Button>
               </Link>
             </div>
             
-            {/* Stats Preview */}
-            <div className="grid grid-cols-3 gap-4 sm:gap-6 pt-8 sm:pt-12 max-w-2xl mx-auto">
+            {/* Stats Preview - Mobile optimized */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 pt-4 sm:pt-6 md:pt-8 lg:pt-12 max-w-2xl mx-auto px-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="text-center"
               >
-                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400 drop-shadow-lg">
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-yellow-400 drop-shadow-lg">
                   500+
                 </div>
-                <div className="text-xs sm:text-sm text-white/80 mt-1">
+                <div className="text-[10px] sm:text-xs md:text-sm text-white/90 mt-0.5 sm:mt-1">
                   Kamp Malzemesi
                 </div>
               </motion.div>
@@ -429,10 +402,10 @@ export const HomePage = () => {
                 transition={{ delay: 0.3, duration: 0.6 }}
                 className="text-center"
               >
-                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400 drop-shadow-lg">
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-yellow-400 drop-shadow-lg">
                   5000+
                 </div>
-                <div className="text-xs sm:text-sm text-white/80 mt-1">
+                <div className="text-[10px] sm:text-xs md:text-sm text-white/90 mt-0.5 sm:mt-1">
                   Mutlu Müşteri
                 </div>
               </motion.div>
@@ -442,10 +415,10 @@ export const HomePage = () => {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="text-center"
               >
-                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400 drop-shadow-lg">
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-yellow-400 drop-shadow-lg">
                   100+
                 </div>
-                <div className="text-xs sm:text-sm text-white/80 mt-1">
+                <div className="text-[10px] sm:text-xs md:text-sm text-white/90 mt-0.5 sm:mt-1">
                   Blog Yazısı
                 </div>
               </motion.div>
